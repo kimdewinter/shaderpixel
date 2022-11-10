@@ -1,5 +1,13 @@
+#include "main.h"
+// #include <glad/glad.h>
+// #include <SDL.h>
+// #include <assimp/Importer.hpp>
+// #include <glm/vec3.hpp>
+// #include <stb_image.h>
+
 int main()
 {
+
 	return 0;
 }
 
