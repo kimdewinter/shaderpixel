@@ -7,8 +7,13 @@ project(shaderpixel CXX)
 # The following libraries can be pulled down and added to the project by turnning the
 # desired options on. Open an issue for additional default support.
 # See: https://github.com/Hoshiningen/OpenGL-Template/issues
+# It is highly recommended to have either GLFW or SDL2 enabled so you can make a context & windows
 
-set(ENABLE_ASSIMP   ON CACHE BOOL "Add Open Asset Import Library (assimp) to the project" FORCE)
+# set(ENABLE_GLFW   ON CACHE BOOL "Add GLFW OpenGL-utility library to the project" FORCE)
+# set(ENABLE_SDL2   ON CACHE BOOL "Add SDL2 hardware abstraction library to the project" FORCE)
+# set(ENABLE_ASSIMP   ON CACHE BOOL "Add Open Asset Import Library (assimp) to the project" FORCE)
+# set(ENABLE_GLM   ON CACHE BOOL "Add GLM OpenGL-mathematics library to the project" FORCE)
+# set(ENABLE_STB   ON CACHE BOOL "Add STB image-utility library to the project" FORCE)
 
 #===========================================================================================
 # GLAD CONFIGURATION
@@ -40,43 +45,58 @@ set(sources
 ${SOURCE_DIR}/main.cpp
 )
 
-add_executable(shaderpixel ${sources} ${includes})
+add_executable(${CMAKE_PROJECT_NAME} ${sources})
 
-target_include_directories(shaderpixel PUBLIC
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 # Perform dependency linkage
-# include(${CMAKE_DIR}/LinkGLFW.cmake)
-# LinkGLFW(shaderpixel PRIVATE)
-include(${CMAKE_DIR}/LinkSDL2.cmake)
-LinkSDL2(shaderpixel PRIVATE)
-
 include(${CMAKE_DIR}/LinkGLAD.cmake)
-LinkGLAD(shaderpixel PRIVATE)
+LinkGLAD(${CMAKE_PROJECT_NAME} PRIVATE)
 
 find_package(OpenGL REQUIRED)
 if (OpenGL_FOUND)
-    target_include_directories(shaderpixel PRIVATE ${OPENGL_INCLUDE_DIRS})
-    target_link_libraries(shaderpixel PRIVATE ${OPENGL_LIBRARIES})
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${OPENGL_INCLUDE_DIRS})
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
 else()
     message(FATAL_ERROR "OpenGL was not found on the system")
 endif()
 
 # Handle the optional libraries
+if (${ENABLE_GLFW})
+	include(${CMAKE_DIR}/LinkGLFW.cmake)
+	LinkGLFW(${CMAKE_PROJECT_NAME} PRIVATE)
+endif()
+
+if (${ENABLE_SDL2})
+	include(${CMAKE_DIR}/LinkSDL2.cmake)
+	LinkSDL2(${CMAKE_PROJECT_NAME} PRIVATE)
+endif()
+
 if (${ENABLE_ASSIMP})
     include(${CMAKE_DIR}/LinkASSIMP.cmake)
-    LinkASSIMP(shaderpixel PRIVATE)
+    LinkASSIMP(${CMAKE_PROJECT_NAME} PRIVATE)
+endif()
+
+if (${ENABLE_GLM})
+	include(${CMAKE_DIR}/LinkGLM.cmake)
+	LinkGLM(${CMAKE_PROJECT_NAME} PRIVATE)
+endif()
+
+if (${ENABLE_STB})
+	include(${CMAKE_DIR}/LinkSTB.cmake)
+	LinkSTB(${CMAKE_PROJECT_NAME} PRIVATE)
 endif()
 
 # Enable C++17
-set_target_properties(shaderpixel PROPERTIES
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO)
 
 # Set project folders
-set_target_properties(shaderpixel PROPERTIES FOLDER ${PROJECT_NAME})
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 
 # Set build type to Release or Debug
 set(CMAKE_BUILD_TYPE Release)
