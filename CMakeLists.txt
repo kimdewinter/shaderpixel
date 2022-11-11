@@ -44,9 +44,6 @@ set(CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(sources
 ${SOURCE_DIR}/main.cpp
 ${SOURCE_DIR}/SdlHandler.cpp
-${SOURCE_DIR}/Controller/Controller.cpp
-${SOURCE_DIR}/Model/Model.cpp
-${SOURCE_DIR}/View/View.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})

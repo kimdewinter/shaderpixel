@@ -4,11 +4,12 @@
 // #include <assimp/Importer.hpp>
 // #include <glm/vec3.hpp>
 // #include <stb_image.h>
+#include <cstdlib>
 
 int main()
 {
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 /*
