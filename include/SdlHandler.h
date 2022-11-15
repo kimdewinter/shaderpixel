@@ -1,18 +1,20 @@
 #ifndef SDLHANDLER_H_INCLUDED
 #define SDLHANDLER_H_INCLUDED
 
+#include "Window.h"
 #include <SDL.h>
-#include <string>
+#include <unordered_set>
+#include <functional>
 
 class SdlHandler
 {
 public:
-	SdlHandler(std::string const &window_name, int const window_width, int const window_height);
+	SdlHandler(std::function<std::unordered_set<Window *>()> windows_creation_after_sdl_init);
+	~SdlHandler() noexcept;
+	void add_window(Window *window);
+	void remove_window(Window *window);
 
-private:
-	std::string window_name;
-	int window_width;
-	int window_height;
+	std::unordered_set<Window *> windows = {};
 };
 
 #endif

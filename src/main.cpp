@@ -1,4 +1,7 @@
 #include "main.h"
+#include "SdlHandler.h"
+#include "Window.h"
+#include <functional>
 // #include <glad/glad.h>
 // #include <SDL.h>
 // #include <assimp/Importer.hpp>
@@ -6,9 +9,27 @@
 // #include <stb_image.h>
 #include <cstdlib>
 
-int main()
+namespace
 {
+	std::unordered_set<Window *> windows_creation()
+	{
+		std::unordered_set<Window *> set;
+		set.insert(new Window(APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT));
+		return set;
+	}
+}
 
+int main(int const argc, char const *const *const argv)
+{
+	if (argc != 1)
+		std::invalid_argument("This program should not be given arguments.");
+	SdlHandler sdlhandler{std::function<std::unordered_set<Window *>()>(windows_creation)};
+	Window *main_window = *sdlhandler.windows.begin();
+	while (1)
+	{
+		main_window->clear();
+		main_window->swap();
+	}
 	return EXIT_SUCCESS;
 }
 
