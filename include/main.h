@@ -14,6 +14,10 @@
 #define CLEAR_COLOR_B 0.0f // Blue
 #define CLEAR_COLOR_A 1.0f // Alpha
 
+#include <glad/glad.h>
+#include <SDL.h>
+// #include <SDL_image.h>
+
 enum ReturnCode
 {
 	SUCCESS,

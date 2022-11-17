@@ -1,5 +1,6 @@
 #include "SdlHandler.h"
 #include <iostream>
+#include "main.h"
 
 SdlHandler::SdlHandler(
 	std::function<std::unordered_set<Window *>()> windows_creation_after_sdl_init)

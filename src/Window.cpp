@@ -1,4 +1,6 @@
 #include "Window.h"
+#include <stdexcept>
+#include "main.h"
 
 Window::Window(
 	std::string const &window_name,
