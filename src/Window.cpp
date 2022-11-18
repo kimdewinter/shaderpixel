@@ -36,11 +36,11 @@ Window::Window(
 		throw std::runtime_error("Error in SDL_GL_CreateContext(): " + std::string(SDL_GetError()));
 
 	// Set vsync
-	// if (SDL_GL_SetSwapInterval(VSYNC) != 0)
-	// throw std::runtime_error("Error in SDL_GL_SetSwapInterval(): " + std::string(SDL_GetError()));
+	if (SDL_GL_SetSwapInterval(VSYNC) != 0)
+		throw std::runtime_error("Error in SDL_GL_SetSwapInterval(): " + std::string(SDL_GetError()));
 }
 
-Window::~Window()
+Window::~Window() noexcept
 {
 	if (this->window_ptr)
 	{
@@ -54,23 +54,12 @@ Window::~Window()
 	}
 }
 
-void Window::set_clear_color(std::array<GLfloat, 4> const &rgba) noexcept
-{
-	this->clear_color = rgba;
-	glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
-}
-
-void Window::clear() noexcept
-{
-	glClearColor(
-		this->clear_color[0],
-		this->clear_color[1],
-		this->clear_color[2],
-		this->clear_color[3]);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void Window::swap() noexcept
+void Window::swap() const noexcept
 {
 	SDL_GL_SwapWindow(this->window_ptr);
+}
+
+std::string const &Window::get_name() const noexcept
+{
+	return this->window_name;
 }

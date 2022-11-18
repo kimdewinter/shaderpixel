@@ -2,16 +2,21 @@
 #include "SdlHandler.h"
 #include "Window.h"
 #include <functional>
-// #include <glad/glad.h>
-// #include <SDL.h>
-// #include <assimp/Importer.hpp>
-// #include <glm/vec3.hpp>
-// #include <stb_image.h>
 #include <cstdlib>
 
 namespace
 {
-	std::unordered_set<Window *> windows_creation()
+	/// @brief Here you can decide what window the main() function treats as being your main window
+	Window &get_main_window(SdlHandler const &sdlhandler)
+	{
+		for (Window *window : sdlhandler.windows)
+			if (window->get_name() == APP_NAME) // Change APP_NAME if you want a different main_window in main()
+				return *window;
+		throw std::logic_error("Error in getting main_window");
+	}
+
+	/// @brief Manually implement function that can construct the windows you want
+	std::unordered_set<Window *> windows_creation() noexcept
 	{
 		std::unordered_set<Window *> set;
 		set.insert(new Window(APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -23,12 +28,27 @@ int main(int const argc, char const *const *const argv)
 {
 	if (argc != 1)
 		std::invalid_argument("This program should not be given arguments.");
-	SdlHandler sdlhandler{std::function<std::unordered_set<Window *>()>(windows_creation)};
-	Window *main_window = *sdlhandler.windows.begin();
-	while (1)
+
+	SdlHandler sdlhandler{
+		std::function<std::unordered_set<Window *>()>(windows_creation),
+		{CLEAR_COLOR_R, CLEAR_COLOR_G, CLEAR_COLOR_B, CLEAR_COLOR_A}};
+
+	Window &main_window = get_main_window(sdlhandler);
+
+	SDL_Event e;
+	bool quit = false;
+	while (!quit)
 	{
-		main_window->clear();
-		main_window->swap();
+		while (SDL_PollEvent(&e))
+		{
+			if (e.type == SDL_QUIT)
+			{
+				quit = true;
+			}
+		}
+		sdlhandler.clear();
+		for (Window *window : sdlhandler.windows)
+			window->swap();
 	}
 	return EXIT_SUCCESS;
 }

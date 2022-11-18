@@ -11,16 +11,14 @@ class Window
 {
 public:
 	Window(std::string const &window_name, int const window_width, int const window_height);
-	~Window();
-	void set_clear_color(std::array<GLfloat, 4> const &rgba) noexcept;
-	void clear() noexcept;
-	void swap() noexcept;
+	~Window() noexcept;
+	void swap() const noexcept;
+	std::string const &get_name() const noexcept;
 
 private:
-	std::string window_name;
-	int window_width;
-	int window_height;
-	std::array<GLfloat, 4> clear_color = {CLEAR_COLOR_R, CLEAR_COLOR_G, CLEAR_COLOR_B, CLEAR_COLOR_A}; // The background color when glClear() is called
+	std::string window_name = "";
+	int window_width = WINDOW_WIDTH;
+	int window_height = WINDOW_HEIGHT;
 	SDL_Window *window_ptr = NULL;
 	SDL_GLContext context_ptr = NULL; // SDL_GLContext is an alias for void *
 };

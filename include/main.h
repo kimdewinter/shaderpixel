@@ -14,6 +14,13 @@
 #define CLEAR_COLOR_B 0.0f // Blue
 #define CLEAR_COLOR_A 1.0f // Alpha
 
+// Includes that might later be needed, but should preferrably not be included in main.h:
+// #include <glad/glad.h>
+// #include <SDL.h>
+// #include <assimp/Importer.hpp>
+// #include <glm/vec3.hpp>
+// #include <stb_image.h>
+
 enum ReturnCode
 {
 	SUCCESS,
