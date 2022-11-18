@@ -1,4 +1,5 @@
 #include "main.h"
+#include "ErrorHandler.h"
 #include "SdlHandler.h"
 #include "Window.h"
 #include <functional>
@@ -22,10 +23,18 @@ namespace
 		set.insert(new Window(APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT));
 		return set;
 	}
+
+	void resize_window(int width, int height)
+	{
+		// Might have to also update the camera with new window width and height
+		glViewport(0, 0, width, height);
+	}
 }
 
 int main(int const argc, char const *const *const argv)
 {
+	Error::setup_segfault_signalhandler();
+
 	if (argc != 1)
 		std::invalid_argument("This program should not be given arguments.");
 
@@ -41,7 +50,15 @@ int main(int const argc, char const *const *const argv)
 	{
 		while (SDL_PollEvent(&e))
 		{
-			if (e.type == SDL_QUIT)
+			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+			{
+				exit(EXIT_SUCCESS);
+			}
+			else if (e.type == SDL_WINDOWEVENT)
+			{
+				resize_window(e.window.data1, e.window.data2);
+			}
+			else if (e.type == SDL_QUIT)
 			{
 				quit = true;
 			}
@@ -52,61 +69,3 @@ int main(int const argc, char const *const *const argv)
 	}
 	return EXIT_SUCCESS;
 }
-
-/*
-#include <iostream>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-void ProcessInput(GLFWwindow *window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-}
-
-int main()
-{
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	// Construct the window
-	GLFWwindow *window = glfwCreateWindow(800, 600, "OpenGL Template", nullptr, nullptr);
-	if (!window)
-	{
-		std::cout << "Failed to create the GLFW window\n";
-		glfwTerminate();
-	}
-
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD\n";
-		return -1;
-	}
-
-	// Handle view port dimensions
-	glViewport(0, 0, 800, 600);
-	glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height)
-								   { glViewport(0, 0, width, height); });
-
-	// This is the render loop
-	while (!glfwWindowShouldClose(window))
-	{
-		ProcessInput(window);
-
-		// Druids are the best
-		glClearColor(1.00f, 0.49f, 0.04f, 1.00f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-
-	glfwTerminate();
-	return 0;
-}
-*/

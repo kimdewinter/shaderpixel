@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "main.h"
 
 Window::Window(
 	std::string const &window_name,
@@ -30,14 +31,12 @@ Window::Window(
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_VERSION_MINOR);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, DOUBLE_BUFFER);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, DEPTH_SIZE);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, MSAA_BUFFERS);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, MSAA_SAMPLES);
 
 	// Create context
 	if (!(this->context_ptr = SDL_GL_CreateContext(this->window_ptr)))
 		throw std::runtime_error("Error in SDL_GL_CreateContext(): " + std::string(SDL_GetError()));
-
-	// Set vsync
-	if (SDL_GL_SetSwapInterval(VSYNC) != 0)
-		throw std::runtime_error("Error in SDL_GL_SetSwapInterval(): " + std::string(SDL_GetError()));
 }
 
 Window::~Window() noexcept

@@ -1,6 +1,39 @@
 #include "SdlHandler.h"
 #include <iostream>
 
+namespace
+{
+#ifdef DEBUG
+	void print_opengl_version()
+	{
+		int major, minor;
+		glGetIntegerv(GL_MAJOR_VERSION, &major);
+		glGetIntegerv(GL_MINOR_VERSION, &minor);
+		std::cout << "OpenGL version " << major << '.' << minor << std::endl;
+	}
+
+	void print_opengl_extensions()
+	{
+		std::cout << "OpenGL extensions:" << std::endl;
+		int len;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &len);
+		for (int i = 0; i < len; i++)
+			std::cout << glGetStringi(GL_EXTENSIONS, i) << std::endl;
+	}
+
+	void debug_info_opengl()
+	{
+		std::cout << "Implementation by " << glGetString(GL_VENDOR) << std::endl;
+		std::cout << "Using renderer " << glGetString(GL_RENDERER) << std::endl;
+		std::cout << "Primary GLSL supported is " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+		int n;
+		glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &n);
+		std::cout << "MAximum nr of vertex attributes supported: " << n << std::endl;
+		print_opengl_extensions();
+	}
+#endif
+}
+
 SdlHandler::SdlHandler(
 	std::function<std::unordered_set<Window *>()> windows_creation_after_sdl_init,
 	std::array<GLfloat, 4> clear_color) : clear_color(clear_color)
@@ -12,6 +45,10 @@ SdlHandler::SdlHandler(
 	for (Window *window : windows_creation_after_sdl_init())
 		this->windows.insert(window);
 
+	// Set vsync
+	if (SDL_GL_SetSwapInterval(VSYNC) != 0)
+		throw std::runtime_error("Error in SDL_GL_SetSwapInterval(): " + std::string(SDL_GetError()));
+
 	// Load OpenGL via GLAD
 	if (!(gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)))
 		throw std::runtime_error("Error in gladLoadGLLoader()");
@@ -19,19 +56,24 @@ SdlHandler::SdlHandler(
 	// Set required OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(clear_color[0], clear_color[1], clear_color[2], clear_color[3]);
+#if WIREFRAME_MODE == 1
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
 
 	// Check for any OpenGL errors
 	if (glGetError() != GL_NO_ERROR)
 		throw std::runtime_error("Error in OpenGL");
+
+#ifdef DEBUG
+	debug_info_opengl();
+#endif
 }
 
 SdlHandler::~SdlHandler() noexcept
 {
 	for (Window *window : this->windows)
-	{
 		if (window)
 			delete window;
-	}
 	SDL_Quit();
 }
 

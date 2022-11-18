@@ -20,7 +20,7 @@ private:
 	int window_width = WINDOW_WIDTH;
 	int window_height = WINDOW_HEIGHT;
 	SDL_Window *window_ptr = NULL;
-	SDL_GLContext context_ptr = NULL; // SDL_GLContext is an alias for void *
+	SDL_GLContext context_ptr = NULL; // SDL_GLContext is an alias for a void * to a SDL_GLContext object
 };
 
 #endif

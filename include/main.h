@@ -1,6 +1,7 @@
 #ifndef MAIN_H_INCLUDED
 #define MAIN_H_INCLUDED
 
+#define DEBUG // Debug mode; comment out if not needed
 #define APP_NAME "humangl"
 #define OPENGL_VERSION_MAJOR 4 // OpenGL version to use before the decimal
 #define OPENGL_VERSION_MINOR 1 // OpenGL version to use after the decimal
@@ -13,8 +14,14 @@
 #define CLEAR_COLOR_G 0.0f // Green
 #define CLEAR_COLOR_B 0.0f // Blue
 #define CLEAR_COLOR_A 1.0f // Alpha
+#define MSAA_BUFFERS 1	   // MSAA buffers (anti-aliasing)
+#define MSAA_SAMPLES 8	   // MSAA samples (anti-aliasing)
+#define WIREFRAME_MODE 0   // Set to 1 if you want to only the lines between vertices
 
-// Includes that might later be needed, but should preferrably not be included in main.h:
+// Things that might later be needed, but should preferrably not be included in main.h:
+// #define FOV 45 // In degrees
+// #define PROJECT_NEAR 0.1
+// #define PROJECT_FAR 100.0
 // #include <glad/glad.h>
 // #include <SDL.h>
 // #include <assimp/Importer.hpp>
