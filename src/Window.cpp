@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "main.h"
+#include "ErrorHandler.h"
 
 Window::Window(
 	std::string const &window_name,
@@ -23,6 +24,12 @@ Window::Window(
 			  window_height,
 			  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
 		throw std::runtime_error("Error in SDL_Createwindow(): " + std::string(SDL_GetError()));
+	if (!(this->window_id = SDL_GetWindowID(this->window_ptr)))
+	{
+		SDL_DestroyWindow(this->window_ptr);
+		this->window_ptr = NULL;
+		throw std::runtime_error("Error retrieving SDL WindowID of window with name: " + this->window_name + '\n' + SDL_GetError());
+	}
 
 	// Create context
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // For extra performance, don't allow pre-3.0 backward compatability
@@ -36,21 +43,33 @@ Window::Window(
 
 	// Create context
 	if (!(this->context_ptr = SDL_GL_CreateContext(this->window_ptr)))
+	{
+		SDL_DestroyWindow(this->window_ptr);
+		this->window_ptr = NULL;
+		this->window_id = 0;
 		throw std::runtime_error("Error in SDL_GL_CreateContext(): " + std::string(SDL_GetError()));
+	}
+
+	// Check if anything went wrong
+	const char *error_check = SDL_GetError();
+	if (error_check != GL_NO_ERROR)
+	{
+		SDL_GL_DeleteContext(this->context_ptr);
+		this->context_ptr = NULL;
+		SDL_DestroyWindow(this->window_ptr);
+		this->window_ptr = NULL;
+		this->window_id = 0;
+		throw std::runtime_error("SDL/GL error: " + std::string(error_check));
+	}
 }
 
 Window::~Window() noexcept
 {
-	if (this->window_ptr)
-	{
-		SDL_DestroyWindow(this->window_ptr);
-		this->window_ptr = NULL;
-	}
-	if (this->context_ptr)
-	{
-		SDL_GL_DeleteContext(this->context_ptr);
-		this->context_ptr = NULL;
-	}
+	SDL_DestroyWindow(this->window_ptr);
+	this->window_ptr = NULL;
+	this->window_id = 0;
+	SDL_GL_DeleteContext(this->context_ptr);
+	this->context_ptr = NULL;
 }
 
 void Window::swap() const noexcept
@@ -58,7 +77,24 @@ void Window::swap() const noexcept
 	SDL_GL_SwapWindow(this->window_ptr);
 }
 
+void Window::make_current() const noexcept
+{
+	if (SDL_GL_MakeCurrent(this->window_ptr, this->context_ptr) < 0)
+		Error::output_error(
+			Error::Type::WARNING,
+			"Failure to make_current for window: " +
+				this->window_name +
+				"\n" +
+				"SDL error: " +
+				SDL_GetError());
+}
+
 std::string const &Window::get_name() const noexcept
 {
 	return this->window_name;
+}
+
+Uint32 const Window::get_id() const noexcept
+{
+	return this->window_id;
 }

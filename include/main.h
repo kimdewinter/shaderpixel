@@ -27,6 +27,7 @@
 // #include <assimp/Importer.hpp>
 // #include <glm/vec3.hpp>
 // #include <stb_image.h>
+// SDL_SetRelativeMouseMode(SDL_TRUE);
 
 enum ReturnCode
 {
