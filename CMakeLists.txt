@@ -10,7 +10,7 @@ project(shaderpixel CXX)
 # It is highly recommended to have either GLFW or SDL2 enabled so you can make a context & windows
 
 # set(ENABLE_GLFW   ON CACHE BOOL "Add GLFW OpenGL-utility library to the project" FORCE)
-# set(ENABLE_SDL2   ON CACHE BOOL "Add SDL2 hardware abstraction library to the project" FORCE)
+set(ENABLE_SDL2   ON CACHE BOOL "Add SDL2 hardware abstraction library to the project" FORCE)
 # set(ENABLE_ASSIMP   ON CACHE BOOL "Add Open Asset Import Library (assimp) to the project" FORCE)
 # set(ENABLE_GLM   ON CACHE BOOL "Add GLM OpenGL-mathematics library to the project" FORCE)
 # set(ENABLE_STB   ON CACHE BOOL "Add STB image-utility library to the project" FORCE)
@@ -43,6 +43,9 @@ set(CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(sources
 ${SOURCE_DIR}/main.cpp
+${SOURCE_DIR}/ErrorHandler.cpp
+${SOURCE_DIR}/SdlHandler.cpp
+${SOURCE_DIR}/Window.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
