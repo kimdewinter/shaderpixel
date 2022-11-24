@@ -11,7 +11,7 @@ namespace
 		void *symbols[30];
 		bzero(symbols, sizeof(void *) * 30);
 		size_t n_symbols = backtrace(symbols, 30);
-		if (!symbols || n_symbols == 0)
+		if (!*symbols || n_symbols == 0)
 			return std::nullopt;
 
 		// Extract trace-lines from symbols as raw char arrays
@@ -47,7 +47,7 @@ void Error::setup_segfault_signalhandler() noexcept
 }
 
 void Error::output_error(
-	Type const type,
+	Error::Type const type,
 	std::string const &explanation_str,
 	std::optional<bool> include_stacktrace,
 	std::ostream &output_stream) noexcept
@@ -61,12 +61,14 @@ void Error::output_error(
 		output += "Fatal error";
 		if (include_stacktrace == std::nullopt)
 			include_stacktrace = true;
+		break;
 	}
 	case WARNING:
 	{
 		output += "Warning";
 		if (include_stacktrace == std::nullopt)
 			include_stacktrace = false;
+		break;
 	}
 	}
 

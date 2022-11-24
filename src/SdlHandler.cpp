@@ -82,18 +82,18 @@ SdlHandler::SdlHandler(
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 #endif
 
+#ifdef DEBUG
+	debug_info_opengl();
+#endif
+
 	// Check for any OpenGL errors
-	char const *error_check = SDL_GetError();
+	GLenum error_check = glGetError();
 	if (error_check != GL_NO_ERROR)
 	{
 		clear_set_of_windows(this->windows);
 		SDL_Quit();
-		throw std::runtime_error("Error in SDL/OpenGL: " + std::string(error_check));
+		throw std::runtime_error("Error in OpenGL.");
 	}
-
-#ifdef DEBUG
-	debug_info_opengl();
-#endif
 }
 
 SdlHandler::~SdlHandler() noexcept
