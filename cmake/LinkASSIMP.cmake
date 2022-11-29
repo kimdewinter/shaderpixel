@@ -4,7 +4,7 @@ macro(LinkASSIMP TARGET ACCESS)
     FetchContent_Declare(
         assimp
         GIT_REPOSITORY https://github.com/assimp/assimp
-        GIT_TAG v5.2.5
+		GIT_TAG 6f6f77232e2468daf145bb093ad2d545c1b18219
     )
 
     FetchContent_GetProperties(assimp)
