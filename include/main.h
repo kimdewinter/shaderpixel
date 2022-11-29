@@ -2,7 +2,7 @@
 #define MAIN_H_INCLUDED
 
 #define DEBUG // Debug mode; comment out if not needed
-#define APP_NAME "humangl"
+#define APP_NAME "shaderpixel"
 #define OPENGL_VERSION_MAJOR 4 // OpenGL version to use before the decimal
 #define OPENGL_VERSION_MINOR 1 // OpenGL version to use after the decimal
 #define DOUBLE_BUFFER 1		   // Whether to use a double buffer; set to 0 or 1, defaults to 1

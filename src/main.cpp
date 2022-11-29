@@ -1,5 +1,6 @@
 #include "main.h"
 #include "ErrorHandler.h"
+#include "EventHandler.h"
 #include "SdlHandler.h"
 #include "Window.h"
 #include <functional>
@@ -13,6 +14,7 @@ namespace Configuration
 	{
 
 	}
+
 	/// @brief Here are some more technical settings
 	namespace Technical
 	{
@@ -44,59 +46,34 @@ namespace Configuration
 	}
 }
 
-namespace
-{
-	void resize_window(Window const &current_window, Window const &event_window, SDL_Event const &event)
-	{
-		// Make the event-related window and context current so it can be operated on
-		event_window.make_current();
-
-		// Do the required resizing
-		// Might have to also update the camera with new window width and height
-		glViewport(0, 0, event.window.data1, event.window.data2);
-
-		// Restore previously current window
-		current_window.make_current();
-	}
-}
-
 int main(int const argc, char const *const *const argv)
 {
+	// If segfaulting, this'll dump a stacktrace into cerr
 	Error::setup_segfault_signalhandler();
 
+	// Check validity of program's input
 	if (argc != 1)
 		Error::output_error(Error::Type::FATAL, "This program should not be given arguments.");
 
-	SdlHandler sdlhandler{&Configuration::Technical::windows_creation, Configuration::Technical::get_clear_colors()};
+	// Start up SDL and OpenGL, create windows via the use of function pointers
+	SdlHandler sdl_handler{&Configuration::Technical::windows_creation, Configuration::Technical::get_clear_colors()};
 
-	Window &main_window = Configuration::Technical::get_main_window(sdlhandler);
+	// Select which window is to be the main window
+	Window &main_window = Configuration::Technical::get_main_window(sdl_handler);
 
-	SDL_Event e;
-	bool quit = false;
-	while (!quit)
+	EventHandler event_handler;
+	while (!event_handler.get_should_quit())
 	{
-		while (SDL_PollEvent(&e))
-		{
-			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
-			{
-				exit(EXIT_SUCCESS);
-			}
-			else if (e.type == SDL_WINDOWEVENT)
-			{
-				std::optional<Window *> current_window = sdlhandler.find_window_by_window_id(SDL_GetWindowID(SDL_GL_GetCurrentWindow()));
-				std::optional<Window *> event_window = sdlhandler.find_window_by_window_id(e.window.windowID);
-				if (event_window == std::nullopt || current_window == std::nullopt)
-					continue;
-				resize_window(**current_window, **event_window, e);
-			}
-			else if (e.type == SDL_QUIT)
-			{
-				quit = true;
-			}
-		}
-		sdlhandler.clear();
-		for (Window *window : sdlhandler.windows)
+		// Poll and handle events (including input)
+		event_handler.handle_all_events(sdl_handler);
+
+		// Clear the buffer so we can start composing a new frame
+		sdl_handler.clear();
+
+		// Swap each window's buffer so that it gets rendered onto the screen
+		for (Window *window : sdl_handler.windows)
 			window->swap();
 	}
+	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;
 }
