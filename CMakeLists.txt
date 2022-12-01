@@ -11,8 +11,8 @@ project(shaderpixel CXX)
 
 # set(ENABLE_GLFW   ON CACHE BOOL "Add GLFW OpenGL-utility library to the project" FORCE)
 set(ENABLE_SDL2   ON CACHE BOOL "Add SDL2 hardware abstraction library to the project" FORCE)
-# set(ENABLE_ASSIMP   ON CACHE BOOL "Add Open Asset Import Library (assimp) to the project" FORCE)
-# set(ENABLE_GLM   ON CACHE BOOL "Add GLM OpenGL-mathematics library to the project" FORCE)
+set(ENABLE_ASSIMP   ON CACHE BOOL "Add Open Asset Import Library (assimp) to the project" FORCE)
+set(ENABLE_GLM   ON CACHE BOOL "Add GLM OpenGL-mathematics library to the project" FORCE)
 # set(ENABLE_STB   ON CACHE BOOL "Add STB image-utility library to the project" FORCE)
 
 #===========================================================================================
@@ -47,6 +47,7 @@ ${SOURCE_DIR}/ErrorHandler.cpp
 ${SOURCE_DIR}/EventHandler.cpp
 ${SOURCE_DIR}/SdlHandler.cpp
 ${SOURCE_DIR}/Window.cpp
+${SOURCE_DIR}/Mesh.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
