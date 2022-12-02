@@ -2,6 +2,8 @@
 #include <iostream>
 #include <execinfo.h>
 #include <unistd.h>
+#include <cstring>
+#include <signal.h>
 
 namespace
 {
@@ -9,7 +11,7 @@ namespace
 	{
 		// Get the backtrace symbols
 		void *symbols[30];
-		bzero(symbols, sizeof(void *) * 30);
+		memset(symbols, 0, sizeof(void *) * 30);
 		size_t n_symbols = backtrace(symbols, 30);
 		if (!*symbols || n_symbols == 0)
 			return std::nullopt;

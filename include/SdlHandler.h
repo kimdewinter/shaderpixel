@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <unordered_set>
 #include <functional>
+#include <optional>
 
 class SdlHandler
 {

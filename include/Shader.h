@@ -8,6 +8,7 @@ public:
 		const char *vertex_path,
 		const char *fragment_path,
 		const char *geometry_path = NULL);
+	void set_uniform_int(const std::string &name, int const value) const noexcept;
 
 	unsigned int id;
 

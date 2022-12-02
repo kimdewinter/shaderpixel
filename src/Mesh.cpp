@@ -1,6 +1,6 @@
 #include "Mesh.h"
 #include <glad/glad.h>
-#include <exception>
+#include <stdexcept>
 
 Mesh::Mesh(
 	std::vector<Vertex> vertices,

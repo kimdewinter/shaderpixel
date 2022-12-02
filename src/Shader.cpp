@@ -1,8 +1,36 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <glad/glad.h>
 #include "Shader.h"
 #include "ErrorHandler.h"
+
+namespace
+{
+	void check_compile_errors(GLuint const shader_id, std::string const type)
+	{
+		GLint success;
+		GLchar info_log[1024];
+		if (type != "PROGRAM")
+		{
+			glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
+			if (!success)
+			{
+				glGetShaderInfoLog(shader_id, 1024, NULL, info_log);
+				throw std::runtime_error("Shader compilation error of type: " + type + "\n" + std::string(info_log) + "\n");
+			}
+		}
+		else
+		{
+			glGetProgramiv(shader_id, GL_LINK_STATUS, &success);
+			if (!success)
+			{
+				glGetProgramInfoLog(shader_id, 1024, NULL, info_log);
+				throw std::runtime_error("Shader linking error of type: " + type + "\n" + std::string(info_log) + "\n");
+			}
+		}
+	}
+}
 
 Shader::Shader(
 	const char *vertex_path,
@@ -50,5 +78,36 @@ Shader::Shader(
 	{
 		Error::output_error(Error::Type::WARNING, exception.what());
 	}
-	// FINISH THIS
+
+	// Compile vertex shader
+	const char *vertex_code_cstr = vertex_code.c_str();
+	unsigned int vertex_id, fragment_id;
+	vertex_id = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertex_id, 1, &vertex_code_cstr, NULL);
+	glCompileShader(vertex_id);
+	check_compile_errors(vertex_id, "VERTEX");
+
+	// Compile fragment shader
+	const char *fragment_code_cstr = fragment_code.c_str();
+	fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragment_id, 1, &fragment_code_cstr, NULL);
+	glCompileShader(fragment_id);
+	check_compile_errors(fragment_id, "FRAGMENT");
+
+	// Compile geometry shader (if necessary)
+	if (geometry_path != NULL)
+	{
+		const char *geometry_code_cstr = geometry_code.c_str();
+		unsigned int geometry_id = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geometry_id, 1, &geometry_code_cstr, NULL);
+		check_compile_errors(geometry_id, "GEOMETRY");
+	}
+
+	// Link shaders and create shader program
+	this->id = glCreateProgram();
+}
+
+void Shader::set_uniform_int(const std::string &name, int const value) const noexcept
+{
+	glUniform1i(glGetUniformLocation(this->id, name.c_str()), value);
 }
