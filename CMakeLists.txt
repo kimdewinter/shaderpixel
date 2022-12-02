@@ -48,6 +48,7 @@ ${SOURCE_DIR}/EventHandler.cpp
 ${SOURCE_DIR}/SdlHandler.cpp
 ${SOURCE_DIR}/Window.cpp
 ${SOURCE_DIR}/Mesh.cpp
+${SOURCE_DIR}/Shader.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
