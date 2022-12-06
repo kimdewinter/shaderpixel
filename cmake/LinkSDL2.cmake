@@ -7,11 +7,7 @@ macro(LinkSDL2 TARGET ACCESS)
 		GIT_TAG release-2.24.2
 	)
 
-	FetchContent_GetProperties(sdl2)
-
-	if (NOT sdl2_POPULATED)
-		FetchContent_Populate(sdl2)
-	endif()
+	FetchContent_MakeAvailable(sdl2)
 
 	find_package(SDL2 REQUIRED)
 

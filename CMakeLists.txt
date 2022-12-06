@@ -7,13 +7,14 @@ project(shaderpixel CXX)
 # The following libraries can be pulled down and added to the project by turnning the
 # desired options on. Open an issue for additional default support.
 # See: https://github.com/Hoshiningen/OpenGL-Template/issues
+# How to FetchContent: https://github.com/pr0g/cmake-examples/blob/main/examples/more/fetch-content/CMakeLists.txt
 # It is highly recommended to have either GLFW or SDL2 enabled so you can make a context & windows
 
 # set(ENABLE_GLFW   ON CACHE BOOL "Add GLFW OpenGL-utility library to the project" FORCE)
 set(ENABLE_SDL2   ON CACHE BOOL "Add SDL2 hardware abstraction library to the project" FORCE)
 set(ENABLE_ASSIMP   ON CACHE BOOL "Add Open Asset Import Library (assimp) to the project" FORCE)
 set(ENABLE_GLM   ON CACHE BOOL "Add GLM OpenGL-mathematics library to the project" FORCE)
-# set(ENABLE_STB   ON CACHE BOOL "Add STB image-utility library to the project" FORCE)
+set(ENABLE_STB   ON CACHE BOOL "Add STB image-utility library to the project" FORCE)
 
 #===========================================================================================
 # GLAD CONFIGURATION
@@ -48,6 +49,7 @@ ${SOURCE_DIR}/EventHandler.cpp
 ${SOURCE_DIR}/SdlHandler.cpp
 ${SOURCE_DIR}/Window.cpp
 ${SOURCE_DIR}/Mesh.cpp
+${SOURCE_DIR}/Model.cpp
 ${SOURCE_DIR}/Shader.cpp
 )
 

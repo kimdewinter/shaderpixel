@@ -16,10 +16,18 @@
 class Model
 {
 public:
-	Model(char const *const path);
+	Model(std::string const &path);
 
 	std::vector<Mesh> meshes;
 	std::string directory;
+
+private:
+	Mesh process_mesh(aiMesh const *const mesh, aiScene const *const scene) noexcept;
+	std::vector<Texture> Model::load_material_textures(
+		aiMaterial const *const mat,
+		aiTextureType const type,
+		std::string const &type_name) noexcept;
+	void process_node(aiNode *node, const aiScene *scene) noexcept;
 };
 
 #endif
