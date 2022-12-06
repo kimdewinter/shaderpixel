@@ -7,20 +7,67 @@ namespace
 {
 	void process_node(aiNode *node, const aiScene *scene)
 	{
+		// process all of the node's meshes
 		for (unsigned int = 0; i < node->numMeshes; i++)
 		{
 			aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
 			meshes.push_back(processMesh(mesh, scene));
 		}
+		// then do the same for each of it's children
 		for (unsigned int i = 0; i < node->mNumchildren; i++)
 		{
 			process_node(node->mChildren[i], scene);
 		}
 	}
 
-	void process_mesh(aiMesh *mesh, const aiScene *scene)
+	Mesh process_mesh(aiMesh const *const mesh, aiScene const *const scene)
 	{
-		// IMPLEMENT THIS
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		std::vector<Texture> textures;
+		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+		{
+			Vertex vertex;
+			// process vertex positions
+			glm::vec3 position_vector;
+			position_vector.x = mesh->mVertices[i].x;
+			position_vector.y = mesh->mVertices[i].y;
+			position_vector.z = mesh->mVertices[i].z;
+			vertex.position = position_vector;
+
+			// process vertex normals
+			glm::vec3 normal_vector;
+			normal_vector.x = mesh->mNormals[i].x;
+			normal_vector.y = mesh->mNormals[i].y;
+			normal_vector.z = mesh->mNormals[i].z;
+			vertex.normal = normal_vector;
+
+			// process texture coordinates
+			if (mesh->mTextureCoords[0])
+			{
+				glm::vec2 texture_vector;
+				texture_vector.x = mesh->mTextureCoords[0][i].x;
+				texture_vector.y = mesh->mTextureCoords[0][i].y;
+				vertex.texture_coordinates = texture_vector;
+			}
+			else
+				vertex.texture_coordinates = glm::vec2(0.0f, 0.0f);
+		}
+
+		// process indices
+		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+		{
+			aiFace face = mesh->mFaces[i];
+			for (unsigned int j = 0; i < face.mNumIndices; j++)
+				indices.push_back(face.mIndices[j]);
+		}
+
+		// process material, if needed
+		if (mesh->mMaterialIndex >= 0)
+		{
+			// PLACEHOLDER
+		}
+		return Mesh(vertices, indices, textures);
 	}
 }
 
