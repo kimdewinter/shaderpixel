@@ -10,13 +10,14 @@
 #define VSYNC 1				   // 0 for immediate updates, 1 for updates synched with vertical retrace, -1 for adaptive vsync
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 900
-#define CLEAR_COLOR_R 0.0f // Red
-#define CLEAR_COLOR_G 0.0f // Green
-#define CLEAR_COLOR_B 0.0f // Blue
-#define CLEAR_COLOR_A 1.0f // Alpha
-#define MSAA_BUFFERS 1	   // MSAA buffers (anti-aliasing)
-#define MSAA_SAMPLES 8	   // MSAA samples (anti-aliasing)
-#define WIREFRAME_MODE 0   // Set to 1 if you want to only the lines between vertices
+#define CLEAR_COLOR_R 0.0f	 // Red
+#define CLEAR_COLOR_G 0.0f	 // Green
+#define CLEAR_COLOR_B 0.0f	 // Blue
+#define CLEAR_COLOR_A 1.0f	 // Alpha
+#define MSAA_BUFFERS 1		 // MSAA buffers (anti-aliasing)
+#define MSAA_SAMPLES 8		 // MSAA samples (anti-aliasing)
+#define WIREFRAME_MODE 0	 // Set to 1 if you want to only the lines between vertices
+#define MAX_BONE_INFLUENCE 4 // Maximum amount of bones that may influence a vertex
 
 // Things that might later be needed, but should preferrably not be included in main.h:
 // #define FOV 45 // In degrees

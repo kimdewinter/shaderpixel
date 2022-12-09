@@ -2,7 +2,6 @@
 #define SDLHANDLER_H_INCLUDED
 
 #include "Window.h"
-#include <SDL.h>
 #include <unordered_set>
 #include <functional>
 #include <optional>

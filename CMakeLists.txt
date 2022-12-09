@@ -57,6 +57,7 @@ add_executable(${CMAKE_PROJECT_NAME} ${sources})
 
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/include
+${CMAKE_CURRENT_SOURCE_DIR}/include/stb_image.h
 )
 
 # Perform dependency linkage
