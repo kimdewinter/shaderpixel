@@ -2,9 +2,12 @@
 #include "ErrorHandler.h"
 #include "EventHandler.h"
 #include "SdlHandler.h"
+#include "Shader.h"
 #include "Window.h"
+#include "Model.h"
 #include <functional>
 #include <cstdlib>
+#include <map>
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
 namespace Configuration
@@ -12,7 +15,21 @@ namespace Configuration
 	/// @brief here you set up the gameworld itself
 	namespace WorldCreation
 	{
+		/// @brief here you define what shaders you want to load, and from what files
+		/// @return a map<string, Shader>, where the string is a name to identify that Shader
+		std::map<std::string, Shader> const load_shaders()
+		{
+			Shader standard_shader("standard_shader.vert", "standard_shader.frag");
+			std::map<std::string, Shader> shaders;
+			shaders.insert({"standard_shader", standard_shader});
+			return shaders;
+		}
 
+		/// @brief here you define what models you want to load
+		std::map<std::string, Model> load_models()
+		{
+			Model backpack("resources/backpack");
+		}
 	}
 
 	/// @brief here are some more technical settings
