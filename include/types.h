@@ -28,7 +28,7 @@ Would in memory translate into:
 struct Texture
 {
 	unsigned int id;
-	std::string type;
+	std::string type; // e.g. texture_diffuse, texture_specular, texture_normal, texture_height
 	std::string path;
 };
 

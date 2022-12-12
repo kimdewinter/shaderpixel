@@ -12,23 +12,23 @@ Mesh::Mesh(
 	if (vertices.empty() || indices.empty() || textures.empty())
 		throw std::invalid_argument("Warning: Mesh constructor encountered invalid argument");
 
-	// Request OpenGL to generate a VAO, VBO and EBO
+	// request OpenGL to generate VAO, VBO, EBO objects
 	glGenVertexArrays(1, &this->VAO);
 	glGenBuffers(1, &this->VBO);
 	glGenBuffers(1, &this->EBO);
 
-	// Bind the objects we just made so we can modify them
+	// bind the objects we just made so we can modify them
 	glBindVertexArray(this->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	// Send vertex data to the GPU
+	// send vertex data to the GPU, all vertices memory is sequential because we use a struct
 	glBufferData(
 		GL_ARRAY_BUFFER,
 		this->vertices.size() * sizeof(Vertex),
 		&this->vertices[0],
 		GL_STATIC_DRAW);
 
-	// Send EBO data to the GPU
+	// send EBO data to the GPU
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
 	glBufferData(
 		GL_ELEMENT_ARRAY_BUFFER,
@@ -36,6 +36,7 @@ Mesh::Mesh(
 		&this->indices[0],
 		GL_STATIC_DRAW);
 
+	// now we set vertex attribute pointers, which explains where in the Vertex struct each attribute begins
 	// vertex positions
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
@@ -48,31 +49,63 @@ Mesh::Mesh(
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texture_coordinates));
 
+	// vertex tangent
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tangent));
+
+	// vertex bitangent
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bitangent));
+
+	// ids
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bone_ids));
+
+	// weights
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bone_weights));
+
 	// release VAO binding
 	glBindVertexArray(0);
 }
 
-void Mesh::draw(Shader &shader)
+void Mesh::draw(Shader const &shader) const noexcept
 {
-	unsigned int diffuse_textures = 1;
-	unsigned int specular_textures = 1;
+	// bind appropriate textures
+	unsigned int texture_diffusen = 1;
+	unsigned int texture_specularn = 1;
+	unsigned int texture_normaln = 1;
+	unsigned int texture_heightn = 1;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before callign glBindTexture()
+		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
+		// retrieve texture number (the n in texture_diffusen)
 		std::string number;
 		std::string name = this->textures[i].type;
 		if (name == "texture_diffuse")
-			number = std::to_string(diffuse_textures++);
+			number = std::to_string(texture_diffusen++);
 		else if (name == "texture_specular")
-			number = std::to_string(specular_textures++);
+			number = std::to_string(texture_specularn++);
+		else if (name == "texture_normal")
+			number = std::to_string(texture_normaln++);
+		else if (name == "texture_height")
+			number = std::to_string(texture_heightn++);
 
-		shader.set_uniform_int(("material." + name + number).c_str(), i);
+		glUniform1i(glGetUniformLocation(shader.id, (name + number).c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 	glActiveTexture(GL_TEXTURE0);
 
 	// draw
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(this->indices.size()), GL_UNSIGNED_INT, 0);
+
+	// reset everything for safety
 	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
+}
+
+unsigned int Mesh::get_vao() const noexcept
+{
+	return this->VAO;
 }
