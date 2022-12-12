@@ -9,19 +9,19 @@ namespace
 {
 	std::optional<std::vector<std::string>> const get_stacktrace() noexcept
 	{
-		// Get the backtrace symbols
+		// get the backtrace symbols
 		void *symbols[30];
 		memset(symbols, 0, sizeof(void *) * 30);
 		size_t n_symbols = backtrace(symbols, 30);
 		if (!*symbols || n_symbols == 0)
 			return std::nullopt;
 
-		// Extract trace-lines from symbols as raw char arrays
+		// extract trace-lines from symbols as raw char arrays
 		char **char_lines = backtrace_symbols(symbols, n_symbols);
 		if (!char_lines)
 			return std::nullopt;
 
-		// Convert std::strings for more orderly output,
+		// convert std::strings for more orderly output,
 		// according to GNU documentation individual strings in char_arrays need not be freed only the variable char_arrays itself
 		std::vector<std::string> output;
 		output.push_back("Obtained " + std::to_string(n_symbols) + " stack frames.");
@@ -54,7 +54,7 @@ void Error::output_error(
 	std::optional<bool> include_stacktrace,
 	std::ostream &output_stream) noexcept
 {
-	// Create string with error title
+	// create string with error title
 	std::string output;
 	switch (type)
 	{
@@ -74,13 +74,13 @@ void Error::output_error(
 	}
 	}
 
-	// If provided, add further explanation
+	// if provided, add further explanation
 	if (!explanation_str.empty())
 		output += ": " + explanation_str;
 	if (!output.empty())
 		output += (output.back() == '.') ? "\n" : ".\n";
 
-	// Check if stacktrace is required
+	// check if stacktrace is required
 	if (include_stacktrace == std::nullopt)
 	{
 		switch (type)
@@ -92,7 +92,7 @@ void Error::output_error(
 		}
 	}
 
-	// If required, add stacktrace
+	// if required, add stacktrace
 	if (include_stacktrace != false)
 	{
 		std::optional<std::vector<std::string>> const stacktrace = get_stacktrace();
@@ -101,11 +101,11 @@ void Error::output_error(
 				output += line + '\n';
 	}
 
-	// Output to requested output stream
+	// output to requested output stream
 	if (!output.empty())
 		output_stream << output;
 
-	// If error is fatal, exit program
+	// if error is fatal, exit program
 	if (type == FATAL)
 		exit(EXIT_FAILURE);
 }

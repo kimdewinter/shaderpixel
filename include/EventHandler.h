@@ -13,7 +13,7 @@ public:
 	void handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler);
 
 private:
-	bool should_quit = false; // If game should quit after current render loop
+	bool should_quit = false; // if game should quit after current render loop
 };
 
 #endif

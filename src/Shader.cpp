@@ -37,34 +37,34 @@ Shader::Shader(
 	const char *fragment_path,
 	const char *geometry_path)
 {
-	// Retrieve source code
+	// retrieve source code
 	std::string vertex_code, fragment_code, geometry_code;
 	std::ifstream vertex_file, fragment_file, geometry_file;
 
-	// Allow filestreams to throw exceptions
+	// allow filestreams to throw exceptions
 	vertex_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	fragment_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	geometry_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try
 	{
-		// Open files
+		// open files
 		vertex_file.open(vertex_path);
 		fragment_file.open(fragment_path);
 		std::stringstream vertex_stream, fragment_stream;
 
-		// Read file buffer into stringstreams
+		// read file buffer into stringstreams
 		vertex_stream << vertex_file.rdbuf();
 		fragment_stream << fragment_file.rdbuf();
 
-		// Close file handlers
+		// close file handlers
 		vertex_file.close();
 		fragment_file.close();
 
-		// Convert stringstream to string
+		// convert stringstream to string
 		vertex_code = vertex_stream.str();
 		fragment_code = fragment_stream.str();
 
-		// If geometry shader path provided: load geometry shader
+		// if geometry shader path provided: load geometry shader
 		if (geometry_path != NULL)
 		{
 			geometry_file.open(geometry_path);
@@ -79,7 +79,7 @@ Shader::Shader(
 		Error::output_error(Error::Type::WARNING, exception.what());
 	}
 
-	// Compile vertex shader
+	// compile vertex shader
 	const char *vertex_code_cstr = vertex_code.c_str();
 	unsigned int vertex_id, fragment_id;
 	vertex_id = glCreateShader(GL_VERTEX_SHADER);
@@ -87,14 +87,14 @@ Shader::Shader(
 	glCompileShader(vertex_id);
 	check_compile_errors(vertex_id, "VERTEX");
 
-	// Compile fragment shader
+	// compile fragment shader
 	const char *fragment_code_cstr = fragment_code.c_str();
 	fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment_id, 1, &fragment_code_cstr, NULL);
 	glCompileShader(fragment_id);
 	check_compile_errors(fragment_id, "FRAGMENT");
 
-	// Compile geometry shader (if necessary)
+	// compile geometry shader (if necessary)
 	if (geometry_path != NULL)
 	{
 		const char *geometry_code_cstr = geometry_code.c_str();
@@ -103,7 +103,7 @@ Shader::Shader(
 		check_compile_errors(geometry_id, "GEOMETRY");
 	}
 
-	// Link shaders and create shader program
+	// link shaders and create shader program
 	this->id = glCreateProgram();
 }
 

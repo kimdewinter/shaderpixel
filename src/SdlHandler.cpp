@@ -51,7 +51,7 @@ SdlHandler::SdlHandler(
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw std::runtime_error(std::string("Error initializing SDL: ") + std::string(SDL_GetError()));
 
-	// Create windows via the supplied function pointer
+	// create windows via the supplied function pointer
 	this->windows = windows_creation_after_sdl_init();
 	if (this->windows.empty())
 	{
@@ -59,7 +59,7 @@ SdlHandler::SdlHandler(
 		throw std::logic_error("Error: window-set creation return empty set");
 	}
 
-	// Set vsync
+	// set vsync
 	if (SDL_GL_SetSwapInterval(VSYNC) != 0)
 	{
 		clear_set_of_windows(this->windows);
@@ -67,7 +67,7 @@ SdlHandler::SdlHandler(
 		throw std::runtime_error("Error in SDL_GL_SetSwapInterval(): " + std::string(SDL_GetError()));
 	}
 
-	// Load OpenGL via GLAD
+	// load OpenGL via GLAD
 	if (!(gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)))
 	{
 		clear_set_of_windows(this->windows);
@@ -75,7 +75,7 @@ SdlHandler::SdlHandler(
 		throw std::runtime_error("Error in gladLoadGLLoader()");
 	}
 
-	// Set required OpenGL settings
+	// set required OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(clear_color[0], clear_color[1], clear_color[2], clear_color[3]);
 #if WIREFRAME_MODE == 1
@@ -86,7 +86,7 @@ SdlHandler::SdlHandler(
 	debug_info_opengl();
 #endif
 
-	// Check for any OpenGL errors
+	// check for any OpenGL errors
 	GLenum error_check = glGetError();
 	if (error_check != GL_NO_ERROR)
 	{

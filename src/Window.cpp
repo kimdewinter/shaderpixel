@@ -9,13 +9,13 @@ Window::Window(
 							   window_width(window_width),
 							   window_height(window_height)
 {
-	// Check arguments
+	// check arguments
 	if (window_width < 1 || window_height < 1)
 		throw std::invalid_argument("Invalid window dimension, width and height must be > 0");
 	if (window_name.empty())
 		throw std::invalid_argument("Empty window name");
 
-	// Create window
+	// create window
 	if (!(this->window_ptr = SDL_CreateWindow(
 			  window_name.c_str(),
 			  SDL_WINDOWPOS_CENTERED,
@@ -31,7 +31,7 @@ Window::Window(
 		throw std::runtime_error("Error retrieving SDL WindowID of window with name: " + this->window_name + '\n' + SDL_GetError());
 	}
 
-	// Create context
+	// create context
 	if (
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0 || // For extra performance, don't allow pre-3.0 backward compatability
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0 ||	 // Only allow use of OpenGL's newer "Core" profile
@@ -48,7 +48,7 @@ Window::Window(
 		throw std::runtime_error("Error calling SDL_GL_SetAttribute()" + std::string(SDL_GetError()));
 	}
 
-	// Create context
+	// create context
 	if (!(this->context_ptr = SDL_GL_CreateContext(this->window_ptr)))
 	{
 		SDL_DestroyWindow(this->window_ptr);

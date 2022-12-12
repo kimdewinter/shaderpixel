@@ -17,11 +17,11 @@ struct Vertex
 	float bone_weights[MAX_BONE_INFLUENCE]; // weights of each bone
 };
 /*
-The following:
+the following:
 vertex.position  = glm::vec3(0.2f, 0.4f, 0.6f);
 vertex.normal    = glm::vec3(0.0f, 1.0f, 0.0f);
 vertex.texture_coordinates = glm::vec2(1.0f, 0.0f);
-Would in memory translate into:
+would in memory translate into:
 [0.2f, 0.4f, 0.6f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f];
 */
 

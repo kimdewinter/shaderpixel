@@ -13,7 +13,7 @@ namespace Error
 		WARNING
 	};
 
-	/// @brief Prints stack trace upon segfault; to use, call at beginning of main
+	/// @brief prints stack trace upon segfault; to use, call at beginning of main
 	void setup_segfault_signalhandler() noexcept;
 
 	/// @brief outputs error to requested output stream

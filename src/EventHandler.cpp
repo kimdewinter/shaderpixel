@@ -5,14 +5,14 @@ namespace
 {
 	void resize_window(Window const &current_window, Window const &event_window, SDL_Event const &event)
 	{
-		// Make the event-related window and context current so it can be operated on
+		// make the event-related window and context current so it can be operated on
 		event_window.make_current();
 
-		// Do the required resizing
-		// Might have to also update the camera with new window width and height
+		// do the required resizing
+		// might have to also update the camera with new window width and height
 		glViewport(0, 0, event.window.data1, event.window.data2);
 
-		// Restore previously current window
+		// restore previously current window
 		current_window.make_current();
 	}
 }

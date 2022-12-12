@@ -9,8 +9,9 @@
 class SdlHandler
 {
 public:
-	/// @param windows_creation_after_sdl_init Necessary because Window can only be created after SDL initialization
-	/// @param clear_color Background color when glClear() is called
+	/// @brief initializes SDL and OpenGL, and creates a number of windows and contexts
+	/// @param windows_creation_after_sdl_init necessary because Window can only be created after SDL initialization
+	/// @param clear_color background color when glClear() is called
 	SdlHandler(
 		std::function<std::unordered_set<Window *>()> windows_creation_after_sdl_init,
 		std::array<GLfloat, 4> const &clear_color = {0.0, 0.0, 0.0, 1.0});

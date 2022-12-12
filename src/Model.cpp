@@ -10,11 +10,12 @@ namespace
 	{
 		std::string file_name = directory + '/' + path;
 
-		// Ask OpenGL to declare a new texture object
+		// ask OpenGL to declare a new texture object
 		unsigned int id;
 		glGenTextures(1, &id);
 
 		// use stb_image to import an image
+		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded textures on the y-axis before loading model
 		int width, height, n_components;
 		unsigned char *data = stbi_load(file_name.c_str(), &width, &height, &n_components, 0);
 		if (!data)
