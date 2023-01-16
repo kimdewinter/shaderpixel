@@ -19,16 +19,17 @@ namespace Configuration
 		/// @return a map<string, Shader>, where the string is a name to identify that Shader
 		std::map<std::string, Shader> const load_shaders()
 		{
-			Shader standard_shader("standard_shader.vert", "standard_shader.frag");
 			std::map<std::string, Shader> shaders;
-			shaders.insert({"standard_shader", standard_shader});
+			shaders.insert({"standard_shader", Shader("resources/standard_shader.vert", "resources/standard_shader.frag")});
 			return shaders;
 		}
 
 		/// @brief here you define what models you want to load
 		std::map<std::string, Model> load_models()
 		{
-			Model backpack("resources/backpack");
+			std::map<std::string, Model> models;
+			models.insert({"backpack", Model("resources/backpack/")});
+			return models;
 		}
 	}
 
@@ -45,7 +46,7 @@ namespace Configuration
 			exit(EXIT_FAILURE);
 		}
 
-		/// @brief manually implement function that can construct the windows you want
+		/// @brief manually implement function that can construct the windows you want (don't use duplicate window names)
 		/// @return unordered set of Window pointers
 		std::unordered_set<Window *> windows_creation() noexcept
 		{

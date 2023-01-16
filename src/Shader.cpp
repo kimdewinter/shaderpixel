@@ -76,12 +76,12 @@ Shader::Shader(
 	}
 	catch (std::ifstream::failure &exception)
 	{
-		Error::output_error(Error::Type::WARNING, exception.what());
+		Error::output_error(Error::Type::FATAL, exception.what());
 	}
 
 	// compile vertex shader
 	const char *vertex_code_cstr = vertex_code.c_str();
-	unsigned int vertex_id, fragment_id;
+	unsigned int vertex_id;
 	vertex_id = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex_id, 1, &vertex_code_cstr, NULL);
 	glCompileShader(vertex_id);
@@ -89,7 +89,7 @@ Shader::Shader(
 
 	// compile fragment shader
 	const char *fragment_code_cstr = fragment_code.c_str();
-	fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
+	unsigned int fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment_id, 1, &fragment_code_cstr, NULL);
 	glCompileShader(fragment_id);
 	check_compile_errors(fragment_id, "FRAGMENT");
@@ -100,6 +100,7 @@ Shader::Shader(
 		const char *geometry_code_cstr = geometry_code.c_str();
 		unsigned int geometry_id = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geometry_id, 1, &geometry_code_cstr, NULL);
+		glCompileShader(geometry_id);
 		check_compile_errors(geometry_id, "GEOMETRY");
 	}
 
