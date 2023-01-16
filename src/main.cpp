@@ -28,7 +28,7 @@ namespace Configuration
 		std::map<std::string, Model> load_models()
 		{
 			std::map<std::string, Model> models;
-			models.insert({"backpack", Model("resources/backpack/")});
+			models.insert({"backpack", Model("resources/backpack/backpack.obj")});
 			return models;
 		}
 	}
