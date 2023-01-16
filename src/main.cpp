@@ -15,7 +15,7 @@ namespace Configuration
 	/// @brief here you set up the gameworld itself
 	namespace WorldCreation
 	{
-		/// @brief here you define what shaders you want to load, and from what files
+		/// @brief here you define what shaders you want to load, and from what files, names must be unique
 		/// @return a map<string, Shader>, where the string is a name to identify that Shader
 		std::map<std::string, Shader> const load_shaders()
 		{
@@ -24,7 +24,7 @@ namespace Configuration
 			return shaders;
 		}
 
-		/// @brief here you define what models you want to load
+		/// @brief here you define what models you want to load, names must be unique, path must not end in a slash
 		std::map<std::string, Model> load_models()
 		{
 			std::map<std::string, Model> models;
@@ -46,7 +46,7 @@ namespace Configuration
 			exit(EXIT_FAILURE);
 		}
 
-		/// @brief manually implement function that can construct the windows you want (don't use duplicate window names)
+		/// @brief manually implement function that can construct the windows you want, names must be unique
 		/// @return unordered set of Window pointers
 		std::unordered_set<Window *> windows_creation() noexcept
 		{

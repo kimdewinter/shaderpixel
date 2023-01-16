@@ -125,8 +125,8 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	std::vector<Texture> textures;
 	// process materials
 	// we assume a convention for sampler names in the shaders
-	// each diffuse texture should be named as 'texutre_diffuseN' where N is a sequential number
-	// same appleis to other textures such as:
+	// each diffuse texture should be named as 'texture_diffuseN' where N is a sequential number
+	// same applies to other textures such as:
 	// diffuse: texture_diffuseN
 	// specular: texture_specularN
 	// normal: texture_normalN
