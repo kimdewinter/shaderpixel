@@ -3,6 +3,7 @@
 
 namespace
 {
+	/*
 	void resize_window(Window const &current_window, Window const &event_window, SDL_Event const &event)
 	{
 		// make the event-related window and context current so it can be operated on
@@ -15,6 +16,7 @@ namespace
 		// restore previously current window
 		current_window.make_current();
 	}
+	*/
 }
 
 void EventHandler::handle_keyboard_event(SDL_Event const &event, SdlHandler &sdl_handler)
@@ -33,18 +35,20 @@ void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_h
 {
 	switch (event.window.event)
 	{
-	case SDL_WINDOWEVENT_RESIZED:
-	{
-		std::optional<Window *> current_window = sdl_handler.find_window_by_window_id(SDL_GetWindowID(SDL_GL_GetCurrentWindow()));
-		std::optional<Window *> event_window = sdl_handler.find_window_by_window_id(event.window.windowID);
-		if (event_window == std::nullopt || current_window == std::nullopt)
+		/*
+		case SDL_WINDOWEVENT_RESIZED:
 		{
-			Error::output_error(Error::Type::WARNING, "Unable to retrieve window_id");
+			std::optional<Window *> current_window = sdl_handler.find_window_by_window_id(SDL_GetWindowID(SDL_GL_GetCurrentWindow()));
+			std::optional<Window *> event_window = sdl_handler.find_window_by_window_id(event.window.windowID);
+			if (event_window == std::nullopt || current_window == std::nullopt)
+			{
+				Error::output_error(Error::Type::WARNING, "Unable to retrieve window_id");
+				break;
+			}
+			resize_window(**current_window, **event_window, event);
 			break;
 		}
-		resize_window(**current_window, **event_window, event);
-		break;
-	}
+		*/
 	}
 }
 
