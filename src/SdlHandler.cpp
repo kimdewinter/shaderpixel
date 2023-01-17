@@ -49,6 +49,8 @@ SdlHandler::SdlHandler(
 		throw std::logic_error("Error: window creation failed");
 	}
 
+	this->window->make_current();
+
 	// set vsync
 	if (SDL_GL_SetSwapInterval(VSYNC) != 0)
 	{
@@ -97,9 +99,4 @@ SdlHandler::~SdlHandler() noexcept
 		this->window = NULL;
 	}
 	SDL_Quit();
-}
-
-void SdlHandler::clear() const noexcept
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

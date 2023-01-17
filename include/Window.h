@@ -13,12 +13,10 @@ public:
 	Window(std::string const &window_name, int const window_width, int const window_height);
 	~Window() noexcept;
 	/// @brief swaps the buffer to the screen, displaying what has been drawn on the buffer
+	void clear() const noexcept;
 	void swap() const noexcept;
 	/// @brief makes this window and it's context the "current" window and context
 	void make_current() const noexcept;
-	std::string const &get_name() const noexcept;
-	/// @return ID associated with this Window's SDL_Window *
-	Uint32 const get_id() const noexcept;
 
 private:
 	std::string window_name = "";

@@ -66,6 +66,11 @@ Window::~Window() noexcept
 	this->context_ptr = NULL;
 }
 
+void Window::clear() const noexcept
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 void Window::swap() const noexcept
 {
 	SDL_GL_SwapWindow(this->window_ptr);
@@ -81,14 +86,4 @@ void Window::make_current() const noexcept
 				"\n" +
 				"SDL error: " +
 				SDL_GetError());
-}
-
-std::string const &Window::get_name() const noexcept
-{
-	return this->window_name;
-}
-
-Uint32 const Window::get_id() const noexcept
-{
-	return this->window_id;
 }

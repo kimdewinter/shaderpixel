@@ -108,7 +108,13 @@ Shader::Shader(
 	this->id = glCreateProgram();
 }
 
+void Shader::use() const noexcept
+{
+	glUseProgram(this->id);
+}
+
 void Shader::set_uniform_int(const std::string &name, int const value) const noexcept
 {
+	this->use();
 	glUniform1i(glGetUniformLocation(this->id, name.c_str()), value);
 }

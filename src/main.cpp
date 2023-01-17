@@ -60,17 +60,31 @@ int main(int const argc, char const *const *const argv)
 	if (argc != 1)
 		Error::output_error(Error::Type::FATAL, "This program should not be given arguments.");
 
-	// start up SDL and OpenGL, create window via the use of function pointer, and get Window *
+	// start up SDL and OpenGL, create window via the use of function pointer, and make window context current
 	SdlHandler sdl_handler{&Configuration::Technical::window_creation, Configuration::Technical::get_clear_colors()};
 
 	EventHandler event_handler;
+
+	// load shaders and models
+	std::map<std::string, Shader> const shaders = Configuration::WorldCreation::load_shaders();
+	std::map<std::string, Model> models = Configuration::WorldCreation::load_models();
 	while (!event_handler.get_should_quit())
 	{
 		// poll and handle events (including input)
 		event_handler.handle_all_events(sdl_handler);
 
+		// ensure window context is made current so it can be acted upon
+		sdl_handler.window->make_current();
+
 		// clear the buffer so we can start composing a new frame
-		sdl_handler.clear();
+		sdl_handler.window->clear();
+
+		// use shaders and set uniforms
+		shader.use();
+		// FINISH THIS
+
+		// draw models
+		// FINISH THIS
 
 		// swap window's buffer so that it gets rendered onto the screen
 		sdl_handler.window->swap();

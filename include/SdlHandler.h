@@ -17,7 +17,6 @@ public:
 		std::array<GLfloat, 4> const &clear_color = {0.0, 0.0, 0.0, 1.0});
 	~SdlHandler() noexcept;
 	/// @brief Clears the buffer so it can be drawn on
-	void clear() const noexcept;
 
 	Window *window = NULL;
 
