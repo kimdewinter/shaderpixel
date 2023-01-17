@@ -17,6 +17,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "Mesh.h"
+#include <optional>
 
 class Model
 {
@@ -34,6 +35,7 @@ private:
 		aiTextureType const type,
 		std::string const &type_name);
 	void process_node(aiNode const *const node, aiScene const *const scene);
+	std::optional<Texture &const> find_loaded_texture(char const *const path) const noexcept;
 };
 
 #endif

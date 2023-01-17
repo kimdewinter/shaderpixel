@@ -51,6 +51,16 @@ namespace
 	}
 }
 
+std::optional<Texture &const> Model::find_loaded_texture(char const *const path) const noexcept
+{
+	for (Texture texture : this->textures_loaded)
+	{
+		if (std::strcmp(texture.path.data(), path) == 0)
+			return texture;
+	}
+	return std::nullopt;
+}
+
 /// @brief checks material textures of given type, and loads them if they're not already loaded
 std::vector<Texture> Model::load_material_textures(
 	aiMaterial const *const mat,
@@ -62,26 +72,20 @@ std::vector<Texture> Model::load_material_textures(
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
-		bool already_loaded = false;
-		for (unsigned int j = 0; j < textures_loaded.size(); j++)
+		if (std::optional<Texture &const> found_texture = find_loaded_texture(str.C_Str()))
 		{
-			if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
-			{
-				// texture with same filepath already loaded
-				textures.push_back(textures_loaded[j]);
-				already_loaded = true;
-				break;
-			}
+			// texture has already been loaded, so copy it's info so it may be used
+			textures.push_back(*found_texture);
 		}
-		if (!already_loaded)
+		else
 		{
 			// texture hasn't been loaded yet, so load it
-			Texture texture;
-			texture.id = TextureFromFile(std::string(str.C_Str()), this->directory);
-			texture.type = type_name;
-			texture.path = str.C_Str();
-			textures.push_back(texture);
-			this->textures_loaded.push_back(texture);
+			Texture new_texture;
+			new_texture.id = TextureFromFile(std::string(str.C_Str()), this->directory);
+			new_texture.type = type_name;
+			new_texture.path = str.C_Str();
+			textures.push_back(new_texture);
+			this->textures_loaded.push_back(new_texture);
 		}
 	}
 	return textures;
@@ -153,9 +157,9 @@ void Model::process_node(aiNode const *const node, aiScene const *const scene)
 	// process all of the node's meshes
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh *assimp_mesh = scene->mMeshes[node->mMeshes[i]];
-		Mesh own_mesh = process_mesh(assimp_mesh, scene);
-		this->meshes.push_back(own_mesh);
+		aiMesh *assimp_type_mesh = scene->mMeshes[node->mMeshes[i]];
+		Mesh own_type_mesh = process_mesh(assimp_type_mesh, scene);
+		this->meshes.push_back(own_type_mesh);
 	}
 	// then do the same for each of it's children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
