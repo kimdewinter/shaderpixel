@@ -51,7 +51,7 @@ namespace
 	}
 }
 
-std::optional<Texture &const> Model::find_loaded_texture(char const *const path) const noexcept
+std::optional<Texture> Model::find_loaded_texture(char const *const path) const noexcept
 {
 	for (Texture texture : this->textures_loaded)
 	{
@@ -72,7 +72,7 @@ std::vector<Texture> Model::load_material_textures(
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
-		if (std::optional<Texture &const> found_texture = find_loaded_texture(str.C_Str()))
+		if (std::optional<Texture> found_texture = find_loaded_texture(str.C_Str()))
 		{
 			// texture has already been loaded, so copy it's info so it may be used
 			textures.push_back(*found_texture);
