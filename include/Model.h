@@ -23,6 +23,7 @@ class Model
 {
 public:
 	Model(std::string const &path);
+	void draw(Shader const &shader) const noexcept;
 
 	std::vector<Texture> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
 	std::vector<Mesh> meshes;

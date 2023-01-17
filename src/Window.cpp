@@ -15,6 +15,22 @@ Window::Window(
 	if (window_name.empty())
 		throw std::invalid_argument("Empty window name");
 
+	// set attributes (should this be part of the std::function that calls Window constructor?)
+	if (
+#ifdef __APPLE__
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0 || // For extra performance, don't allow pre-3.0 backward compatability
+#endif
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0 || // Only allow use of OpenGL's newer "Core" profile
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_VERSION_MAJOR) < 0 ||
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_VERSION_MINOR) < 0 ||
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, DOUBLE_BUFFER) < 0 ||
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, DEPTH_SIZE) < 0 ||
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, MSAA_BUFFERS) < 0 ||
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, MSAA_SAMPLES) < 0)
+	{
+		throw std::runtime_error("Error calling SDL_GL_SetAttribute()" + std::string(SDL_GetError()));
+	}
+
 	// create window
 	if (!(this->window_ptr = SDL_CreateWindow(
 			  window_name.c_str(),
@@ -29,26 +45,6 @@ Window::Window(
 		SDL_DestroyWindow(this->window_ptr);
 		this->window_ptr = NULL;
 		throw std::runtime_error("Error retrieving SDL WindowID of window with name: " + this->window_name + '\n' + SDL_GetError());
-	}
-
-	// create context
-	if (
-#ifdef __APPLE__
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0 ||
-#endif
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0 || // For extra performance, don't allow pre-3.0 backward compatability
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0 ||	 // Only allow use of OpenGL's newer "Core" profile
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_VERSION_MAJOR) < 0 ||
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_VERSION_MINOR) < 0 ||
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, DOUBLE_BUFFER) < 0 ||
-		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, DEPTH_SIZE) < 0 ||
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, MSAA_BUFFERS) < 0 ||
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, MSAA_SAMPLES) < 0)
-	{
-		SDL_DestroyWindow(this->window_ptr);
-		this->window_ptr = NULL;
-		this->window_id = 0;
-		throw std::runtime_error("Error calling SDL_GL_SetAttribute()" + std::string(SDL_GetError()));
 	}
 
 	// create context

@@ -36,25 +36,11 @@ namespace Configuration
 	/// @brief here are some more technical settings
 	namespace Technical
 	{
-		/// @brief here you can decide what window the main() function treats as being your main window
-		Window &get_main_window(SdlHandler const &sdlhandler) noexcept
+		/// @brief manually implement function that can construct the window you want
+		/// @return Window pointer or throw in case of failure
+		Window *window_creation()
 		{
-			for (Window *window : sdlhandler.windows)
-				if (window->get_name() == APP_NAME) // Change APP_NAME if you want a different main_window in main()
-					return *window;
-			Error::output_error(Error::Type::FATAL, "Error in getting main_window");
-			exit(EXIT_FAILURE);
-		}
-
-		/// @brief manually implement function that can construct the windows you want, names must be unique
-		/// @return unordered set of Window pointers
-		std::unordered_set<Window *> windows_creation() noexcept
-		{
-			std::unordered_set<Window *> set;
-			set.insert(new Window(APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT));
-			if (set.empty())
-				Error::output_error(Error::Type::FATAL, "unable to create windows");
-			return set;
+			return new Window(APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT);
 		}
 
 		/// @brief here you can decide what the default clear color is (this is the background color after calling glClear())
@@ -74,11 +60,8 @@ int main(int const argc, char const *const *const argv)
 	if (argc != 1)
 		Error::output_error(Error::Type::FATAL, "This program should not be given arguments.");
 
-	// start up SDL and OpenGL, create windows via the use of function pointers
-	SdlHandler sdl_handler{&Configuration::Technical::windows_creation, Configuration::Technical::get_clear_colors()};
-
-	// select which window is to be the main window
-	Window &main_window = Configuration::Technical::get_main_window(sdl_handler);
+	// start up SDL and OpenGL, create window via the use of function pointer, and get Window *
+	SdlHandler sdl_handler{&Configuration::Technical::window_creation, Configuration::Technical::get_clear_colors()};
 
 	EventHandler event_handler;
 	while (!event_handler.get_should_quit())
@@ -89,9 +72,8 @@ int main(int const argc, char const *const *const argv)
 		// clear the buffer so we can start composing a new frame
 		sdl_handler.clear();
 
-		// swap each window's buffer so that it gets rendered onto the screen
-		for (Window *window : sdl_handler.windows)
-			window->swap();
+		// swap window's buffer so that it gets rendered onto the screen
+		sdl_handler.window->swap();
 	}
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;

@@ -32,37 +32,28 @@ namespace
 		print_opengl_extensions();
 	}
 #endif
-
-	void clear_set_of_windows(std::unordered_set<Window *> &set) noexcept
-	{
-		for (Window *window : set)
-		{
-			delete window;
-			window = NULL;
-		}
-		set.clear();
-	}
 }
 
 SdlHandler::SdlHandler(
-	std::function<std::unordered_set<Window *>()> windows_creation_after_sdl_init,
+	std::function<Window *()> window_creation_after_sdl_init,
 	std::array<GLfloat, 4> const &clear_color) : clear_color(clear_color)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw std::runtime_error(std::string("Error initializing SDL: ") + std::string(SDL_GetError()));
 
-	// create windows via the supplied function pointer
-	this->windows = windows_creation_after_sdl_init();
-	if (this->windows.empty())
+	// create window via the supplied function pointer
+	this->window = window_creation_after_sdl_init();
+	if (!this->window)
 	{
 		SDL_Quit();
-		throw std::logic_error("Error: window-set creation return empty set");
+		throw std::logic_error("Error: window creation failed");
 	}
 
 	// set vsync
 	if (SDL_GL_SetSwapInterval(VSYNC) != 0)
 	{
-		clear_set_of_windows(this->windows);
+		delete this->window;
+		this->window = NULL;
 		SDL_Quit();
 		throw std::runtime_error("Error in SDL_GL_SetSwapInterval(): " + std::string(SDL_GetError()));
 	}
@@ -70,7 +61,8 @@ SdlHandler::SdlHandler(
 	// load OpenGL via GLAD
 	if (!(gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)))
 	{
-		clear_set_of_windows(this->windows);
+		delete this->window;
+		this->window = NULL;
 		SDL_Quit();
 		throw std::runtime_error("Error in gladLoadGLLoader()");
 	}
@@ -90,7 +82,8 @@ SdlHandler::SdlHandler(
 	GLenum error_check = glGetError();
 	if (error_check != GL_NO_ERROR)
 	{
-		clear_set_of_windows(this->windows);
+		delete this->window;
+		this->window = NULL;
 		SDL_Quit();
 		throw std::runtime_error("Error in OpenGL.");
 	}
@@ -98,50 +91,12 @@ SdlHandler::SdlHandler(
 
 SdlHandler::~SdlHandler() noexcept
 {
-	clear_set_of_windows(this->windows);
+	if (this->window)
+	{
+		delete this->window;
+		this->window = NULL;
+	}
 	SDL_Quit();
-}
-
-void SdlHandler::add_window(Window *window)
-{
-	if (this->windows.find(window) != this->windows.end())
-		throw std::invalid_argument("Error adding window to SdlHandler: this Window already present");
-	this->windows.insert(window);
-}
-
-std::optional<Window *> SdlHandler::find_window_by_name(std::string const &str) const noexcept
-{
-	for (Window *window : this->windows)
-		if (window->get_name() == str)
-			return window;
-	return std::nullopt;
-};
-
-std::optional<Window *> SdlHandler::find_window_by_window_id(Uint32 const id) const noexcept
-{
-	for (Window *window : this->windows)
-		if (window->get_id() == id)
-			return window;
-	return std::nullopt;
-}
-
-void SdlHandler::remove_window(Window *window)
-{
-	std::unordered_set<Window *>::iterator iter = this->windows.find(window);
-	if (iter == this->windows.end())
-		throw std::invalid_argument("Error removing window from SdlHandler: this Window already absent");
-	delete *iter;			   // Delete actual Window instance
-	this->windows.erase(iter); // Erase this's pointer to the Window
-}
-
-void SdlHandler::set_clear_color(std::array<GLfloat, 4> const &rgba) noexcept
-{
-	this->clear_color = rgba;
-	glClearColor(
-		this->clear_color[0],
-		this->clear_color[1],
-		this->clear_color[2],
-		this->clear_color[3]);
 }
 
 void SdlHandler::clear() const noexcept
