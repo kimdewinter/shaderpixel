@@ -80,7 +80,6 @@ int main(int const argc, char const *const *const argv)
 		sdl_handler.window->clear();
 
 		// use shaders and set uniforms
-		shader.use();
 		// FINISH THIS
 
 		// draw models

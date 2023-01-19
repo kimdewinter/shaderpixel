@@ -17,7 +17,7 @@ namespace
 			if (!success)
 			{
 				glGetShaderInfoLog(shader_id, 1024, NULL, info_log);
-				throw std::runtime_error("Shader compilation error of type: " + type + "\n" + std::string(info_log) + "\n");
+				throw std::runtime_error("Shader linking error of type: " + type + "\n" + std::string(info_log) + "\n");
 			}
 		}
 		else
@@ -94,6 +94,7 @@ Shader::Shader(
 	glCompileShader(fragment_id);
 	check_compile_errors(fragment_id, "FRAGMENT");
 
+	unsigned int geometry_id = NULL;
 	// compile geometry shader (if necessary)
 	if (geometry_path != NULL)
 	{
@@ -106,6 +107,18 @@ Shader::Shader(
 
 	// link shaders and create shader program
 	this->id = glCreateProgram();
+	glAttachShader(this->id, vertex_id);
+	glAttachShader(this->id, fragment_id);
+	if (geometry_path != NULL && geometry_id != NULL)
+		glAttachShader(this->id, geometry_id);
+	glLinkProgram(this->id);
+	check_compile_errors(this->id, "PROGRAM");
+
+	// shaders no logner necessary now that they've been linked and the shader program compiled
+	glDeleteShader(vertex_id);
+	glDeleteShader(fragment_id);
+	if (geometry_path != NULL && geometry_id != NULL)
+		glDeleteShader(geometry_id);
 }
 
 void Shader::use() const noexcept
