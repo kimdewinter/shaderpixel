@@ -1,7 +1,8 @@
 #ifndef TYPES_H_INCLUDED
 #define TYPES_H_INCLUDED
 
-#include <glm/glm.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <string>
 #include "main.h"
 

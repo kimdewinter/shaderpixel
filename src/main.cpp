@@ -8,7 +8,7 @@
 #include <functional>
 #include <cstdlib>
 #include <map>
-#include <glm/ext.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
 namespace Configuration

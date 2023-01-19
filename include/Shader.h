@@ -1,7 +1,7 @@
 #ifndef SHADER_H_INCLUDED
 #define SHADER_H_INCLUDED
 
-#include <glm/glm.hpp>
+#include <glm/mat4x4.hpp>
 
 class Shader
 {
