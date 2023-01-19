@@ -10,9 +10,9 @@
 #define VSYNC 1				   // 0 for immediate updates, 1 for updates synched with vertical retrace, -1 for adaptive vsync
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 900
-#define CLEAR_COLOR_R 0.0f	 // red
-#define CLEAR_COLOR_G 0.0f	 // green
-#define CLEAR_COLOR_B 0.0f	 // blue
+#define CLEAR_COLOR_R 0.7f	 // red
+#define CLEAR_COLOR_G 0.7f	 // green
+#define CLEAR_COLOR_B 0.7f	 // blue
 #define CLEAR_COLOR_A 1.0f	 // alpha
 #define MSAA_BUFFERS 1		 // MSAA buffers (anti-aliasing)
 #define MSAA_SAMPLES 8		 // MSAA samples (anti-aliasing)

@@ -86,6 +86,8 @@ int main(int const argc, char const *const *const argv)
 		// draw models
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		glm::quat rotation = glm::quat(glm::vec3(glm::radians(20.0f), glm::radians(30.0f), glm::radians(15.0f)));
+		model = model * glm::mat4(rotation);
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		shaders.at("standard_shader").set_uniform_mat4("model", model);
 		models.at("backpack").draw(shaders.at("standard_shader"));
