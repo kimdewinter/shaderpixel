@@ -33,9 +33,9 @@ namespace
 }
 
 Shader::Shader(
-	const char *vertex_path,
-	const char *fragment_path,
-	const char *geometry_path)
+	char const *const vertex_path,
+	char const *const fragment_path,
+	char const *const geometry_path)
 {
 	// retrieve source code
 	std::string vertex_code, fragment_code, geometry_code;
@@ -94,7 +94,7 @@ Shader::Shader(
 	glCompileShader(fragment_id);
 	check_compile_errors(fragment_id, "FRAGMENT");
 
-	unsigned int geometry_id = NULL;
+	unsigned int geometry_id = 0;
 	// compile geometry shader (if necessary)
 	if (geometry_path != NULL)
 	{
@@ -109,7 +109,7 @@ Shader::Shader(
 	this->id = glCreateProgram();
 	glAttachShader(this->id, vertex_id);
 	glAttachShader(this->id, fragment_id);
-	if (geometry_path != NULL && geometry_id != NULL)
+	if (geometry_path != NULL)
 		glAttachShader(this->id, geometry_id);
 	glLinkProgram(this->id);
 	check_compile_errors(this->id, "PROGRAM");
@@ -117,7 +117,7 @@ Shader::Shader(
 	// shaders no logner necessary now that they've been linked and the shader program compiled
 	glDeleteShader(vertex_id);
 	glDeleteShader(fragment_id);
-	if (geometry_path != NULL && geometry_id != NULL)
+	if (geometry_path != NULL)
 		glDeleteShader(geometry_id);
 }
 
@@ -126,8 +126,19 @@ void Shader::use() const noexcept
 	glUseProgram(this->id);
 }
 
-void Shader::set_uniform_int(const std::string &name, int const value) const noexcept
+unsigned int Shader::get_id() const noexcept
+{
+	return this->id;
+}
+
+void Shader::set_uniform_int(std::string const &name, int const value) const noexcept
 {
 	this->use();
 	glUniform1i(glGetUniformLocation(this->id, name.c_str()), value);
+}
+
+void Shader::set_uniform_mat4(std::string const &name, glm::mat4 const &value) const noexcept
+{
+	this->use();
+	glUniformMatrix4fv(glGetUniformLocation(this->id, name.c_str()), 1, GL_FALSE, &value[0][0]);
 }

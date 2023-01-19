@@ -8,6 +8,7 @@
 #include <functional>
 #include <cstdlib>
 #include <map>
+#include <glm/ext.hpp>
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
 namespace Configuration
@@ -70,23 +71,30 @@ int main(int const argc, char const *const *const argv)
 	std::map<std::string, Model> models = Configuration::WorldCreation::load_models();
 	while (!event_handler.get_should_quit())
 	{
-		// poll and handle events (including input)
-		event_handler.handle_all_events(sdl_handler);
-
 		// ensure window context is made current so it can be acted upon
 		sdl_handler.window->make_current();
 
 		// clear the buffer so we can start composing a new frame
 		sdl_handler.window->clear();
 
-		// use shaders and set uniforms
-		// FINISH THIS
+		// set view and projection transformations for shaders
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+		glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f) + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		shaders.at("standard_shader").set_uniform_mat4("projection", projection);
+		shaders.at("standard_shader").set_uniform_mat4("view", view);
 
 		// draw models
-		// FINISH THIS
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		shaders.at("standard_shader").set_uniform_mat4("model", model);
+		models.at("backpack").draw(shaders.at("standard_shader"));
 
 		// swap window's buffer so that it gets rendered onto the screen
 		sdl_handler.window->swap();
+
+		// poll and handle events (including input)
+		event_handler.handle_all_events(sdl_handler);
 	}
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;
