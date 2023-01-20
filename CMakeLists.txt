@@ -44,6 +44,7 @@ set(CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(sources
 ${SOURCE_DIR}/main.cpp
+${SOURCE_DIR}/Camera.cpp
 ${SOURCE_DIR}/ErrorHandler.cpp
 ${SOURCE_DIR}/EventHandler.cpp
 ${SOURCE_DIR}/SdlHandler.cpp
