@@ -4,17 +4,17 @@
 #include <cmath>
 
 Camera::Camera(
-	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 world_up = glm::vec3(0.0f, 1.0f, 0.0),
-	float yaw = CAMERA_DEFAULT_YAW,
-	float pitch = CAMERA_DEFAULT_PITCH) noexcept : position(position),
-												   world_up(world_up),
-												   yaw(yaw),
-												   pitch(pitch),
-												   front(glm::vec3(0.0f, 0.0f, -1.0f)),
-												   movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
-												   mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
-												   zoom(CAMERA_DEFAULT_ZOOM)
+	glm::vec3 position,
+	glm::vec3 world_up,
+	float yaw,
+	float pitch) noexcept : position(position),
+							world_up(world_up),
+							yaw(yaw),
+							pitch(pitch),
+							front(glm::vec3(0.0f, 0.0f, -1.0f)),
+							movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
+							mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
+							zoom(CAMERA_DEFAULT_ZOOM)
 {
 	update_camera_vectors();
 }
@@ -54,4 +54,49 @@ void Camera::update_camera_vectors() noexcept
 
 	// calculate new up vector (camera-up, not world-up)
 	this->up = glm::normalize(glm::cross(this->right, this->front));
+}
+
+void Camera::move_camera(Camera::MoveDirection const direction, float const delta_time) noexcept
+{
+	float const movement_magnitude = this->movement_speed * delta_time;
+	switch (direction)
+	{
+	case FORWARD:
+		this->position += this->front * movement_magnitude;
+		break;
+	case BACKWARD:
+		this->position -= this->front * movement_magnitude;
+		break;
+	case LEFT:
+		this->position -= this->right * movement_magnitude;
+		break;
+	case RIGHT:
+		this->position += this->right * movement_magnitude;
+		break;
+	}
+}
+
+void Camera::pan_camera(float const x_offset, float const y_offset, GLboolean constrain_pitch) noexcept
+{
+	this->yaw += (x_offset * this->mouse_sensitivity);
+	this->pitch += (y_offset * this->mouse_sensitivity);
+
+	if (constrain_pitch)
+	{
+		if (this->pitch > 89.0f)
+			this->pitch = 89.0f;
+		else if (this->pitch < -89.0f)
+			this->pitch = -89.0f;
+	}
+
+	this->update_camera_vectors();
+}
+
+void Camera::zoom_camera(float const y_offset) noexcept
+{
+	this->zoom -= y_offset;
+	if (this->zoom < 1.0f)
+		this->zoom = 1.0f;
+	else if (this->zoom > 45.0f)
+		this->zoom = 45.0f;
 }

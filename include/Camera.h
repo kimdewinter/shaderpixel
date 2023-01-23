@@ -3,12 +3,14 @@
 
 #include "main.h"
 #include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
+#include <glad/glad.h>
 
 class Camera
 {
 public:
-	enum Direction
+	enum MoveDirection
 	{
 		FORWARD,
 		BACKWARD,
@@ -29,6 +31,17 @@ public:
 		float yaw,
 		float pitch) noexcept;
 	glm::mat4 get_view_matrix() const noexcept;
+	/// @brief moves camera's position in the world
+	/// @param direction direction of movement
+	/// @param delta_time how much time has passed since last frame
+	void move_camera(Camera::MoveDirection const direction, float const delta_time) noexcept;
+	/// @brief Pans camera around, usually depending on how much the mouse has moved
+	/// @param x_offset
+	/// @param y_offset
+	/// @param constrain_pitch
+	void pan_camera(float const x_offset, float const y_offset, GLboolean constrain_pitch = true) noexcept;
+	/// @brief Zooms camera in and out, obviously a mousewheels main axis is vertical
+	void zoom_camera(float const y_offset) noexcept;
 
 private:
 	/// @brief uses the updated Euler angles to calculate new front, right, and (cam-)up vector
