@@ -16,18 +16,18 @@ public:
 		RIGHT
 	};
 
-	/// @brief construct with vectors
+	/// @brief constructs with vectors
 	Camera(
 		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 world_up = glm::vec3(0.0f, 1.0f, 0.0),
 		float yaw = CAMERA_DEFAULT_YAW,
-		float pitch = CAMERA_DEFAULT_PITCH);
-	/// @brief construct with scalars
+		float pitch = CAMERA_DEFAULT_PITCH) noexcept;
+	/// @brief constructs with scalars
 	Camera(
 		float position[3],
 		float world_up[3],
 		float yaw,
-		float pitch) noexcept; 
+		float pitch) noexcept;
 	glm::mat4 get_view_matrix() const noexcept;
 
 private:

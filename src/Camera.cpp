@@ -7,14 +7,14 @@ Camera::Camera(
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
 	glm::vec3 world_up = glm::vec3(0.0f, 1.0f, 0.0),
 	float yaw = CAMERA_DEFAULT_YAW,
-	float pitch = CAMERA_DEFAULT_PITCH) : position(position),
-										  world_up(world_up),
-										  yaw(yaw),
-										  pitch(pitch),
-										  front(glm::vec3(0.0f, 0.0f, -1.0f)),
-										  movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
-										  mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
-										  zoom(CAMERA_DEFAULT_ZOOM)
+	float pitch = CAMERA_DEFAULT_PITCH) noexcept : position(position),
+												   world_up(world_up),
+												   yaw(yaw),
+												   pitch(pitch),
+												   front(glm::vec3(0.0f, 0.0f, -1.0f)),
+												   movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
+												   mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
+												   zoom(CAMERA_DEFAULT_ZOOM)
 {
 	update_camera_vectors();
 }
@@ -23,14 +23,14 @@ Camera::Camera(
 	float position[3],
 	float world_up[3],
 	float yaw,
-	float pitch) : position(glm::vec3(position[0], position[1], position[2])),
-				   world_up(glm::vec3(world_up[0], world_up[1], world_up[2])),
-				   yaw(yaw),
-				   pitch(pitch),
-				   front(glm::vec3(0.0f, 0.0f, -1.0f)),
-				   movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
-				   mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
-				   zoom(CAMERA_DEFAULT_ZOOM)
+	float pitch) noexcept : position(glm::vec3(position[0], position[1], position[2])),
+							world_up(glm::vec3(world_up[0], world_up[1], world_up[2])),
+							yaw(yaw),
+							pitch(pitch),
+							front(glm::vec3(0.0f, 0.0f, -1.0f)),
+							movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
+							mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
+							zoom(CAMERA_DEFAULT_ZOOM)
 {
 	update_camera_vectors();
 }
