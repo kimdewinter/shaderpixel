@@ -19,15 +19,25 @@ namespace
 	*/
 }
 
-void EventHandler::handle_keyboard_event(SDL_Event const &event, SdlHandler &sdl_handler)
+void EventHandler::handle_keyboard_event(SDL_Event const &event, SdlHandler &sdl_handler, Camera &camera)
 {
 	switch (event.key.keysym.sym)
 	{
 	case SDLK_ESCAPE:
-	{
 		this->should_quit = true;
 		break;
-	}
+	case SDLK_w:
+		camera.move_camera(Camera::MoveDirection::FORWARD, 0.1f);
+		break;
+	case SDLK_s:
+		camera.move_camera(Camera::MoveDirection::BACKWARD, 0.1f);
+		break;
+	case SDLK_a:
+		camera.move_camera(Camera::MoveDirection::LEFT, 0.1f);
+		break;
+	case SDLK_d:
+		camera.move_camera(Camera::MoveDirection::RIGHT, 0.1f);
+		break;
 	}
 }
 
@@ -52,7 +62,7 @@ void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_h
 	}
 }
 
-void EventHandler::handle_all_events(SdlHandler &sdl_handler)
+void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera)
 {
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
@@ -61,7 +71,7 @@ void EventHandler::handle_all_events(SdlHandler &sdl_handler)
 		{
 		case SDL_KEYDOWN:
 		{
-			this->handle_keyboard_event(event, sdl_handler);
+			this->handle_keyboard_event(event, sdl_handler, camera);
 			break;
 		}
 		case SDL_QUIT:

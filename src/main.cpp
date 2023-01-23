@@ -1,4 +1,5 @@
 #include "main.h"
+#include "Camera.h"
 #include "ErrorHandler.h"
 #include "EventHandler.h"
 #include "SdlHandler.h"
@@ -65,6 +66,7 @@ int main(int const argc, char const *const *const argv)
 	SdlHandler sdl_handler{&Configuration::Technical::window_creation, Configuration::Technical::get_clear_colors()};
 
 	EventHandler event_handler;
+	Camera camera = Camera({0.0f, 0.0f, 10.0f});
 
 	// load shaders and models
 	std::map<std::string, Shader> const shaders = Configuration::WorldCreation::load_shaders();
@@ -79,7 +81,8 @@ int main(int const argc, char const *const *const argv)
 
 		// set view and projection transformations for shaders
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f) + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		camera.update_camera_vectors();
+		glm::mat4 view = camera.get_view_matrix();
 		shaders.at("standard_shader").set_uniform_mat4("projection", projection);
 		shaders.at("standard_shader").set_uniform_mat4("view", view);
 
@@ -96,7 +99,7 @@ int main(int const argc, char const *const *const argv)
 		sdl_handler.window->swap();
 
 		// poll and handle events (including input)
-		event_handler.handle_all_events(sdl_handler);
+		event_handler.handle_all_events(sdl_handler, camera);
 	}
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;

@@ -30,6 +30,8 @@ public:
 		float world_up[3],
 		float yaw,
 		float pitch) noexcept;
+	/// @brief uses the updated Euler angles to calculate new front, right, and (cam-)up vector
+	void update_camera_vectors() noexcept;
 	glm::mat4 get_view_matrix() const noexcept;
 	/// @brief moves camera's position in the world
 	/// @param direction direction of movement
@@ -44,9 +46,6 @@ public:
 	void zoom_camera(float const y_offset) noexcept;
 
 private:
-	/// @brief uses the updated Euler angles to calculate new front, right, and (cam-)up vector
-	void update_camera_vectors() noexcept;
-
 	// camera attributes
 	glm::vec3 position; // camera's position in world space (so relative to world center)
 	glm::vec3 front;	// direction vector of what the camera points it's front towards
