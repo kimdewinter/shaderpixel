@@ -3,6 +3,14 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <cmath>
 
+namespace
+{
+	float nanoseconds_to_seconds(std::chrono::duration<long long, std::nano> const nanoseconds)
+	{
+		return
+	}
+}
+
 Camera::Camera(
 	glm::vec3 position,
 	glm::vec3 world_up,
@@ -56,7 +64,7 @@ void Camera::update_camera_vectors() noexcept
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 }
 
-void Camera::move_camera(Camera::MoveDirection const direction, float const delta_time) noexcept
+void Camera::move_camera(Camera::MoveDirection const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept
 {
 	float const movement_magnitude = this->movement_speed * delta_time;
 	switch (direction)

@@ -1,5 +1,6 @@
 #include "main.h"
 #include "Camera.h"
+#include "Clock.h"
 #include "ErrorHandler.h"
 #include "EventHandler.h"
 #include "SdlHandler.h"
@@ -67,12 +68,19 @@ int main(int const argc, char const *const *const argv)
 
 	EventHandler event_handler;
 	Camera camera = Camera({0.0f, 0.0f, 10.0f});
+	Clock clock;
 
 	// load shaders and models
 	std::map<std::string, Shader> const shaders = Configuration::WorldCreation::load_shaders();
 	std::map<std::string, Model> models = Configuration::WorldCreation::load_models();
 	while (!event_handler.get_should_quit())
 	{
+		// update clock, which calculates time_delta since last clock update
+		clock.update_clock();
+
+		// poll and handle events (including input)
+		event_handler.handle_all_events(sdl_handler, camera, clock);
+
 		// ensure window context is made current so it can be acted upon
 		sdl_handler.window->make_current();
 
@@ -97,9 +105,6 @@ int main(int const argc, char const *const *const argv)
 
 		// swap window's buffer so that it gets rendered onto the screen
 		sdl_handler.window->swap();
-
-		// poll and handle events (including input)
-		event_handler.handle_all_events(sdl_handler, camera);
 	}
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;

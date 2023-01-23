@@ -19,7 +19,11 @@ namespace
 	*/
 }
 
-void EventHandler::handle_keyboard_event(SDL_Event const &event, SdlHandler &sdl_handler, Camera &camera)
+void EventHandler::handle_keyboard_event(
+	SDL_Event const &event,
+	SdlHandler &sdl_handler,
+	Camera &camera,
+	Clock const &clock)
 {
 	switch (event.key.keysym.sym)
 	{
@@ -27,16 +31,16 @@ void EventHandler::handle_keyboard_event(SDL_Event const &event, SdlHandler &sdl
 		this->should_quit = true;
 		break;
 	case SDLK_w:
-		camera.move_camera(Camera::MoveDirection::FORWARD, 0.1f);
+		camera.move_camera(Camera::MoveDirection::FORWARD, clock.get_time_delta());
 		break;
 	case SDLK_s:
-		camera.move_camera(Camera::MoveDirection::BACKWARD, 0.1f);
+		camera.move_camera(Camera::MoveDirection::BACKWARD, clock.get_time_delta());
 		break;
 	case SDLK_a:
-		camera.move_camera(Camera::MoveDirection::LEFT, 0.1f);
+		camera.move_camera(Camera::MoveDirection::LEFT, clock.get_time_delta());
 		break;
 	case SDLK_d:
-		camera.move_camera(Camera::MoveDirection::RIGHT, 0.1f);
+		camera.move_camera(Camera::MoveDirection::RIGHT, clock.get_time_delta());
 		break;
 	}
 }
@@ -62,7 +66,7 @@ void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_h
 	}
 }
 
-void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera)
+void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Clock const &clock)
 {
 	SDL_Event event;
 	while (SDL_PollEvent(&event))

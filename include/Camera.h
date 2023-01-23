@@ -2,6 +2,7 @@
 #define CAMERA__H__
 
 #include "main.h"
+#include <chrono>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
@@ -36,7 +37,7 @@ public:
 	/// @brief moves camera's position in the world
 	/// @param direction direction of movement
 	/// @param delta_time how much time has passed since last frame
-	void move_camera(Camera::MoveDirection const direction, float const delta_time) noexcept;
+	void move_camera(Camera::MoveDirection const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept;
 	/// @brief Pans camera around, usually depending on how much the mouse has moved
 	/// @param x_offset
 	/// @param y_offset
