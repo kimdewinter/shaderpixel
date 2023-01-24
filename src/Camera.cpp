@@ -88,7 +88,7 @@ void Camera::move_camera(Camera::MoveDirection const direction, std::chrono::dur
 void Camera::pan_camera(float const x_offset, float const y_offset, GLboolean constrain_pitch) noexcept
 {
 	this->yaw += (x_offset * this->mouse_sensitivity);
-	this->pitch += (y_offset * this->mouse_sensitivity);
+	this->pitch -= (y_offset * this->mouse_sensitivity);
 
 	if (constrain_pitch)
 	{

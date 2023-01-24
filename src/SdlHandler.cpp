@@ -41,6 +41,9 @@ SdlHandler::SdlHandler(
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw std::runtime_error(std::string("Error initializing SDL: ") + std::string(SDL_GetError()));
 
+	// set required SDL settings
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	// create window via the supplied function pointer
 	this->window = window_creation_after_sdl_init();
 	if (!this->window)

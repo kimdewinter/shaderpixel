@@ -45,6 +45,23 @@ void EventHandler::handle_keyboard_event(
 	}
 }
 
+void EventHandler::handle_mouse_motion(SDL_Event const &event, Camera &camera)
+{
+	this->mouse_moved = true;
+	if (this->first_mouse_event)
+	{
+		this->first_mouse_event = false;
+		this->mouse_rel_x = 0.0f;
+		this->mouse_rel_y = 0.0f;
+	}
+	else
+	{
+		this->mouse_rel_x = static_cast<float>(event.motion.xrel);
+		this->mouse_rel_y = static_cast<float>(event.motion.yrel);
+		camera.pan_camera(this->mouse_rel_x, this->mouse_rel_y, true);
+	}
+}
+
 void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler)
 {
 	switch (event.window.event)
@@ -68,6 +85,7 @@ void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_h
 
 void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Clock const &clock)
 {
+	this->mouse_moved = false;
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -76,6 +94,11 @@ void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Cl
 		case SDL_KEYDOWN:
 		{
 			this->handle_keyboard_event(event, sdl_handler, camera, clock);
+			break;
+		}
+		case SDL_MOUSEMOTION:
+		{
+			this->handle_mouse_motion(event, camera);
 			break;
 		}
 		case SDL_QUIT:
@@ -95,4 +118,11 @@ void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Cl
 bool const EventHandler::get_should_quit() const noexcept
 {
 	return this->should_quit;
+}
+
+bool EventHandler::get_mouse_moved() const noexcept
+{
+	if (this->first_mouse_event)
+		Error::output_error(Error::WARNING, "get_mouse_moved() was called while EventHandler.first_mouse_event was true", true);
+	return this->mouse_moved;
 }
