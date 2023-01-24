@@ -20,7 +20,7 @@
 #define MAX_BONE_INFLUENCE 4 // maximum amount of bones that may influence a vertex
 #define CAMERA_DEFAULT_YAW -90.0f
 #define CAMERA_DEFAULT_PITCH 0.0f
-#define CAMERA_DEFAULT_MOVEMENT_SPEED 2.5f
+#define CAMERA_DEFAULT_MOVEMENT_SPEED 10.0f
 #define CAMERA_DEFAULT_MOUSE_SENSITIVITY 0.1f
 #define CAMERA_DEFAULT_ZOOM 45.0f
 

@@ -5,9 +5,10 @@
 
 namespace
 {
+	/// @return a float that signifies how many seconds variable "nanoseconds" is
 	float nanoseconds_to_seconds(std::chrono::duration<long long, std::nano> const nanoseconds)
 	{
-		return
+		return std::chrono::duration<float>(nanoseconds).count();
 	}
 }
 
@@ -66,7 +67,7 @@ void Camera::update_camera_vectors() noexcept
 
 void Camera::move_camera(Camera::MoveDirection const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept
 {
-	float const movement_magnitude = this->movement_speed * delta_time;
+	float const movement_magnitude = this->movement_speed * nanoseconds_to_seconds(delta_time);
 	switch (direction)
 	{
 	case FORWARD:

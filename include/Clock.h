@@ -9,10 +9,10 @@ class Clock
 {
 public:
 	void update_clock() noexcept;
-	std::chrono::duration<long long, std::nano> get_time_delta() const noexcept;
+	std::chrono::duration<long long, std::nano> get_time_delta() const;
 
 private:
-	bool first_time = false; // necessary because "previous" won't have a valid value on the first loop
+	bool first_update = true; // necessary because "previous" won't have a valid value on the first loop
 	time_point<steady_clock> previous;
 	time_point<steady_clock> current;
 	std::chrono::duration<long long, std::nano> time_delta =

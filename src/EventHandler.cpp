@@ -75,7 +75,7 @@ void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Cl
 		{
 		case SDL_KEYDOWN:
 		{
-			this->handle_keyboard_event(event, sdl_handler, camera);
+			this->handle_keyboard_event(event, sdl_handler, camera, clock);
 			break;
 		}
 		case SDL_QUIT:
