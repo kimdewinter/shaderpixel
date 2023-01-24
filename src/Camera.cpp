@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "ErrorHandler.h"
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <cmath>
@@ -65,7 +66,7 @@ void Camera::update_camera_vectors() noexcept
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 }
 
-void Camera::move_camera(Camera::MoveDirection const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept
+void Camera::move_camera(Camera::Direction const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept
 {
 	float const movement_magnitude = this->movement_speed * nanoseconds_to_seconds(delta_time);
 	switch (direction)
@@ -82,6 +83,12 @@ void Camera::move_camera(Camera::MoveDirection const direction, std::chrono::dur
 	case RIGHT:
 		this->position += this->right * movement_magnitude;
 		break;
+	case UP:
+		this->position += this->up * movement_magnitude;
+		break;
+	case DOWN:
+		this->position -= this->up * movement_magnitude;
+		break;
 	}
 }
 
@@ -92,12 +99,29 @@ void Camera::pan_camera(float const x_offset, float const y_offset, GLboolean co
 
 	if (constrain_pitch)
 	{
-		if (this->pitch > 89.0f)
-			this->pitch = 89.0f;
-		else if (this->pitch < -89.0f)
-			this->pitch = -89.0f;
+		if (this->pitch > 89.9f)
+			this->pitch = 89.9f;
+		else if (this->pitch < -89.9f)
+			this->pitch = -89.9f;
 	}
 
+	this->update_camera_vectors();
+}
+
+void Camera::roll_camera(Camera::Direction const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept
+{
+	float const magnitude = this->movement_speed * nanoseconds_to_seconds(delta_time);
+	switch (direction)
+	{
+	case LEFT:
+		this->world_up -= this->right * magnitude;
+		break;
+	case RIGHT:
+		this->world_up += this->right * magnitude;
+		break;
+	default:
+		Error::output_error(Error::WARNING, "roll_camera() received direction other than LEFT or RIGHT", true);
+	}
 	this->update_camera_vectors();
 }
 

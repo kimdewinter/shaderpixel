@@ -31,16 +31,28 @@ void EventHandler::handle_keyboard_event(
 		this->should_quit = true;
 		break;
 	case SDLK_w:
-		camera.move_camera(Camera::MoveDirection::FORWARD, clock.get_time_delta());
+		camera.move_camera(Camera::Direction::FORWARD, clock.get_time_delta());
 		break;
 	case SDLK_s:
-		camera.move_camera(Camera::MoveDirection::BACKWARD, clock.get_time_delta());
+		camera.move_camera(Camera::Direction::BACKWARD, clock.get_time_delta());
 		break;
 	case SDLK_a:
-		camera.move_camera(Camera::MoveDirection::LEFT, clock.get_time_delta());
+		camera.move_camera(Camera::Direction::LEFT, clock.get_time_delta());
 		break;
 	case SDLK_d:
-		camera.move_camera(Camera::MoveDirection::RIGHT, clock.get_time_delta());
+		camera.move_camera(Camera::Direction::RIGHT, clock.get_time_delta());
+		break;
+	case SDLK_r:
+		camera.move_camera(Camera::Direction::UP, clock.get_time_delta());
+		break;
+	case SDLK_f:
+		camera.move_camera(Camera::Direction::DOWN, clock.get_time_delta());
+		break;
+	case SDLK_q:
+		camera.roll_camera(Camera::Direction::LEFT, clock.get_time_delta());
+		break;
+	case SDLK_e:
+		camera.roll_camera(Camera::Direction::RIGHT, clock.get_time_delta());
 		break;
 	}
 }
