@@ -1,14 +1,18 @@
 #include "Clock.h"
 #include "ErrorHandler.h"
 
-using std::chrono::duration, std::chrono::nanoseconds, std::chrono::steady_clock;
+template <typename T = long long, typename E = std::nano>
+using duration = std::chrono::duration<T, E>;
+template <typename T = std::chrono::steady_clock>
+using time_point = std::chrono::time_point<T>;
+using std::chrono::steady_clock;
 
 void Clock::update_clock() noexcept
 {
 	this->current = steady_clock::now();
 	if (this->first_update)
 	{
-		this->time_delta = std::chrono::duration<long long, std::nano>(0);
+		this->time_delta = duration<>(0);
 		this->first_update = false;
 	}
 	else
@@ -18,12 +22,12 @@ void Clock::update_clock() noexcept
 	this->previous = this->current;
 }
 
-std::chrono::duration<long long, std::nano> Clock::get_time_delta() const
+duration<> Clock::get_time_delta() const
 {
 	if (this->first_update)
 	{
 		Error::output_error(Error::WARNING, "get_time_delta() was called before the first update_clock() call", true);
-		return std::chrono::duration<long long, std::nano>(0);
+		return duration<>(0);
 	}
 	return this->time_delta;
 }

@@ -67,44 +67,48 @@ int main(int const argc, char const *const *const argv)
 	SdlHandler sdl_handler{&Configuration::Technical::window_creation, Configuration::Technical::get_clear_colors()};
 
 	EventHandler event_handler;
-	Camera camera = Camera({0.0f, 0.0f, 10.0f});
+	Camera camera({0.0f, 0.0f, 10.0f});
 	Clock clock;
 
 	// load shaders and models
 	std::map<std::string, Shader> const shaders = Configuration::WorldCreation::load_shaders();
 	std::map<std::string, Model> models = Configuration::WorldCreation::load_models();
+
 	while (!event_handler.get_should_quit())
 	{
-		// update clock, which calculates time_delta since last clock update
-		clock.update_clock();
+		// UPDATE CLOCK
+		clock.update_clock(); // gets delta time since last update
 
-		// poll and handle events (including input)
-		event_handler.handle_all_events(sdl_handler, camera, clock);
+		// INPUT HANDLING
+		{
+			// poll and handle events (including input)
+			event_handler.handle_all_events(sdl_handler, camera, clock);
+		}
 
-		// ensure window context is made current so it can be acted upon
-		sdl_handler.window->make_current();
+		// RENDERING
+		{
+			sdl_handler.window->make_current(); // ensure window context is made current so it can be acted upon
+			sdl_handler.window->clear();		// clear the buffer so we can start composing a new frame
 
-		// clear the buffer so we can start composing a new frame
-		sdl_handler.window->clear();
+			// set view and projection transformations for shaders
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+			camera.update_camera_vectors();
+			glm::mat4 view = camera.get_view_matrix();
+			shaders.at("standard_shader").set_uniform_mat4("projection", projection);
+			shaders.at("standard_shader").set_uniform_mat4("view", view);
 
-		// set view and projection transformations for shaders
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-		camera.update_camera_vectors();
-		glm::mat4 view = camera.get_view_matrix();
-		shaders.at("standard_shader").set_uniform_mat4("projection", projection);
-		shaders.at("standard_shader").set_uniform_mat4("view", view);
+			// draw models
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+			glm::quat rotation = glm::quat(glm::vec3(glm::radians(20.0f), glm::radians(30.0f), glm::radians(15.0f)));
+			model = model * glm::mat4(rotation);
+			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+			shaders.at("standard_shader").set_uniform_mat4("model", model);
+			models.at("backpack").draw(shaders.at("standard_shader"));
 
-		// draw models
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		glm::quat rotation = glm::quat(glm::vec3(glm::radians(20.0f), glm::radians(30.0f), glm::radians(15.0f)));
-		model = model * glm::mat4(rotation);
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		shaders.at("standard_shader").set_uniform_mat4("model", model);
-		models.at("backpack").draw(shaders.at("standard_shader"));
-
-		// swap window's buffer so that it gets rendered onto the screen
-		sdl_handler.window->swap();
+			// swap window's buffer so that it gets rendered onto the screen
+			sdl_handler.window->swap();
+		}
 	}
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;

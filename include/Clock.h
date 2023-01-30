@@ -3,20 +3,22 @@
 
 #include <chrono>
 
-using std::chrono::time_point, std::chrono::steady_clock, std::chrono::duration;
-
 class Clock
 {
 public:
+	template <typename T = long long, typename E = std::nano>
+	using duration = std::chrono::duration<T, E>;
+	template <typename T = std::chrono::steady_clock>
+	using time_point = std::chrono::time_point<T>;
+
 	void update_clock() noexcept;
-	std::chrono::duration<long long, std::nano> get_time_delta() const;
+	duration<> get_time_delta() const;
 
 private:
 	bool first_update = true; // necessary because "previous" won't have a valid value on the first loop
-	time_point<steady_clock> previous;
-	time_point<steady_clock> current;
-	std::chrono::duration<long long, std::nano> time_delta =
-		std::chrono::duration<long long, std::nano>(0); // time elapsed between previous and current
+	time_point<> previous;
+	time_point<> current;
+	duration<> time_delta = duration<>(0); // time elapsed between previous and current
 };
 
 #endif
