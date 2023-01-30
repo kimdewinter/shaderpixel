@@ -7,32 +7,6 @@
 
 namespace
 {
-	std::optional<std::vector<std::string>> const get_stacktrace() noexcept
-	{
-		// get the backtrace symbols
-		void *symbols[30];
-		memset(symbols, 0, sizeof(void *) * 30);
-		size_t n_symbols = backtrace(symbols, 30);
-		if (!*symbols || n_symbols == 0)
-			return std::nullopt;
-
-		// extract trace-lines from symbols as raw char arrays
-		char **char_lines = backtrace_symbols(symbols, n_symbols);
-		if (!char_lines)
-			return std::nullopt;
-
-		// convert std::strings for more orderly output,
-		// according to GNU documentation individual strings in char_arrays need not be freed only the variable char_arrays itself
-		std::vector<std::string> output;
-		output.push_back("Obtained " + std::to_string(n_symbols) + " stack frames.");
-		for (size_t i = 0; i < n_symbols; i++)
-			if (char_lines[i])
-				output.push_back(std::string(char_lines[i]));
-		free(char_lines);
-		char_lines = NULL;
-		return output;
-	}
-
 	void segfault_handler(int signal) noexcept
 	{
 		std::string output = "Error signal: " + std::to_string(signal) + "\n";
@@ -41,6 +15,32 @@ namespace
 				output += line + '\n';
 		exit(EXIT_FAILURE);
 	}
+}
+
+std::optional<std::vector<std::string>> Error::get_stacktrace() const noexcept
+{
+	// get the backtrace symbols
+	void *symbols[30];
+	memset(symbols, 0, sizeof(void *) * 30);
+	size_t n_symbols = backtrace(symbols, 30);
+	if (!*symbols || n_symbols == 0)
+		return std::nullopt;
+
+	// extract trace-lines from symbols as raw char arrays
+	char **char_lines = backtrace_symbols(symbols, n_symbols);
+	if (!char_lines)
+		return std::nullopt;
+
+	// convert std::strings for more orderly output,
+	// according to GNU documentation individual strings in char_arrays need not be freed only the variable char_arrays itself
+	std::vector<std::string> output;
+	output.push_back("Obtained " + std::to_string(n_symbols) + " stack frames.");
+	for (size_t i = 0; i < n_symbols; i++)
+		if (char_lines[i])
+			output.push_back(std::string(char_lines[i]));
+	free(char_lines);
+	char_lines = NULL;
+	return output;
 }
 
 void Error::setup_segfault_signalhandler() noexcept
