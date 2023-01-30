@@ -110,4 +110,4 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 
 # Set build type to Release or Debug
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)

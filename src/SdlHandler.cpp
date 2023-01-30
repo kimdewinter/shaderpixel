@@ -3,7 +3,7 @@
 
 namespace
 {
-#ifdef DEBUG
+#ifndef NDEBUG
 	void print_opengl_version() noexcept
 	{
 		int major, minor;
@@ -79,7 +79,7 @@ SdlHandler::SdlHandler(
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 #endif
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	debug_info_opengl();
 #endif
 
