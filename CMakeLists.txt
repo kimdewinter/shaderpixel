@@ -111,3 +111,7 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 
 # Set build type to Release or Debug
 set(CMAKE_BUILD_TYPE Debug)
+
+target_compile_options(shaderpixel
+PRIVATE
+-fno-exceptions)

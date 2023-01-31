@@ -3,6 +3,7 @@
 #include <stb_image.h>
 #include <SDL.h>
 #include <glad/glad.h>
+#include "ErrorHandler.h"
 
 namespace
 {
@@ -18,11 +19,7 @@ namespace
 		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded textures on the y-axis before loading model
 		int width, height, n_components;
 		unsigned char *data = stbi_load(file_name.c_str(), &width, &height, &n_components, 0);
-		if (!data)
-		{
-			stbi_image_free(data);
-			throw std::runtime_error("Texture failed to load at path:" + path);
-		}
+		ASSERT(data, "texture failed to load at path: " + path);
 
 		// set the colour components
 		GLenum format;
@@ -179,8 +176,8 @@ Model::Model(std::string const &path) : directory(path.substr(0, path.find_last_
 	aiScene const *const scene = importer.ReadFile(path, ASSIMP_POSTPROCESSING);
 
 	// check if read was succesful, if data is complete, and if the root node is not null
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-		throw std::runtime_error("Error with Assimp file read error: " + std::string(importer.GetErrorString()));
+	ASSERT(scene && !(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) && scene->mRootNode,
+		   "error with Assimp file read error: " + std::string(importer.GetErrorString()));
 
 	// process Assimp's root node recursively
 	process_node(scene->mRootNode, scene);

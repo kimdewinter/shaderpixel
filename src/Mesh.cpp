@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include <glad/glad.h>
 #include <stdexcept>
+#include "ErrorHandler.h"
 
 Mesh::Mesh(
 	std::vector<Vertex> vertices,
@@ -9,8 +10,8 @@ Mesh::Mesh(
 									 indices(indices),
 									 textures(textures)
 {
-	if (vertices.empty() || indices.empty() || textures.empty())
-		throw std::invalid_argument("Warning: Mesh constructor encountered invalid argument");
+	ASSERT(!vertices.empty() && !indices.empty() && !textures.empty(),
+		   "warning: mesh constructor encountered invalid argument");
 
 	// request OpenGL to generate VAO, VBO, EBO objects
 	glGenVertexArrays(1, &this->VAO);

@@ -1,5 +1,6 @@
 #include "SdlHandler.h"
 #include <iostream>
+#include "ErrorHandler.h"
 
 namespace
 {
@@ -38,39 +39,22 @@ SdlHandler::SdlHandler(
 	std::function<Window *()> window_creation_after_sdl_init,
 	std::array<GLfloat, 4> const &clear_color) : clear_color(clear_color)
 {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		throw std::runtime_error(std::string("Error initializing SDL: ") + std::string(SDL_GetError()));
+	ASSERT(SDL_Init(SDL_INIT_VIDEO) == 0, "Error initializing SDL: " + std::string(SDL_GetError()));
 
 	// set required SDL settings
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	// create window via the supplied function pointer
 	this->window = window_creation_after_sdl_init();
-	if (!this->window)
-	{
-		SDL_Quit();
-		throw std::logic_error("Error: window creation failed");
-	}
+	ASSERT(this->window, "window creation failed");
 
 	this->window->make_current();
 
 	// set vsync
-	if (SDL_GL_SetSwapInterval(VSYNC) != 0)
-	{
-		delete this->window;
-		this->window = NULL;
-		SDL_Quit();
-		throw std::runtime_error("Error in SDL_GL_SetSwapInterval(): " + std::string(SDL_GetError()));
-	}
+	ASSERT(SDL_GL_SetSwapInterval(VSYNC) == 0, "error in SDL_GL_SetSwapInterval(): " + std::string(SDL_GetError()));
 
 	// load OpenGL via GLAD
-	if (!(gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)))
-	{
-		delete this->window;
-		this->window = NULL;
-		SDL_Quit();
-		throw std::runtime_error("Error in gladLoadGLLoader()");
-	}
+	ASSERT(gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress), "error in gloadLoadGLLoader()");
 
 	// set required OpenGL settings
 	glEnable(GL_DEPTH_TEST);
@@ -84,14 +68,7 @@ SdlHandler::SdlHandler(
 #endif
 
 	// check for any OpenGL errors
-	GLenum error_check = glGetError();
-	if (error_check != GL_NO_ERROR)
-	{
-		delete this->window;
-		this->window = NULL;
-		SDL_Quit();
-		throw std::runtime_error("Error in OpenGL.");
-	}
+	ASSERT(glGetError() == GL_NO_ERROR, "error in OpenGL");
 }
 
 SdlHandler::~SdlHandler() noexcept
