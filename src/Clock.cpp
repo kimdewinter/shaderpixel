@@ -26,7 +26,7 @@ duration<> Clock::get_time_delta() const
 {
 	if (this->first_update)
 	{
-		Error::output_error(Error::WARNING, "get_time_delta() was called before the first update_clock() call", true);
+		Error::output_warning("get_time_delta() was called before the first update_clock() call");
 		return duration<>(0);
 	}
 	return this->time_delta;

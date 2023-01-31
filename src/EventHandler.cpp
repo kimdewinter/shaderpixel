@@ -135,6 +135,6 @@ bool const EventHandler::get_should_quit() const noexcept
 bool EventHandler::get_mouse_moved() const noexcept
 {
 	if (this->first_mouse_event)
-		Error::output_error(Error::WARNING, "get_mouse_moved() was called while EventHandler.first_mouse_event was true", true);
+		Error::output_warning("get_mouse_moved() was called while EventHandler.first_mouse_event was true");
 	return this->mouse_moved;
 }

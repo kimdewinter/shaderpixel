@@ -60,8 +60,7 @@ int main(int const argc, char const *const *const argv)
 	Error::setup_segfault_signalhandler();
 
 	// check validity of program's input
-	if (argc != 1)
-		Error::output_error(Error::Type::FATAL, "This program should not be given arguments.");
+	ASSERT(argc == 1, "This program should not be given arguments.");
 
 	// start up SDL and OpenGL, create window via the use of function pointer, and make window context current
 	SdlHandler sdl_handler{&Configuration::Technical::window_creation, Configuration::Technical::get_clear_colors()};

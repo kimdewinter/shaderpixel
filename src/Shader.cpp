@@ -76,7 +76,7 @@ Shader::Shader(
 	}
 	catch (std::ifstream::failure &exception)
 	{
-		Error::output_error(Error::Type::FATAL, exception.what());
+		// Error::output_error(Error::Type::FATAL, exception.what());
 	}
 
 	// compile vertex shader
