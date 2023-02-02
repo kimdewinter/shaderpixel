@@ -1,7 +1,6 @@
 #include "ErrorHandler.h"
 #include <execinfo.h>
-// #include <unistd.h>
-// #include <cstring>
+#include <cstring>
 #include <signal.h>
 
 namespace

@@ -17,7 +17,7 @@ namespace
 			if (!success)
 			{
 				glGetShaderInfoLog(shader_id, 1024, NULL, info_log);
-				throw std::runtime_error("Shader linking error of type: " + type + "\n" + std::string(info_log) + "\n");
+				ASSERT(false, "Shader compilation error of type: " + type + "\n" + std::string(info_log) + "\n");
 			}
 		}
 		else
@@ -26,7 +26,7 @@ namespace
 			if (!success)
 			{
 				glGetProgramInfoLog(shader_id, 1024, NULL, info_log);
-				throw std::runtime_error("Shader linking error of type: " + type + "\n" + std::string(info_log) + "\n");
+				ASSERT(false, "Shader linking error of type: " + type + "\n" + std::string(info_log) + "\n");
 			}
 		}
 	}
@@ -45,38 +45,36 @@ Shader::Shader(
 	vertex_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	fragment_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	geometry_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	try
+
+	// open files
+	vertex_file.open(vertex_path);
+	fragment_file.open(fragment_path);
+	ASSERT(
+		vertex_file.is_open() && fragment_file.is_open(),
+		"failed to open vertex_file and/or fragment_file in Shader constructor");
+
+	// read file buffer into stringstreams
+	std::stringstream vertex_stream, fragment_stream;
+	vertex_stream << vertex_file.rdbuf();
+	fragment_stream << fragment_file.rdbuf();
+
+	// close file handlers
+	vertex_file.close();
+	fragment_file.close();
+
+	// convert stringstream to string
+	vertex_code = vertex_stream.str();
+	fragment_code = fragment_stream.str();
+
+	// if geometry shader path provided: load geometry shader
+	if (geometry_path != NULL)
 	{
-		// open files
-		vertex_file.open(vertex_path);
-		fragment_file.open(fragment_path);
-		std::stringstream vertex_stream, fragment_stream;
-
-		// read file buffer into stringstreams
-		vertex_stream << vertex_file.rdbuf();
-		fragment_stream << fragment_file.rdbuf();
-
-		// close file handlers
-		vertex_file.close();
-		fragment_file.close();
-
-		// convert stringstream to string
-		vertex_code = vertex_stream.str();
-		fragment_code = fragment_stream.str();
-
-		// if geometry shader path provided: load geometry shader
-		if (geometry_path != NULL)
-		{
-			geometry_file.open(geometry_path);
-			std::stringstream geometry_stream;
-			geometry_stream << geometry_file.rdbuf();
-			geometry_file.close();
-			geometry_code = geometry_stream.str();
-		}
-	}
-	catch (std::ifstream::failure &exception)
-	{
-		ASSERT(false, exception.what());
+		geometry_file.open(geometry_path);
+		ASSERT(geometry_file.is_open(), "failed to open geometry_file in Shader constructor");
+		std::stringstream geometry_stream;
+		geometry_stream << geometry_file.rdbuf();
+		geometry_file.close();
+		geometry_code = geometry_stream.str();
 	}
 
 	// compile vertex shader
