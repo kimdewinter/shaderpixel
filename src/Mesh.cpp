@@ -6,9 +6,9 @@
 Mesh::Mesh(
 	std::vector<Vertex> vertices,
 	std::vector<unsigned int> indices,
-	std::vector<Texture> textures) : vertices(vertices),
-									 indices(indices),
-									 textures(textures)
+	std::vector<Texture> textures) noexcept : vertices(vertices),
+											  indices(indices),
+											  textures(textures)
 {
 	ASSERT(!vertices.empty() && !indices.empty() && !textures.empty(),
 		   "warning: mesh constructor encountered invalid argument");

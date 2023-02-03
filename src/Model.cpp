@@ -68,7 +68,7 @@ std::optional<Texture> Model::find_loaded_texture(char const *const path) const 
 std::vector<Texture> Model::load_material_textures(
 	aiMaterial const *const mat,
 	aiTextureType const type,
-	std::string const &type_name)
+	std::string const &type_name) noexcept
 {
 	std::vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
@@ -155,7 +155,7 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 }
 
 /// @brief processes node in recursive fashion
-void Model::process_node(aiNode const *const node, aiScene const *const scene)
+void Model::process_node(aiNode const *const node, aiScene const *const scene) noexcept
 {
 	// process all of the node's meshes
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -169,7 +169,7 @@ void Model::process_node(aiNode const *const node, aiScene const *const scene)
 		process_node(node->mChildren[i], scene);
 }
 
-Model::Model(std::string const &path) : directory(path.substr(0, path.find_last_of('/')))
+Model::Model(std::string const &path) noexcept : directory(path.substr(0, path.find_last_of('/')))
 {
 	// read file with Assimp
 	Assimp::Importer importer;

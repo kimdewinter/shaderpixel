@@ -22,7 +22,7 @@
 class Model
 {
 public:
-	Model(std::string const &path);
+	Model(std::string const &path) noexcept;
 	void draw(Shader const &shader) const noexcept;
 
 	std::vector<Texture> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
@@ -34,8 +34,8 @@ private:
 	std::vector<Texture> load_material_textures(
 		aiMaterial const *const mat,
 		aiTextureType const type,
-		std::string const &type_name);
-	void process_node(aiNode const *const node, aiScene const *const scene);
+		std::string const &type_name) noexcept;
+	void process_node(aiNode const *const node, aiScene const *const scene) noexcept;
 	std::optional<Texture> find_loaded_texture(char const *const path) const noexcept;
 };
 

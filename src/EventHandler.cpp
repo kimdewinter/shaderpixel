@@ -23,7 +23,7 @@ void EventHandler::handle_keyboard_event(
 	SDL_Event const &event,
 	SdlHandler &sdl_handler,
 	Camera &camera,
-	Clock const &clock)
+	Clock const &clock) noexcept
 {
 	switch (event.key.keysym.sym)
 	{
@@ -57,7 +57,7 @@ void EventHandler::handle_keyboard_event(
 	}
 }
 
-void EventHandler::handle_mouse_motion(SDL_Event const &event, Camera &camera)
+void EventHandler::handle_mouse_motion(SDL_Event const &event, Camera &camera) noexcept
 {
 	this->mouse_moved = true;
 	if (this->first_mouse_event)
@@ -74,7 +74,7 @@ void EventHandler::handle_mouse_motion(SDL_Event const &event, Camera &camera)
 	}
 }
 
-void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler)
+void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler) noexcept
 {
 	switch (event.window.event)
 	{
@@ -95,7 +95,7 @@ void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_h
 	}
 }
 
-void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Clock const &clock)
+void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Clock const &clock) noexcept
 {
 	this->mouse_moved = false;
 	SDL_Event event;

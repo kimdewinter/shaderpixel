@@ -14,9 +14,8 @@ public:
 	/// @param clear_color background color when glClear() is called
 	SdlHandler(
 		std::function<Window *()> window_creation_after_sdl_init,
-		std::array<GLfloat, 4> const &clear_color = {0.0, 0.0, 0.0, 1.0});
+		std::array<GLfloat, 4> const &clear_color = {0.0, 0.0, 0.0, 1.0}) noexcept;
 	~SdlHandler() noexcept;
-	/// @brief Clears the buffer so it can be drawn on
 
 	Window *window = NULL;
 

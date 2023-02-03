@@ -12,7 +12,7 @@ public:
 	using time_point = std::chrono::time_point<T>;
 
 	void update_clock() noexcept;
-	duration<> get_time_delta() const;
+	duration<> get_time_delta() const noexcept;
 
 private:
 	bool first_update = true; // necessary because "previous" won't have a valid value on the first loop

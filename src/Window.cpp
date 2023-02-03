@@ -5,9 +5,9 @@
 Window::Window(
 	std::string const &window_name,
 	int const window_width,
-	int const window_height) : window_name(window_name),
-							   window_width(window_width),
-							   window_height(window_height)
+	int const window_height) noexcept : window_name(window_name),
+										window_width(window_width),
+										window_height(window_height)
 {
 	// check arguments
 	ASSERT(window_width > 0 && window_height > 0, "invalid window dimension, width and height must be > 0");

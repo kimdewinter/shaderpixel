@@ -20,7 +20,7 @@ namespace Configuration
 	{
 		/// @brief here you define what shaders you want to load, and from what files, names must be unique
 		/// @return a map<string, Shader>, where the string is a name to identify that Shader
-		std::map<std::string, Shader> const load_shaders()
+		std::map<std::string, Shader> const load_shaders() noexcept
 		{
 			std::map<std::string, Shader> shaders;
 			shaders.insert({"standard_shader", Shader("resources/standard_shader.vert", "resources/standard_shader.frag")});
@@ -28,7 +28,7 @@ namespace Configuration
 		}
 
 		/// @brief here you define what models you want to load, names must be unique, path must not end in a slash
-		std::map<std::string, Model> load_models()
+		std::map<std::string, Model> load_models() noexcept
 		{
 			std::map<std::string, Model> models;
 			models.insert({"backpack", Model("resources/backpack/backpack.obj")});
@@ -40,8 +40,8 @@ namespace Configuration
 	namespace Technical
 	{
 		/// @brief manually implement function that can construct the window you want
-		/// @return Window pointer or throw in case of failure
-		Window *window_creation()
+		/// @return Window pointer or NULL in case of failure
+		Window *window_creation() noexcept
 		{
 			return new Window(APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT);
 		}

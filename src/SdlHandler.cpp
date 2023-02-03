@@ -37,7 +37,7 @@ namespace
 
 SdlHandler::SdlHandler(
 	std::function<Window *()> window_creation_after_sdl_init,
-	std::array<GLfloat, 4> const &clear_color) : clear_color(clear_color)
+	std::array<GLfloat, 4> const &clear_color) noexcept : clear_color(clear_color)
 {
 	ASSERT(SDL_Init(SDL_INIT_VIDEO) == 0, "Error initializing SDL: " + std::string(SDL_GetError()));
 

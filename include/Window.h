@@ -10,7 +10,7 @@
 class Window
 {
 public:
-	Window(std::string const &window_name, int const window_width, int const window_height);
+	Window(std::string const &window_name, int const window_width, int const window_height) noexcept;
 	~Window() noexcept;
 	/// @brief swaps the buffer to the screen, displaying what has been drawn on the buffer
 	void clear() const noexcept;

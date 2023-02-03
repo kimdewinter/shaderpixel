@@ -35,16 +35,11 @@ namespace
 Shader::Shader(
 	char const *const vertex_path,
 	char const *const fragment_path,
-	char const *const geometry_path)
+	char const *const geometry_path) noexcept
 {
 	// retrieve source code
 	std::string vertex_code, fragment_code, geometry_code;
 	std::ifstream vertex_file, fragment_file, geometry_file;
-
-	// allow filestreams to throw exceptions
-	vertex_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	fragment_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	geometry_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
 	// open files
 	vertex_file.open(vertex_path);

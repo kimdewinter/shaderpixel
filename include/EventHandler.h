@@ -10,16 +10,16 @@ class EventHandler
 {
 public:
 	bool const get_should_quit() const noexcept;
-	void handle_all_events(SdlHandler &sdl_handler, Camera &camera, Clock const &clock);
+	void handle_all_events(SdlHandler &sdl_handler, Camera &camera, Clock const &clock) noexcept;
 	void handle_keyboard_event(
 		SDL_Event const &event,
 		SdlHandler &sdl_handler,
 		Camera &camera,
-		Clock const &clock);
+		Clock const &clock) noexcept;
 	void handle_mouse_motion(
 		SDL_Event const &event,
-		Camera &camera);
-	void handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler);
+		Camera &camera) noexcept;
+	void handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler) noexcept;
 	bool get_mouse_moved() const noexcept;
 
 private:
