@@ -22,7 +22,7 @@ void Clock::update_clock() noexcept
 	this->previous = this->current;
 }
 
-duration<> Clock::get_time_delta() const
+duration<> Clock::get_time_delta() const noexcept
 {
 	if (this->first_update)
 	{
