@@ -6,6 +6,7 @@
 class Clock
 {
 public:
+	// bunch of templates and usings to reduce clutter
 	template <typename T = long long, typename E = std::nano>
 	using duration = std::chrono::duration<T, E>;
 	template <typename T = std::chrono::steady_clock>

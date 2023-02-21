@@ -59,7 +59,6 @@ void EventHandler::handle_keyboard_event(
 
 void EventHandler::handle_mouse_motion(SDL_Event const &event, Camera &camera) noexcept
 {
-	this->mouse_moved = true;
 	if (this->first_mouse_event)
 	{
 		this->first_mouse_event = false;
@@ -97,7 +96,6 @@ void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_h
 
 void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Clock const &clock) noexcept
 {
-	this->mouse_moved = false;
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -130,11 +128,4 @@ void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Cl
 bool const EventHandler::get_should_quit() const noexcept
 {
 	return this->should_quit;
-}
-
-bool EventHandler::get_mouse_moved() const noexcept
-{
-	if (this->first_mouse_event)
-		Error::output_warning("get_mouse_moved() was called while EventHandler.first_mouse_event was true");
-	return this->mouse_moved;
 }

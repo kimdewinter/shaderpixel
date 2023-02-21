@@ -35,7 +35,7 @@ public:
 		float pitch) noexcept;
 	/// @brief uses the updated Euler angles to calculate new front, right, and (cam-)up vector
 	void update_camera_vectors() noexcept;
-	glm::mat4 get_view_matrix() const noexcept;
+	glm::mat4 get_view_matrix() noexcept;
 	/// @brief moves camera's position in the world
 	/// @param direction direction of movement
 	/// @param delta_time how much time has passed since last frame

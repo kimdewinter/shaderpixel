@@ -20,12 +20,10 @@ public:
 		SDL_Event const &event,
 		Camera &camera) noexcept;
 	void handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler) noexcept;
-	bool get_mouse_moved() const noexcept;
 
 private:
-	bool should_quit = false; // if game should quit after current render loop
-	bool first_mouse_event = true;
-	bool mouse_moved = false;
+	bool should_quit = false;	   // if game should quit after current render loop
+	bool first_mouse_event = true; // should become false after a mouse event has occurred
 	float mouse_rel_x = 0;
 	float mouse_rel_y = 0;
 };

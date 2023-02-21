@@ -45,8 +45,9 @@ Camera::Camera(
 	update_camera_vectors();
 }
 
-glm::mat4 Camera::get_view_matrix() const noexcept
+glm::mat4 Camera::get_view_matrix() noexcept
 {
+	this->update_camera_vectors();
 	return glm::lookAt(this->position, this->position + this->front, this->up);
 }
 

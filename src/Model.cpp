@@ -64,7 +64,6 @@ std::optional<Texture> Model::find_loaded_texture(char const *const path) const 
 	return std::nullopt;
 }
 
-/// @brief checks material textures of given type, and loads them if they're not already loaded
 std::vector<Texture> Model::load_material_textures(
 	aiMaterial const *const mat,
 	aiTextureType const type,
@@ -94,7 +93,6 @@ std::vector<Texture> Model::load_material_textures(
 	return textures;
 }
 
-/// @brief convert assimp aiMesh into a Mesh
 Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) noexcept
 {
 	std::vector<Vertex> vertices;
@@ -154,7 +152,6 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	return Mesh(vertices, indices, textures);
 }
 
-/// @brief processes node in recursive fashion
 void Model::process_node(aiNode const *const node, aiScene const *const scene) noexcept
 {
 	// process all of the node's meshes
