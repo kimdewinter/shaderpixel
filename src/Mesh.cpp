@@ -10,7 +10,7 @@ Mesh::Mesh(
 											  indices(indices),
 											  textures(textures)
 {
-	ASSERT(!vertices.empty() && !indices.empty() && !textures.empty(),
+	ASSERT(!vertices.empty() && !indices.empty(),
 		   "warning: mesh constructor encountered invalid argument");
 
 	// request OpenGL to generate VAO, VBO, EBO objects
