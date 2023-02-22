@@ -27,7 +27,7 @@ public:
 
 	std::vector<Texture> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
 	std::vector<Mesh> meshes;			  // meshes that make up the parts of a model
-	std::string directory;				  // directory where model file is stored
+	std::string const directory;		  // directory where model file is stored
 
 private:
 	/// @brief processes rootnode, and then it's child nodes in recursive fashion
