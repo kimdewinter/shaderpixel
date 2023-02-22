@@ -91,7 +91,6 @@ int main(int const argc, char const *const *const argv)
 
 			// set view and projection transformations for shaders
 			glm::mat4 projection_matrix = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-			camera.update_camera_vectors();
 			glm::mat4 view_matrix = camera.get_view_matrix();
 			shaders.at("standard_shader").set_uniform_mat4("projection", projection_matrix);
 			shaders.at("standard_shader").set_uniform_mat4("view", view_matrix);
