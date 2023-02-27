@@ -18,11 +18,14 @@
 		}                                                                              \
 	} while (false)
 #else
-#define ASSERT(bool_condition, message)                                       \
-	do                                                                        \
-	{                                                                         \
-		std::cerr << "Assertion '" #bool_condition "' failed in " << __FILE__ \
-				  << " line " << __Line__ << ": " << message << std::endl;    \
+#define ASSERT(bool_condition, message)                                           \
+	do                                                                            \
+	{                                                                             \
+		if (!(bool_condition))                                                    \
+		{                                                                         \
+			std::cerr << "Assertion '" #bool_condition "' failed in " << __FILE__ \
+					  << " line " << __LINE__ << ": " << message << std::endl;    \
+		}                                                                         \
 	} while (false)
 #endif
 
