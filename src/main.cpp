@@ -23,7 +23,7 @@ namespace Configuration
 		std::map<std::string, Shader> const load_shaders() noexcept
 		{
 			std::map<std::string, Shader> shaders;
-			shaders.insert({"standard_shader", Shader("resources/standard_shader.vert", "resources/standard_shader.frag")});
+			shaders.insert({"standard_shader", Shader("projection", "view", "model", "resources/standard_shader.vert", "resources/standard_shader.frag")});
 			return shaders;
 		}
 
@@ -84,16 +84,24 @@ int main(int const argc, char const *const *const argv)
 			event_handler.handle_all_events(sdl_handler, camera, clock);
 		}
 
+		// Set projection matrix (unlikely to be needing to be recalculated each cycle)
+		glm::mat4 projection_matrix = glm::perspective(
+			glm::radians(45.0f),
+			(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
+			0.1f,
+			100.0f);
+		for (auto shader : shaders)
+			shader.second.set_projection_matrix(projection_matrix);
+
 		// RENDERING
 		{
 			sdl_handler.window->make_current(); // ensure window context is made current so it can be acted upon
 			sdl_handler.window->clear();		// clear the buffer so we can start composing a new frame
 
-			// set view and projection transformations for shaders
-			glm::mat4 projection_matrix = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+			// set view matrix for shaders
 			glm::mat4 view_matrix = camera.get_view_matrix();
-			shaders.at("standard_shader").set_uniform_mat4("projection", projection_matrix);
-			shaders.at("standard_shader").set_uniform_mat4("view", view_matrix);
+			for (auto shader : shaders)
+				shader.second.set_view_matrix(view_matrix);
 
 			// draw models
 			glm::mat4 model_matrix = glm::mat4(1.0f);
@@ -101,7 +109,7 @@ int main(int const argc, char const *const *const argv)
 			glm::quat rotation = glm::quat(glm::vec3(glm::radians(20.0f), glm::radians(30.0f), glm::radians(15.0f)));
 			model_matrix = model_matrix * glm::mat4(rotation);
 			model_matrix = glm::scale(model_matrix, glm::vec3(1.0f, 1.0f, 1.0f));
-			shaders.at("standard_shader").set_uniform_mat4("model", model_matrix);
+			shaders.at("standard_shader").set_model_matrix(model_matrix);
 			models.at("backpack").draw(shaders.at("standard_shader"));
 
 			// swap window's buffer so that it gets rendered onto the screen
@@ -113,7 +121,6 @@ int main(int const argc, char const *const *const argv)
 }
 
 // TASKS:
-// 1. resolve crash when texture file not present (problem in process_mesh()? )
 // 2. abstract shader uniform setting away into Configuration::Technical
 // 3. abstract away model drawing in the same way
 // 4. make it so multiple models can be loaded and displayed in specific starting positions

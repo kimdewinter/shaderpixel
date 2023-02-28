@@ -33,9 +33,14 @@ namespace
 }
 
 Shader::Shader(
-	char const *const vertex_path,
-	char const *const fragment_path,
-	char const *const geometry_path) noexcept
+	std::string const &projection_uniform_name,
+	std::string const &view_uniform_name,
+	std::string const &model_uniform_name,
+	std::string const &vertex_path,
+	std::string const &fragment_path,
+	std::string const &geometry_path) noexcept : projection_uniform_name(projection_uniform_name),
+												 view_uniform_name(view_uniform_name),
+												 model_uniform_name(model_uniform_name)
 {
 	// retrieve source code
 	std::string vertex_code, fragment_code, geometry_code;
@@ -62,7 +67,7 @@ Shader::Shader(
 	fragment_code = fragment_stream.str();
 
 	// if geometry shader path provided: load geometry shader
-	if (geometry_path != NULL)
+	if (geometry_path.empty() == false)
 	{
 		geometry_file.open(geometry_path);
 		ASSERT(geometry_file.is_open(), "failed to open geometry_file in Shader constructor");
@@ -89,7 +94,7 @@ Shader::Shader(
 
 	unsigned int geometry_id = 0;
 	// compile geometry shader (if necessary)
-	if (geometry_path != NULL)
+	if (geometry_path.empty() == false)
 	{
 		const char *geometry_code_cstr = geometry_code.c_str();
 		unsigned int geometry_id = glCreateShader(GL_GEOMETRY_SHADER);
@@ -102,7 +107,7 @@ Shader::Shader(
 	this->id = glCreateProgram();
 	glAttachShader(this->id, vertex_id);
 	glAttachShader(this->id, fragment_id);
-	if (geometry_path != NULL)
+	if (geometry_path.empty() == false)
 		glAttachShader(this->id, geometry_id);
 	glLinkProgram(this->id);
 	check_compile_errors(this->id, "PROGRAM");
@@ -110,7 +115,7 @@ Shader::Shader(
 	// shaders no logner necessary now that they've been linked and the shader program compiled
 	glDeleteShader(vertex_id);
 	glDeleteShader(fragment_id);
-	if (geometry_path != NULL)
+	if (geometry_path.empty() == false)
 		glDeleteShader(geometry_id);
 }
 
@@ -122,6 +127,21 @@ void Shader::use() const noexcept
 unsigned int Shader::get_id() const noexcept
 {
 	return this->id;
+}
+
+void Shader::set_projection_matrix(glm::mat4 const &value) const noexcept
+{
+	this->set_uniform_mat4(this->projection_uniform_name, value);
+}
+
+void Shader::set_view_matrix(glm::mat4 const &value) const noexcept
+{
+	this->set_uniform_mat4(this->view_uniform_name, value);
+}
+
+void Shader::set_model_matrix(glm::mat4 const &value) const noexcept
+{
+	this->set_uniform_mat4(this->model_uniform_name, value);
 }
 
 void Shader::set_uniform_int(std::string const &name, int const value) const noexcept
