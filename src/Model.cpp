@@ -179,3 +179,12 @@ Model::Model(std::string const &path) noexcept : directory(path.substr(0, path.f
 	// process Assimp's root node recursively
 	process_node(scene->mRootNode, scene);
 }
+
+glm::mat4 Model::get_model_matrix() const noexcept
+{
+	glm::mat4 matrix = glm::mat4(1.0f);						 // start with a non-transforming identity matrix
+	matrix = glm::translate(matrix, this->position);		 // add translation
+	matrix = glm::dot(matrix, glm::mat4(this->orientation)); // add rotation
+	matrix = glm::scale(matrix, this->scaling);				 // add scaling
+	return matrix;
+}

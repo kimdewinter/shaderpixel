@@ -18,6 +18,8 @@
 #include <assimp/postprocess.h>
 #include "Mesh.h"
 #include <optional>
+#include <glm/vec3.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 class Model
 {
@@ -42,6 +44,11 @@ private:
 	/// @brief checks whether the texture is already loaded
 	/// @return Texture, or std::nullopt if not already loaded
 	std::optional<Texture> find_loaded_texture(char const *const path) const noexcept;
+	glm::mat4 get_model_matrix() const noexcept;
+
+	glm::vec3 position;
+	glm::quat orientation;
+	glm::vec3 scaling;
 };
 
 #endif
