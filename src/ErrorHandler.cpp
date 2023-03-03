@@ -51,9 +51,3 @@ void Error::setup_segfault_signalhandler() noexcept
 {
 	signal(SIGSEGV, segfault_handler);
 }
-
-void Error::output_warning(std::string const &str, std::ostream &output_stream) noexcept
-{
-	ASSERT(!str.empty(), "empty string");
-	std::cerr << "WARNING: " << str << std::endl;
-}

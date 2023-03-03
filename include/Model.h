@@ -24,9 +24,20 @@
 class Model
 {
 public:
-	Model(std::string const &path) noexcept;
+	/// @param name identifier of this instance of this class
+	/// @param path where to find the model data
+	/// @param position adjustment of starting position
+	/// @param orientation adjustment of starting orientation
+	/// @param scaling adjustment of starting scaling
+	Model(
+		std::string const name,
+		std::string const &path,
+		glm::vec3 position = glm::vec3({1.0f, 1.0f, 1.0f}),
+		glm::quat orientation = glm::quat(glm::vec3({1.0f, 1.0f, 1.0f})),
+		glm::vec3 scaling = glm::vec3({1.0f, 1.0f, 1.0f})) noexcept;
 	void draw(Shader const &shader) const noexcept;
 
+	std::string name;
 	std::vector<Texture> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
 	std::vector<Mesh> meshes;			  // meshes that make up the parts of a model
 	std::string const directory;		  // directory where model file is stored

@@ -20,18 +20,18 @@ namespace Configuration
 	{
 		/// @brief here you define what shaders you want to load, and from what files, names must be unique
 		/// @return a map<string, Shader>, where the string is a name to identify that Shader
-		std::map<std::string, Shader> const load_shaders() noexcept
+		std::map<std::string const, Shader const> const load_shaders() noexcept
 		{
-			std::map<std::string, Shader> shaders;
-			shaders.insert({"standard_shader", Shader("projection", "view", "model", "resources/standard_shader.vert", "resources/standard_shader.frag")});
+			std::map<std::string const, Shader const> shaders;
+			shaders.insert({"standard_shader", Shader("standard_shader", "projection", "view", "model", "resources/standard_shader.vert", "resources/standard_shader.frag")});
 			return shaders;
 		}
 
 		/// @brief here you define what models you want to load, names must be unique, path must not end in a slash
-		std::map<std::string, Model> load_models() noexcept
+		std::map<std::string const, Model> load_models() noexcept
 		{
-			std::map<std::string, Model> models;
-			models.insert({"backpack", Model("resources/backpack/backpack.obj")});
+			std::map<std::string const, Model> models;
+			models.insert({"backpack", Model("resources/backpack/backpack.obj", {0.0f, -1.0f, 0.0f})});
 			return models;
 		}
 	}
@@ -70,8 +70,8 @@ int main(int const argc, char const *const *const argv)
 	Clock clock;
 
 	// load shaders and models
-	std::map<std::string, Shader> const shaders = Configuration::WorldCreation::load_shaders();
-	std::map<std::string, Model> models = Configuration::WorldCreation::load_models();
+	std::map<std::string const, Shader const> const shaders = Configuration::WorldCreation::load_shaders();
+	std::map<std::string const, Model> models = Configuration::WorldCreation::load_models();
 
 	while (!event_handler.get_should_quit())
 	{
@@ -104,8 +104,11 @@ int main(int const argc, char const *const *const argv)
 				shader.second.set_view_matrix(view_matrix);
 
 			// draw models
-			glm::mat4 model_matrix = glm::mat4(1.0f);
-			model_matrix = glm::translate(model_matrix, glm::vec3(0.0f, 0.0f, 0.0f));
+			for (auto model : models)
+				model.second.draw()
+
+					glm::mat4 model_matrix = glm::mat4(1.0f);
+			model_matrix = glm::translate(model_matrix, glm::vec3({0.0f, 0.0f, 0.0f}));
 			glm::quat rotation = glm::quat(glm::vec3(glm::radians(20.0f), glm::radians(30.0f), glm::radians(15.0f)));
 			model_matrix = model_matrix * glm::mat4(rotation);
 			model_matrix = glm::scale(model_matrix, glm::vec3(1.0f, 1.0f, 1.0f));

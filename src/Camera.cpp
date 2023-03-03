@@ -121,7 +121,7 @@ void Camera::roll_camera(Camera::Direction const direction, std::chrono::duratio
 		this->world_up += this->right * magnitude;
 		break;
 	default:
-		Error::output_warning("roll_camera() received direction other than LEFT or RIGHT");
+		ASSERT(false, "roll_camera() received direction other than LEFT or RIGHT");
 	}
 	this->update_camera_vectors();
 }

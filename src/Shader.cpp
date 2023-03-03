@@ -33,12 +33,14 @@ namespace
 }
 
 Shader::Shader(
+	std::string const &name,
 	std::string const &projection_uniform_name,
 	std::string const &view_uniform_name,
 	std::string const &model_uniform_name,
 	std::string const &vertex_path,
 	std::string const &fragment_path,
-	std::string const &geometry_path) noexcept : projection_uniform_name(projection_uniform_name),
+	std::string const &geometry_path) noexcept : name(name),
+												 projection_uniform_name(projection_uniform_name),
 												 view_uniform_name(view_uniform_name),
 												 model_uniform_name(model_uniform_name)
 {
@@ -104,13 +106,13 @@ Shader::Shader(
 	}
 
 	// link shaders and create shader program
-	this->id = glCreateProgram();
-	glAttachShader(this->id, vertex_id);
-	glAttachShader(this->id, fragment_id);
+	this->opengl_id = glCreateProgram();
+	glAttachShader(this->opengl_id, vertex_id);
+	glAttachShader(this->opengl_id, fragment_id);
 	if (geometry_path.empty() == false)
-		glAttachShader(this->id, geometry_id);
-	glLinkProgram(this->id);
-	check_compile_errors(this->id, "PROGRAM");
+		glAttachShader(this->opengl_id, geometry_id);
+	glLinkProgram(this->opengl_id);
+	check_compile_errors(this->opengl_id, "PROGRAM");
 
 	// shaders no logner necessary now that they've been linked and the shader program compiled
 	glDeleteShader(vertex_id);
@@ -121,12 +123,12 @@ Shader::Shader(
 
 void Shader::use() const noexcept
 {
-	glUseProgram(this->id);
+	glUseProgram(this->opengl_id);
 }
 
-unsigned int Shader::get_id() const noexcept
+unsigned int Shader::get_opengl_id() const noexcept
 {
-	return this->id;
+	return this->opengl_id;
 }
 
 void Shader::set_projection_matrix(glm::mat4 const &value) const noexcept
@@ -147,11 +149,11 @@ void Shader::set_model_matrix(glm::mat4 const &value) const noexcept
 void Shader::set_uniform_int(std::string const &name, int const value) const noexcept
 {
 	this->use();
-	glUniform1i(glGetUniformLocation(this->id, name.c_str()), value);
+	glUniform1i(glGetUniformLocation(this->opengl_id, name.c_str()), value);
 }
 
 void Shader::set_uniform_mat4(std::string const &name, glm::mat4 const &value) const noexcept
 {
 	this->use();
-	glUniformMatrix4fv(glGetUniformLocation(this->id, name.c_str()), 1, GL_FALSE, &value[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(this->opengl_id, name.c_str()), 1, GL_FALSE, &value[0][0]);
 }

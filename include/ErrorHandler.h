@@ -38,8 +38,6 @@ namespace Error
 
 	/// @brief prints stack trace upon segfault; to use, simply call at the very beginning of main
 	void setup_segfault_signalhandler() noexcept;
-
-	void output_warning(std::string const &str, std::ostream &output_stream = std::cerr) noexcept;
 }
 
 #endif

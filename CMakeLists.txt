@@ -48,6 +48,7 @@ ${SOURCE_DIR}/Camera.cpp
 ${SOURCE_DIR}/Clock.cpp
 ${SOURCE_DIR}/ErrorHandler.cpp
 ${SOURCE_DIR}/EventHandler.cpp
+${SOURCE_DIR}/Renderer.cpp
 ${SOURCE_DIR}/SdlHandler.cpp
 ${SOURCE_DIR}/Window.cpp
 ${SOURCE_DIR}/Mesh.cpp

@@ -166,7 +166,16 @@ void Model::process_node(aiNode const *const node, aiScene const *const scene) n
 		process_node(node->mChildren[i], scene);
 }
 
-Model::Model(std::string const &path) noexcept : directory(path.substr(0, path.find_last_of('/')))
+Model::Model(
+	std::string const name,
+	std::string const &path,
+	glm::vec3 position,
+	glm::quat orientation,
+	glm::vec3 scaling) noexcept : name(name),
+								  directory(path.substr(0, path.find_last_of('/'))),
+								  position(position),
+								  orientation(orientation),
+								  scaling(scaling)
 {
 	// read file with Assimp
 	Assimp::Importer importer;
@@ -182,9 +191,9 @@ Model::Model(std::string const &path) noexcept : directory(path.substr(0, path.f
 
 glm::mat4 Model::get_model_matrix() const noexcept
 {
-	glm::mat4 matrix = glm::mat4(1.0f);						 // start with a non-transforming identity matrix
-	matrix = glm::translate(matrix, this->position);		 // add translation
-	matrix = glm::dot(matrix, glm::mat4(this->orientation)); // add rotation
-	matrix = glm::scale(matrix, this->scaling);				 // add scaling
+	glm::mat4 matrix = glm::mat4(1.0f);				 // start with a non-transforming identity matrix
+	matrix = glm::translate(matrix, this->position); // add translation
+	matrix = matrix * glm::mat4(this->orientation);	 // add rotation
+	matrix = glm::scale(matrix, this->scaling);		 // add scaling
 	return matrix;
 }
