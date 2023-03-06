@@ -64,12 +64,12 @@ std::optional<Texture> Model::find_loaded_texture(char const *const path) const 
 	return std::nullopt;
 }
 
-std::vector<Texture> Model::load_material_textures(
+std::vector<Texture const> Model::load_material_textures(
 	aiMaterial const *const mat,
 	aiTextureType const type,
 	std::string const &type_name) noexcept
 {
-	std::vector<Texture> textures;
+	std::vector<Texture const> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
@@ -95,7 +95,7 @@ std::vector<Texture> Model::load_material_textures(
 
 Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) noexcept
 {
-	std::vector<Vertex> vertices;
+	std::vector<Vertex const> vertices;
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
@@ -121,13 +121,13 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	}
 
 	// process indices
-	std::vector<unsigned int> indices;
+	std::vector<unsigned int const> indices;
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		for (unsigned int j = 0; j < mesh->mFaces[i].mNumIndices; j++)
 			indices.push_back(mesh->mFaces[i].mIndices[j]);
 
 	// from here on we're processing textures
-	std::vector<Texture> textures;
+	std::vector<Texture const> textures;
 	// process materials
 	// we assume a convention for sampler names in the shaders
 	// each diffuse texture should be named as 'texture_diffuseN' where N is a sequential number
@@ -137,16 +137,16 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	// normal: texture_normalN
 	aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 	// diffuse maps
-	std::vector<Texture> diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+	std::vector<Texture const> const diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
 	// specular maps
-	std::vector<Texture> specular_maps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
+	std::vector<Texture const> const specular_maps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
 	textures.insert(textures.end(), specular_maps.begin(), specular_maps.end());
 	// normal maps
-	std::vector<Texture> normal_maps = load_material_textures(material, aiTextureType_NORMALS, "texture_normal");
+	std::vector<Texture const> const normal_maps = load_material_textures(material, aiTextureType_NORMALS, "texture_normal");
 	textures.insert(textures.end(), normal_maps.begin(), normal_maps.end());
 	// height maps
-	std::vector<Texture> height_maps = load_material_textures(material, aiTextureType_HEIGHT, "texture_height");
+	std::vector<Texture const> const height_maps = load_material_textures(material, aiTextureType_HEIGHT, "texture_height");
 	textures.insert(textures.end(), height_maps.begin(), height_maps.end());
 
 	return Mesh(vertices, indices, textures);
@@ -157,7 +157,7 @@ void Model::process_node(aiNode const *const node, aiScene const *const scene) n
 	// process all of the node's meshes
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh *assimp_type_mesh = scene->mMeshes[node->mMeshes[i]];
+		aiMesh const *const assimp_type_mesh = scene->mMeshes[node->mMeshes[i]];
 		Mesh own_type_mesh = process_mesh(assimp_type_mesh, scene);
 		this->meshes.push_back(own_type_mesh);
 	}
@@ -167,15 +167,15 @@ void Model::process_node(aiNode const *const node, aiScene const *const scene) n
 }
 
 Model::Model(
-	std::string const name,
+	std::string const &name,
 	std::string const &path,
-	glm::vec3 position,
-	glm::quat orientation,
-	glm::vec3 scaling) noexcept : name(name),
-								  directory(path.substr(0, path.find_last_of('/'))),
-								  position(position),
-								  orientation(orientation),
-								  scaling(scaling)
+	glm::vec3 const &position,
+	glm::quat const &orientation,
+	glm::vec3 const &scaling) noexcept : name(name),
+										 directory(path.substr(0, path.find_last_of('/'))),
+										 position(position),
+										 orientation(orientation),
+										 scaling(scaling)
 {
 	// read file with Assimp
 	Assimp::Importer importer;

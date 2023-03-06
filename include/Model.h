@@ -30,17 +30,15 @@ public:
 	/// @param orientation adjustment of starting orientation
 	/// @param scaling adjustment of starting scaling
 	Model(
-		std::string const name,
+		std::string const &name,
 		std::string const &path,
-		glm::vec3 position = glm::vec3({1.0f, 1.0f, 1.0f}),
-		glm::quat orientation = glm::quat(glm::vec3({1.0f, 1.0f, 1.0f})),
-		glm::vec3 scaling = glm::vec3({1.0f, 1.0f, 1.0f})) noexcept;
+		glm::vec3 const &position = glm::vec3({1.0f, 1.0f, 1.0f}),
+		glm::quat const &orientation = glm::quat(glm::vec3({1.0f, 1.0f, 1.0f})),
+		glm::vec3 const &scaling = glm::vec3({1.0f, 1.0f, 1.0f})) noexcept;
 	void draw(Shader const &shader) const noexcept;
 
-	std::string name;
-	std::vector<Texture> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
-	std::vector<Mesh> meshes;			  // meshes that make up the parts of a model
-	std::string const directory;		  // directory where model file is stored
+	std::string const name;
+	std::string const directory; // directory where model file is stored
 
 private:
 	/// @brief processes rootnode, and then it's child nodes in recursive fashion
@@ -48,7 +46,7 @@ private:
 	/// @brief convert assimp aiMesh into our own Mesh type
 	Mesh process_mesh(aiMesh const *const mesh, aiScene const *const scene) noexcept;
 	/// @brief checks material textures of given type, and loads them if they're not already loaded
-	std::vector<Texture> load_material_textures(
+	std::vector<Texture const> load_material_textures(
 		aiMaterial const *const mat,
 		aiTextureType const type,
 		std::string const &type_name) noexcept;
@@ -57,6 +55,8 @@ private:
 	std::optional<Texture> find_loaded_texture(char const *const path) const noexcept;
 	glm::mat4 get_model_matrix() const noexcept;
 
+	std::vector<Mesh> meshes;					// meshes that make up the parts of a model
+	std::vector<Texture const> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
 	glm::vec3 position;
 	glm::quat orientation;
 	glm::vec3 scaling;

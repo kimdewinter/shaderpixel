@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <map>
 #include <glm/gtc/quaternion.hpp>
+#include "Renderer.h"
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
 namespace Configuration
@@ -56,6 +57,9 @@ namespace Configuration
 
 int main(int const argc, char const *const *const argv)
 {
+	Renderer renderer{{{"standard_shader", "backpack"},
+					   {"other_shader", "other_model"}}};
+
 	// if segfaulting, this'll dump a stacktrace into cerr
 	Error::setup_segfault_signalhandler();
 

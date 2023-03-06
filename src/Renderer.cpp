@@ -24,7 +24,7 @@ namespace
 	}
 }
 
-std::vector<std::pair<Shader const &, Model const &>> Renderer::assembly_pairs(
+std::vector<std::pair<Shader const &, Model const &>> Renderer::assemble_pairs(
 	std::map<std::string const, Shader const> const &shaders,
 	std::map<std::string const, Model> const &models) const noexcept
 {
@@ -46,6 +46,8 @@ void Renderer::render(std::map<std::string const, Shader const> const &shaders,
 					  std::map<std::string const, Model> const &models) const noexcept
 {
 	std::vector<std::pair<Shader const &, Model const &>> shader_model_refs;
+
+	// create pairs of Shaders and Models
 	for (std::pair<std::string const, std::string const> pair_names : this->shader_model_pairs)
 	{
 		auto assembled_pair = assemble_pair(pair_names.first, pair_names.second, shaders, models);
@@ -56,4 +58,13 @@ void Renderer::render(std::map<std::string const, Shader const> const &shaders,
 		}
 		shader_model_refs.push_back(*assembled_pair);
 	}
+
+	// draw each Model with the help of it's assigned Shader
+	for (std::pair<Shader const &, Model const &> pair : shader_model_refs)
+		pair.second.draw(pair.first);
+}
+
+Renderer::Renderer(std::vector<std::pair<std::string const, std::string const>> shader_model_pairs) noexcept
+	: shader_model_pairs(shader_model_pairs)
+{
 }

@@ -4,11 +4,11 @@
 #include "ErrorHandler.h"
 
 Mesh::Mesh(
-	std::vector<Vertex> vertices,
-	std::vector<unsigned int> indices,
-	std::vector<Texture> textures) noexcept : vertices(vertices),
-											  indices(indices),
-											  textures(textures)
+	std::vector<Vertex const> const &vertices,
+	std::vector<unsigned int const> const &indices,
+	std::vector<Texture const> const &textures) noexcept : vertices(vertices),
+														   indices(indices),
+														   textures(textures)
 {
 	ASSERT(!vertices.empty() && !indices.empty(),
 		   "warning: mesh constructor encountered invalid argument");
@@ -104,9 +104,4 @@ void Mesh::draw(Shader const &shader) const noexcept
 	// reset everything for safety
 	glBindVertexArray(0);
 	glActiveTexture(GL_TEXTURE0);
-}
-
-unsigned int Mesh::get_vao() const noexcept
-{
-	return this->VAO;
 }
