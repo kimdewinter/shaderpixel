@@ -148,12 +148,14 @@ void Shader::set_model_matrix(glm::mat4 const &value) const noexcept
 
 void Shader::set_uniform_int(std::string const &name, int const value) const noexcept
 {
+	// ideally you wouldn't want to call glUseProgram() more than necessary
 	this->use();
 	glUniform1i(glGetUniformLocation(this->opengl_id, name.c_str()), value);
 }
 
 void Shader::set_uniform_mat4(std::string const &name, glm::mat4 const &value) const noexcept
 {
+	// ideally you wouldn't want to call glUseProgram() more than necessary
 	this->use();
 	glUniformMatrix4fv(glGetUniformLocation(this->opengl_id, name.c_str()), 1, GL_FALSE, &value[0][0]);
 }

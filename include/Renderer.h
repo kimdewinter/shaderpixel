@@ -9,24 +9,20 @@
 class Renderer
 {
 public:
-	Renderer(std::vector<std::pair<std::string const, std::string const>> const &shader_model_pairs) noexcept;
-	/// @brief renders the models specified in member variable "shader_model_pairs"
-	/// @param shaders string must match the name in member var "shader_model_pairs"
-	/// @param models string must match the name in member var "shader_model_pairs"
-	void Renderer::render(
-		std::map<std::string const, Shader const> const &shaders,
-		std::map<std::string const, Model> const &models) const noexcept;
+	/// @param render_pairs map->first should be the name of the Shader, map->second the name of the Model
+	Renderer::Renderer(std::map<std::string const, std::string const> const &render_pairs) noexcept;
+	/// @brief renders the models specified in member variable "render_pairs"
+	void Renderer::render() const noexcept;
 
 private:
-	/// @brief helper function that pairs Shader and Model instance refs based on member variable shader_model_pairs, so they can be drawn
-	/// @param shaders string must match the name in member var "shader_model_pairs"
-	/// @param models string must match the name in member var "shader_model_pairs"
+	/// @brief helper function that pairs Shader and Model instance refs based on member variable "render_pairs", so they can be drawn
 	/// @return vector of paired Shader and Model instance refs, ready for rendering
-	std::vector<std::pair<Shader const &, Model const &>> assemble_pairs(
-		std::map<std::string const, Shader const> const &shaders,
-		std::map<std::string const, Model> const &models) const noexcept;
+	std::vector<std::pair<Shader const &, Model &>> assemble_pairs() noexcept;
 
-	std::vector<std::pair<std::string const, std::string const>> shader_model_pairs; // first is Shader name, second is Model name
+	std::map<std::string const, Shader const> shaders;
+	std::map<std::string const, Model> models;
+	std::map<std::string const, std::string const> render_pairs; // first is Shader name, second is Model name
+																 // std::vector<std::pair<std::string const, std::string const>> shader_model_pairs; // first is Shader name, second is Model name
 };
 
 #endif

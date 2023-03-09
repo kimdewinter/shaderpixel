@@ -32,7 +32,7 @@ namespace Configuration
 		std::map<std::string const, Model> load_models() noexcept
 		{
 			std::map<std::string const, Model> models;
-			models.insert({"backpack", Model("resources/backpack/backpack.obj", {0.0f, -1.0f, 0.0f})});
+			models.insert({"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, -1.0f, 0.0f})});
 			return models;
 		}
 	}
@@ -88,21 +88,21 @@ int main(int const argc, char const *const *const argv)
 			event_handler.handle_all_events(sdl_handler, camera, clock);
 		}
 
-		// Set projection matrix (unlikely to be needing to be recalculated each cycle)
-		glm::mat4 projection_matrix = glm::perspective(
-			glm::radians(45.0f),
-			(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
-			0.1f,
-			100.0f);
-		for (auto shader : shaders)
-			shader.second.set_projection_matrix(projection_matrix);
-
 		// RENDERING
 		{
 			sdl_handler.window->make_current(); // ensure window context is made current so it can be acted upon
 			sdl_handler.window->clear();		// clear the buffer so we can start composing a new frame
 
-			// set view matrix for shaders
+			// apply projection matrix to shaders(perspective-related; unlikely it actually needs to be recalculated each cycle)
+			glm::mat4 const projection_matrix = glm::perspective(
+				glm::radians(45.0f),
+				(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
+				0.1f,
+				100.0f);
+			for (auto shader : shaders)
+				shader.second.set_projection_matrix(projection_matrix);
+
+			// apply view matrix to shaders (shifts things to be shown from camera's position)
 			glm::mat4 view_matrix = camera.get_view_matrix();
 			for (auto shader : shaders)
 				shader.second.set_view_matrix(view_matrix);
