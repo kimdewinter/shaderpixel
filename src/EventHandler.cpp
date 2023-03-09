@@ -125,7 +125,7 @@ void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Cl
 	}
 }
 
-bool const EventHandler::get_should_quit() const noexcept
+bool EventHandler::get_should_quit() const noexcept
 {
 	return this->should_quit;
 }

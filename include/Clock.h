@@ -12,7 +12,9 @@ public:
 	template <typename T = std::chrono::steady_clock>
 	using time_point = std::chrono::time_point<T>;
 
+	/// @brief call every frame to be keep track of how much time has passed since previous frame
 	void update_clock() noexcept;
+	/// @return time passed since most recent and second-most recent call of update_clock()
 	duration<> get_time_delta() const noexcept;
 
 private:

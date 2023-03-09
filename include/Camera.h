@@ -39,15 +39,22 @@ public:
 	/// @brief moves camera's position in the world
 	/// @param direction direction of movement
 	/// @param delta_time how much time has passed since last frame
-	void move_camera(Camera::Direction const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept;
+	void move_camera(
+		Camera::Direction const direction,
+		std::chrono::duration<long long, std::nano> const delta_time) noexcept;
 	/// @brief Pans camera around, usually depending on how much the mouse has moved
 	/// @param x_offset
 	/// @param y_offset
 	/// @param constrain_pitch
-	void pan_camera(float const x_offset, float const y_offset, GLboolean constrain_pitch = true) noexcept;
+	void pan_camera(
+		float const x_offset,
+		float const y_offset,
+		GLboolean constrain_pitch = true) noexcept;
 	/// @brief rolls the camera; do a barrel roll!
 	/// @param direction only LEFT and RIGHT are valid roll directions
-	void roll_camera(Camera::Direction const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept;
+	void roll_camera(
+		Camera::Direction const direction,
+		std::chrono::duration<long long, std::nano> const delta_time) noexcept;
 	/// @brief Zooms camera in and out, obviously a mousewheels main axis is vertical
 	void zoom_camera(float const y_offset) noexcept;
 
@@ -86,8 +93,6 @@ P = camera_position
 			[	U.x		U.y		U.z		0	]		*			[	0	1	0	-P.y	]
 LookAt =	[	D.x		D.y		D.z		0	]	(dot product)	[	0	0	1	-P.z	]
 			[	0		0		0		1	]					[	0	0	0	1		]
-
-
 */
 
 #endif
