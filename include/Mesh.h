@@ -10,18 +10,18 @@ class Mesh
 {
 public:
 	Mesh(
-		std::vector<Vertex const> const &vertices,
-		std::vector<unsigned int const> const &indices,
-		std::vector<Texture const> const &textures) noexcept;
+		std::vector<Vertex> const &vertices,
+		std::vector<unsigned int> const &indices,
+		std::vector<Texture> const &textures) noexcept;
 	void draw(Shader const &shader) const noexcept;
 
 private:
 	unsigned int VAO; // Vertex Array Object
 	unsigned int VBO; // Vertex Buffer Object
 	unsigned int EBO; // Element Buffer Object
-	std::vector<Vertex const> const vertices;
-	std::vector<unsigned int const> const indices;
-	std::vector<Texture const> const textures;
+	std::vector<Vertex> const vertices;
+	std::vector<unsigned int> const indices;
+	std::vector<Texture> const textures;
 };
 
 #endif

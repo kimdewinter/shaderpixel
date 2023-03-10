@@ -20,26 +20,26 @@ namespace Configuration
 	{
 		/// @brief here you define what shaders you want to load, and from what files, names must be unique
 		/// @return a map<string, Shader>, where the string is a name to identify that Shader
-		std::map<std::string const, Shader const> const load_shaders() noexcept
+		std::map<std::string, Shader> load_shaders() noexcept
 		{
-			std::map<std::string const, Shader const> shaders;
+			std::map<std::string, Shader> shaders;
 			shaders.insert({"standard_shader", Shader("standard_shader", "projection", "view", "model", "resources/standard_shader.vert", "resources/standard_shader.frag")});
 			return shaders;
 		}
 
 		/// @brief here you define what models you want to load, names must be unique, path must not end in a slash
-		std::map<std::string const, Model> load_models() noexcept
+		std::map<std::string, Model> load_models() noexcept
 		{
-			std::map<std::string const, Model> models;
+			std::map<std::string, Model> models;
 			models.insert({"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, -1.0f, 0.0f})});
 			return models;
 		}
 
 		/// @brief assign which Shaders should render which Models, creating a map of pairings that should be rendered each frame
 		/// @return first string is Shader name, second string is Model name
-		std::map<std::string const, std::string const> pair_shader_and_model_names() noexcept
+		std::map<std::string, std::string> pair_shader_and_model_names() noexcept
 		{
-			std::map<std::string const, std::string const> name_pairings;
+			std::map<std::string, std::string> name_pairings;
 			name_pairings.insert({"standard_shader", "backpack"});
 			return name_pairings;
 		}
@@ -101,9 +101,7 @@ int main(int const argc, char const *const *const argv)
 			sdl_handler.window->clear();		// clear the buffer so we can start composing a new frame
 
 			// tell renderer to draw all actively loaded Models, using their assigned Shaders
-			renderer.draw_all(
-				camera.get_projection_matrix(),
-				camera.get_view_matrix());
+			renderer.draw_all(camera.get_projection_matrix(), camera.get_view_matrix());
 
 			// swap window's buffer so that it gets rendered onto the screen
 			sdl_handler.window->swap();

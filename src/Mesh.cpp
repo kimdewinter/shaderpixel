@@ -4,11 +4,11 @@
 #include "ErrorHandler.h"
 
 Mesh::Mesh(
-	std::vector<Vertex const> const &vertices,
-	std::vector<unsigned int const> const &indices,
-	std::vector<Texture const> const &textures) noexcept : vertices(vertices),
-														   indices(indices),
-														   textures(textures)
+	std::vector<Vertex> const &vertices,
+	std::vector<unsigned int> const &indices,
+	std::vector<Texture> const &textures) noexcept : vertices(vertices),
+													 indices(indices),
+													 textures(textures)
 {
 	ASSERT(!vertices.empty() && !indices.empty(),
 		   "warning: mesh constructor encountered invalid argument");

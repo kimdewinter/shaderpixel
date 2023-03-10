@@ -47,7 +47,7 @@ private:
 	/// @brief convert assimp aiMesh into our own Mesh type
 	Mesh process_mesh(aiMesh const *const mesh, aiScene const *const scene) noexcept;
 	/// @brief checks material textures of given type, and loads them if they're not already loaded
-	std::vector<Texture const> load_material_textures(
+	std::vector<Texture> load_material_textures(
 		aiMaterial const *const mat,
 		aiTextureType const type,
 		std::string const &type_name) noexcept;
@@ -56,7 +56,7 @@ private:
 	std::optional<Texture> find_loaded_texture(char const *const path) const noexcept;
 
 	std::vector<Mesh> meshes;					// meshes that make up the parts of a model
-	std::vector<Texture const> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
+	std::vector<Texture> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
 	glm::vec3 position;
 	glm::quat orientation;
 	glm::vec3 scaling;

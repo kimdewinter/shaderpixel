@@ -64,12 +64,12 @@ std::optional<Texture> Model::find_loaded_texture(char const *const path) const 
 	return std::nullopt;
 }
 
-std::vector<Texture const> Model::load_material_textures(
+std::vector<Texture> Model::load_material_textures(
 	aiMaterial const *const mat,
 	aiTextureType const type,
 	std::string const &type_name) noexcept
 {
-	std::vector<Texture const> textures;
+	std::vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
@@ -95,7 +95,7 @@ std::vector<Texture const> Model::load_material_textures(
 
 Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) noexcept
 {
-	std::vector<Vertex const> vertices;
+	std::vector<Vertex> vertices;
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
@@ -121,13 +121,13 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	}
 
 	// process indices
-	std::vector<unsigned int const> indices;
+	std::vector<unsigned int> indices;
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		for (unsigned int j = 0; j < mesh->mFaces[i].mNumIndices; j++)
-			indices.push_back((unsigned int const)(mesh->mFaces[i].mIndices[j]));
+			indices.push_back(mesh->mFaces[i].mIndices[j]);
 
 	// from here on we're processing textures
-	std::vector<Texture const> textures;
+	std::vector<Texture> textures;
 	// process materials
 	// we assume a convention for sampler names in the shaders
 	// each diffuse texture should be named as 'texture_diffuseN' where N is a sequential number
@@ -137,16 +137,16 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	// normal: texture_normalN
 	aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 	// diffuse maps
-	std::vector<Texture const> const diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+	std::vector<Texture> const diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
 	// specular maps
-	std::vector<Texture const> const specular_maps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
+	std::vector<Texture> const specular_maps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
 	textures.insert(textures.end(), specular_maps.begin(), specular_maps.end());
 	// normal maps
-	std::vector<Texture const> const normal_maps = load_material_textures(material, aiTextureType_NORMALS, "texture_normal");
+	std::vector<Texture> const normal_maps = load_material_textures(material, aiTextureType_NORMALS, "texture_normal");
 	textures.insert(textures.end(), normal_maps.begin(), normal_maps.end());
 	// height maps
-	std::vector<Texture const> const height_maps = load_material_textures(material, aiTextureType_HEIGHT, "texture_height");
+	std::vector<Texture> const height_maps = load_material_textures(material, aiTextureType_HEIGHT, "texture_height");
 	textures.insert(textures.end(), height_maps.begin(), height_maps.end());
 
 	return Mesh(vertices, indices, textures);
