@@ -6,6 +6,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glad/glad.h>
 
 class Camera
@@ -35,7 +36,8 @@ public:
 		float pitch) noexcept;
 	/// @brief uses the updated Euler angles to calculate new front, right, and (cam-)up vector
 	void update_camera_vectors() noexcept;
-	glm::mat4 get_view_matrix() noexcept;
+	glm::mat4 const get_view_matrix() noexcept;
+	glm::mat4 const &get_projection_matrix() const noexcept;
 	/// @brief moves camera's position in the world
 	/// @param direction direction of movement
 	/// @param delta_time how much time has passed since last frame
@@ -65,6 +67,12 @@ private:
 	glm::vec3 up;		// vector that points upwards of the camera (important when the camera is rolled)
 	glm::vec3 right;	// vector that points to the right of the camera
 	glm::vec3 world_up; // vector that points upwards in world-space
+	glm::mat4 projection_matrix = glm::perspective(
+		glm::radians(45.0f),
+		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
+		0.1f,
+		100.0f); // matrix needed to show things in correct perspective
+
 	// euler angles
 	float yaw;
 	float pitch;

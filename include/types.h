@@ -4,6 +4,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <string>
+#include <array>
 #include "main.h"
 
 /// @brief this struct is laid out in a manner that it forms contiguous data, which can be sent to OpenGL as one (absolute) unit
@@ -14,8 +15,8 @@ struct Vertex
 	glm::vec2 texture_coordinates = glm::vec2{0.0f, 0.0f};
 	glm::vec3 tangent = glm::vec3{0.0f, 0.0f, 0.0f};
 	glm::vec3 bitangent = glm::vec3{0.0f, 0.0f, 0.0f};
-	int bone_ids[MAX_BONE_INFLUENCE];		// bone indexes that influence this vertex
-	float bone_weights[MAX_BONE_INFLUENCE]; // weights of each bone
+	std::array<int, MAX_BONE_INFLUENCE> bone_ids;		// bone indexes that influence this vertex
+	std::array<float, MAX_BONE_INFLUENCE> bone_weights; // weights of each bone
 };
 /*
 the following:

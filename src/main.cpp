@@ -10,7 +10,6 @@
 #include <functional>
 #include <cstdlib>
 #include <map>
-#include <glm/gtc/quaternion.hpp>
 #include "Renderer.h"
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
@@ -35,6 +34,15 @@ namespace Configuration
 			models.insert({"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, -1.0f, 0.0f})});
 			return models;
 		}
+
+		/// @brief assign which Shaders should render which Models, creating a map of pairings that should be rendered each frame
+		/// @return first string is Shader name, second string is Model name
+		std::map<std::string const, std::string const> pair_shader_and_model_names() noexcept
+		{
+			std::map<std::string const, std::string const> name_pairings;
+			name_pairings.insert({"standard_shader", "backpack"});
+			return name_pairings;
+		}
 	}
 
 	/// @brief here are some more technical settings
@@ -57,9 +65,6 @@ namespace Configuration
 
 int main(int const argc, char const *const *const argv)
 {
-	Renderer renderer{{{"standard_shader", "backpack"},
-					   {"other_shader", "other_model"}}};
-
 	// if segfaulting, this'll dump a stacktrace into cerr
 	Error::setup_segfault_signalhandler();
 
@@ -73,9 +78,11 @@ int main(int const argc, char const *const *const argv)
 	Camera camera({0.0f, 0.0f, 10.0f});
 	Clock clock;
 
-	// load shaders and models
-	std::map<std::string const, Shader const> const shaders = Configuration::WorldCreation::load_shaders();
-	std::map<std::string const, Model> models = Configuration::WorldCreation::load_models();
+	// load shaders and models to render
+	Renderer renderer(
+		Configuration::WorldCreation::load_shaders(),
+		Configuration::WorldCreation::load_models(),
+		Configuration::WorldCreation::pair_shader_and_model_names());
 
 	while (!event_handler.get_should_quit())
 	{
@@ -93,31 +100,10 @@ int main(int const argc, char const *const *const argv)
 			sdl_handler.window->make_current(); // ensure window context is made current so it can be acted upon
 			sdl_handler.window->clear();		// clear the buffer so we can start composing a new frame
 
-			// apply projection matrix to shaders(perspective-related; unlikely it actually needs to be recalculated each cycle)
-			glm::mat4 const projection_matrix = glm::perspective(
-				glm::radians(45.0f),
-				(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
-				0.1f,
-				100.0f);
-			for (auto shader : shaders)
-				shader.second.set_projection_matrix(projection_matrix);
-
-			// apply view matrix to shaders (shifts things to be shown from camera's position)
-			glm::mat4 view_matrix = camera.get_view_matrix();
-			for (auto shader : shaders)
-				shader.second.set_view_matrix(view_matrix);
-
-			// draw models
-			for (auto model : models)
-				model.second.draw()
-
-					glm::mat4 model_matrix = glm::mat4(1.0f);
-			model_matrix = glm::translate(model_matrix, glm::vec3({0.0f, 0.0f, 0.0f}));
-			glm::quat rotation = glm::quat(glm::vec3(glm::radians(20.0f), glm::radians(30.0f), glm::radians(15.0f)));
-			model_matrix = model_matrix * glm::mat4(rotation);
-			model_matrix = glm::scale(model_matrix, glm::vec3(1.0f, 1.0f, 1.0f));
-			shaders.at("standard_shader").set_model_matrix(model_matrix);
-			models.at("backpack").draw(shaders.at("standard_shader"));
+			// tell renderer to draw all actively loaded Models, using their assigned Shaders
+			renderer.draw_all(
+				camera.get_projection_matrix(),
+				camera.get_view_matrix());
 
 			// swap window's buffer so that it gets rendered onto the screen
 			sdl_handler.window->swap();

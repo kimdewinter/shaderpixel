@@ -4,8 +4,8 @@
 
 std::vector<std::pair<Shader const &, Model &>> Renderer::assemble_pairs() noexcept
 {
-	std::vector<std::pair<Shader const &, Model &>> shader_model_refs;
-	for (std::pair<std::string const, std::string const> name_pair : this->render_pairs)
+	std::vector<std::pair<Shader const &, Model &>> render_pair_refs;
+	for (std::pair<std::string const, std::string const> name_pair : this->render_pair_names)
 	{
 		auto shader_ref = this->shaders.find(name_pair.first);
 		auto model_ref = this->models.find(name_pair.second);
@@ -14,23 +14,34 @@ std::vector<std::pair<Shader const &, Model &>> Renderer::assemble_pairs() noexc
 			ASSERT(false, "Renderer unable to find Shader or Model");
 			continue;
 		}
-		shader_model_refs.push_back({shader_ref->second, model_ref->second});
+		render_pair_refs.push_back({shader_ref->second, model_ref->second});
 	}
-	return shader_model_refs;
+	return render_pair_refs;
 }
 
-void Renderer::render() const noexcept
+void Renderer::draw_all(
+	glm::mat4 const &projection_matrix,
+	glm::mat4 const &view_matrix) noexcept
 {
-	std::vector<std::pair<Shader const &, Model &>> shader_model_refs = this->assemble_pairs();
+	// create queue of Shader-Model pairs to render
+	std::vector<std::pair<Shader const &, Model &>> render_pair_refs = this->assemble_pairs();
 
-	// PLACEHOLDER: set up shader matrices and draw
-
-	// draw each Model with the help of it's assigned Shader
-	for (std::pair<Shader const &, Model const &> pair : shader_model_refs)
-		pair.second.draw(pair.first);
+	for (std::pair<Shader const &, Model &> ref_pair : render_pair_refs)
+	{
+		ref_pair.first.use();									 // might be more elegant to call "use" once on a Shader and execute all it's draws
+		ref_pair.first.set_projection_matrix(projection_matrix); // unlikely it needs to be set again every frame
+		ref_pair.first.set_view_matrix(view_matrix);
+		ref_pair.first.set_model_matrix(ref_pair.second.get_model_matrix());
+		ref_pair.second.draw(ref_pair.first);
+	}
 }
 
-Renderer::Renderer(std::vector<std::pair<std::string const, std::string const>> const &render_pairs) noexcept
-	: render_pairs(render_pairs)
+Renderer::Renderer(
+	std::map<std::string const, Shader const> const &shaders,
+	std::map<std::string const, Model> const &models,
+	std::map<std::string const, std::string const> const &render_pair_names) noexcept
+	: shaders(shaders),
+	  models(models),
+	  render_pair_names(render_pair_names)
 {
 }

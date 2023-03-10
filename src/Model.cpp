@@ -124,7 +124,7 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	std::vector<unsigned int const> indices;
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		for (unsigned int j = 0; j < mesh->mFaces[i].mNumIndices; j++)
-			indices.push_back(mesh->mFaces[i].mIndices[j]);
+			indices.push_back((unsigned int const)(mesh->mFaces[i].mIndices[j]));
 
 	// from here on we're processing textures
 	std::vector<Texture const> textures;
@@ -189,7 +189,7 @@ Model::Model(
 	process_node(scene->mRootNode, scene);
 }
 
-glm::mat4 Model::get_model_matrix() const noexcept
+glm::mat4 const Model::get_model_matrix() const noexcept
 {
 	glm::mat4 matrix = glm::mat4(1.0f);				 // start with a non-transforming identity matrix
 	matrix = glm::translate(matrix, this->position); // add translation

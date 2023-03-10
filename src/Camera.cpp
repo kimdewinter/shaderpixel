@@ -2,6 +2,7 @@
 #include "ErrorHandler.h"
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <cmath>
 
 namespace
@@ -45,10 +46,15 @@ Camera::Camera(
 	update_camera_vectors();
 }
 
-glm::mat4 Camera::get_view_matrix() noexcept
+glm::mat4 const Camera::get_view_matrix() noexcept
 {
 	this->update_camera_vectors();
 	return glm::lookAt(this->position, this->position + this->front, this->up);
+}
+
+glm::mat4 const &Camera ::get_projection_matrix() const noexcept
+{
+	return this->projection_matrix;
 }
 
 void Camera::update_camera_vectors() noexcept
