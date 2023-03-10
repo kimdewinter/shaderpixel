@@ -189,7 +189,7 @@ Model::Model(
 	process_node(scene->mRootNode, scene);
 }
 
-glm::mat4 const Model::get_model_matrix() const noexcept
+glm::mat4 Model::get_model_matrix() const noexcept
 {
 	glm::mat4 matrix = glm::mat4(1.0f);				 // start with a non-transforming identity matrix
 	matrix = glm::translate(matrix, this->position); // add translation

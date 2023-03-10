@@ -15,8 +15,8 @@ namespace
 }
 
 Camera::Camera(
-	glm::vec3 position,
-	glm::vec3 world_up,
+	glm::vec3 const &position,
+	glm::vec3 const &world_up,
 	float yaw,
 	float pitch) noexcept : position(position),
 							world_up(world_up),
@@ -46,13 +46,13 @@ Camera::Camera(
 	update_camera_vectors();
 }
 
-glm::mat4 const Camera::get_view_matrix() noexcept
+glm::mat4 Camera::get_view_matrix() noexcept
 {
 	this->update_camera_vectors();
 	return glm::lookAt(this->position, this->position + this->front, this->up);
 }
 
-glm::mat4 const &Camera ::get_projection_matrix() const noexcept
+glm::mat4 Camera ::get_projection_matrix() const noexcept
 {
 	return this->projection_matrix;
 }
@@ -73,7 +73,7 @@ void Camera::update_camera_vectors() noexcept
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 }
 
-void Camera::move_camera(Camera::Direction const direction, std::chrono::duration<long long, std::nano> const delta_time) noexcept
+void Camera::move_camera(Camera::Direction const direction, std::chrono::duration<long long, std::nano> const &delta_time) noexcept
 {
 	float const movement_magnitude = this->movement_speed * nanoseconds_to_seconds(delta_time);
 	switch (direction)

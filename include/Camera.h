@@ -24,8 +24,8 @@ public:
 
 	/// @brief constructs with vectors
 	Camera(
-		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3 world_up = glm::vec3(0.0f, 1.0f, 0.0),
+		glm::vec3 const &position = glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3 const &world_up = glm::vec3(0.0f, 1.0f, 0.0),
 		float yaw = CAMERA_DEFAULT_YAW,
 		float pitch = CAMERA_DEFAULT_PITCH) noexcept;
 	/// @brief constructs with scalars
@@ -36,14 +36,14 @@ public:
 		float pitch) noexcept;
 	/// @brief uses the updated Euler angles to calculate new front, right, and (cam-)up vector
 	void update_camera_vectors() noexcept;
-	glm::mat4 const get_view_matrix() noexcept;
-	glm::mat4 const &get_projection_matrix() const noexcept;
+	glm::mat4 get_view_matrix() noexcept;
+	glm::mat4 get_projection_matrix() const noexcept;
 	/// @brief moves camera's position in the world
 	/// @param direction direction of movement
 	/// @param delta_time how much time has passed since last frame
 	void move_camera(
 		Camera::Direction const direction,
-		std::chrono::duration<long long, std::nano> const delta_time) noexcept;
+		std::chrono::duration<long long, std::nano> const &delta_time) noexcept;
 	/// @brief Pans camera around, usually depending on how much the mouse has moved
 	/// @param x_offset
 	/// @param y_offset

@@ -36,7 +36,7 @@ public:
 		glm::quat const &orientation = glm::quat(glm::vec3({1.0f, 1.0f, 1.0f})),
 		glm::vec3 const &scaling = glm::vec3({1.0f, 1.0f, 1.0f})) noexcept;
 	void draw(Shader const &shader) const noexcept;
-	glm::mat4 const get_model_matrix() const noexcept;
+	glm::mat4 get_model_matrix() const noexcept;
 
 	std::string const name;
 	std::string const directory; // directory where model file is stored
@@ -55,7 +55,7 @@ private:
 	/// @return Texture, or std::nullopt if not already loaded
 	std::optional<Texture> find_loaded_texture(char const *const path) const noexcept;
 
-	std::vector<Mesh> meshes;					// meshes that make up the parts of a model
+	std::vector<Mesh> meshes;			  // meshes that make up the parts of a model
 	std::vector<Texture> textures_loaded; // all textures loaded so far; optimization to make sure textures are not loaded twice unnecessarily
 	glm::vec3 position;
 	glm::quat orientation;
