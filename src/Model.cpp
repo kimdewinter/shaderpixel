@@ -149,7 +149,7 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	std::vector<Texture> const height_maps = load_material_textures(material, aiTextureType_HEIGHT, "texture_height");
 	textures.insert(textures.end(), height_maps.begin(), height_maps.end());
 
-	return Mesh(vertices, indices, textures);
+	return Mesh(std::move(vertices), std::move(indices), std::move(textures));
 }
 
 void Model::process_node(aiNode const *const node, aiScene const *const scene) noexcept

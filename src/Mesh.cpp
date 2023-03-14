@@ -3,14 +3,9 @@
 #include <stdexcept>
 #include "ErrorHandler.h"
 
-Mesh::Mesh(
-	std::vector<Vertex> const &vertices,
-	std::vector<unsigned int> const &indices,
-	std::vector<Texture> const &textures) noexcept : vertices(vertices),
-													 indices(indices),
-													 textures(textures)
+void Mesh::constructor_helper() noexcept
 {
-	ASSERT(!vertices.empty() && !indices.empty(),
+	ASSERT(!this->vertices.empty() && !this->indices.empty(),
 		   "warning: mesh constructor encountered invalid argument");
 
 	// request OpenGL to generate VAO, VBO, EBO objects
@@ -68,6 +63,28 @@ Mesh::Mesh(
 
 	// release VAO binding
 	glBindVertexArray(0);
+}
+
+Mesh::Mesh(
+	std::vector<Vertex> &&vertices,
+	std::vector<unsigned int> &&indices,
+	std::vector<Texture> &&textures) noexcept
+{
+	this->vertices = vertices;
+	this->indices = indices;
+	this->textures = textures;
+	constructor_helper();
+}
+
+Mesh::Mesh(
+	std::vector<Vertex> const &vertices,
+	std::vector<unsigned int> const &indices,
+	std::vector<Texture> const &textures) noexcept
+{
+	this->vertices = vertices;
+	this->indices = indices;
+	this->textures = textures;
+	constructor_helper();
 }
 
 void Mesh::draw(Shader const &shader) const noexcept

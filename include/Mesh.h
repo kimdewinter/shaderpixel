@@ -13,15 +13,21 @@ public:
 		std::vector<Vertex> const &vertices,
 		std::vector<unsigned int> const &indices,
 		std::vector<Texture> const &textures) noexcept;
+	Mesh(
+		std::vector<Vertex> &&vertices,
+		std::vector<unsigned int> &&indices,
+		std::vector<Texture> &&textures) noexcept;
 	void draw(Shader const &shader) const noexcept;
 
 private:
+	void constructor_helper() noexcept;
+
 	unsigned int VAO; // Vertex Array Object
 	unsigned int VBO; // Vertex Buffer Object
 	unsigned int EBO; // Element Buffer Object
-	std::vector<Vertex> const vertices;
-	std::vector<unsigned int> const indices;
-	std::vector<Texture> const textures;
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+	std::vector<Texture> textures;
 };
 
 #endif
