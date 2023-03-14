@@ -14,6 +14,11 @@ public:
 		std::map<std::string, Shader> const &shaders,
 		std::map<std::string, Model> const &models,
 		std::map<std::string, std::string> const &render_pair_names) noexcept;
+	Renderer(
+		std::map<std::string, Shader> &&shaders,
+		std::map<std::string, Model> &&models,
+		std::map<std::string, std::string> &&render_pair_names) noexcept;
+
 	/// @brief draw the models specified in member variable "render_pair_names"
 	void draw_all(
 		glm::mat4 const &projection_matrix,
