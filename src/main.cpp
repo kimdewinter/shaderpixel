@@ -32,6 +32,7 @@ namespace Configuration
 		{
 			std::map<std::string, Model> models;
 			models.insert({"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, -1.0f, 0.0f})});
+			// models.insert({"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {0.0f, -1.0f, 0.0f}, glm::quat({0.5f, 0.0f, 0.0f}), {0.1f, 0.1f, 0.1f})});
 			return models;
 		}
 
@@ -41,6 +42,7 @@ namespace Configuration
 		{
 			std::map<std::string, std::string> name_pairings;
 			name_pairings.insert({"standard_shader", "backpack"});
+			// name_pairings.insert({"standard_shader", "pedestal"});
 			return name_pairings;
 		}
 	}
@@ -110,8 +112,3 @@ int main(int const argc, char const *const *const argv)
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;
 }
-
-// TASKS:
-// 2. abstract shader uniform setting away into Configuration::Technical
-// 3. abstract away model drawing in the same way
-// 4. make it so multiple models can be loaded and displayed in specific starting positions
