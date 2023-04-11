@@ -34,8 +34,9 @@ namespace Configuration
 			std::map<std::string, Model> models;
 			models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, 0.0f, -10.0f})});
 			models.insert(std::pair<std::string, Model>{"pillar", Model("pillar", "resources/Pillar/LP_Pillar_Textured.obj", {0.0f, 0.0f, -20.0f})});
-			// models.insert({"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, 1.0f, 0.0f})});
-			// models.insert({"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {0.0f, -1.0f, 0.0f}, glm::quat({0.5f, 0.0f, 0.0f}), {0.1f, 0.1f, 0.1f})});
+			models.insert({"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {0.0f, 0.0f, -30.0f}, glm::quat({0.5f, 0.0f, 0.0f}), {0.1f, 0.1f, 0.1f})});
+			// models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, -10.0f, 0.0f})});
+
 			return models;
 		}
 
@@ -46,8 +47,8 @@ namespace Configuration
 			std::multimap<std::string, std::string> name_pairings;
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "backpack"});
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pillar"});
-			// name_pairings.insert({"standard_shader", "terrain"});
-			// name_pairings.insert({"standard_shader", "pedestal"});
+			name_pairings.insert({"standard_shader", "pedestal"});
+			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "terrain"});
 			return name_pairings;
 		}
 	}
