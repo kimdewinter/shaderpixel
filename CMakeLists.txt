@@ -15,6 +15,7 @@ set(ENABLE_SDL2   ON CACHE BOOL "Add SDL2 hardware abstraction library to the pr
 set(ENABLE_ASSIMP   ON CACHE BOOL "Add Open Asset Import Library (assimp) to the project" FORCE)
 set(ENABLE_GLM   ON CACHE BOOL "Add GLM OpenGL-mathematics library to the project" FORCE)
 set(ENABLE_STB   ON CACHE BOOL "Add STB image-utility library to the project" FORCE)
+set(ENABLE_IMGUI	ON CACHE BOOL "Add IMGUI gui library to the project" FORCE)
 
 #===========================================================================================
 # GLAD CONFIGURATION
@@ -57,6 +58,13 @@ ${SOURCE_DIR}/Shader.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
+
+# Enable C++17
+set(CMAKE_CXX_STANDARD 17)
+# set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
+#     CXX_STANDARD 17
+#     CXX_STANDARD_REQUIRED YES
+#     CXX_EXTENSIONS NO)
 
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -101,11 +109,11 @@ if (${ENABLE_STB})
 	LinkSTB(${CMAKE_PROJECT_NAME} PRIVATE)
 endif()
 
-# Enable C++17
-set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED YES
-    CXX_EXTENSIONS NO)
+if (${ENABLE_IMGUI})
+	include(${CMAKE_DIR}/LinkIMGUI.cmake)
+
+	target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui_sdl2)
+endif()
 
 # Set project folders
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
