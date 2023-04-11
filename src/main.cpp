@@ -42,6 +42,7 @@ namespace Configuration
 		{
 			std::map<std::string, std::string> name_pairings;
 			name_pairings.insert({"standard_shader", "backpack"});
+			name_pairings.insert({"standard_shader", "terrain"});
 			// name_pairings.insert({"standard_shader", "pedestal"});
 			return name_pairings;
 		}
