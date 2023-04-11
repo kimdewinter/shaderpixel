@@ -28,7 +28,6 @@ void Renderer::draw_all(
 
 	for (std::pair<Shader &, Model &> ref_pair : render_pair_refs)
 	{
-		std::cout << "Currently using shader -" << ref_pair.first.name << "- to render model -" << ref_pair.second.name << "-" << std::endl;
 		ref_pair.first.use();									 // might be more elegant to call "use" once on a Shader and execute all it's draws
 		ref_pair.first.set_projection_matrix(projection_matrix); // unlikely it needs to be set again every frame
 		ref_pair.first.set_view_matrix(view_matrix);
