@@ -24,6 +24,7 @@ namespace Configuration
 		{
 			std::map<std::string, Shader> shaders;
 			shaders.insert({"standard_shader", Shader("standard_shader", "projection", "view", "model", "resources/standard_shader.vert", "resources/standard_shader.frag")});
+			// shaders.insert({"standard_shader", Shader("standard_shader2", "projection", "view", "model", "resources/standard_shader.vert", "resources/standard_shader.frag")});
 			return shaders;
 		}
 
@@ -31,18 +32,21 @@ namespace Configuration
 		std::map<std::string, Model> load_models() noexcept
 		{
 			std::map<std::string, Model> models;
-			models.insert({"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, -1.0f, 0.0f})});
+			models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, 0.0f, -10.0f})});
+			models.insert(std::pair<std::string, Model>{"pillar", Model("pillar", "resources/Pillar/LP_Pillar_Textured.obj", {0.0f, 0.0f, -20.0f})});
+			// models.insert({"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, 1.0f, 0.0f})});
 			// models.insert({"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {0.0f, -1.0f, 0.0f}, glm::quat({0.5f, 0.0f, 0.0f}), {0.1f, 0.1f, 0.1f})});
 			return models;
 		}
 
 		/// @brief assign which Shaders should render which Models, creating a map of pairings that should be rendered each frame
 		/// @return first string is Shader name, second string is Model name
-		std::map<std::string, std::string> pair_shader_and_model_names() noexcept
+		std::multimap<std::string, std::string> pair_shader_and_model_names() noexcept
 		{
-			std::map<std::string, std::string> name_pairings;
-			name_pairings.insert({"standard_shader", "backpack"});
-			name_pairings.insert({"standard_shader", "terrain"});
+			std::multimap<std::string, std::string> name_pairings;
+			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "backpack"});
+			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pillar"});
+			// name_pairings.insert({"standard_shader", "terrain"});
 			// name_pairings.insert({"standard_shader", "pedestal"});
 			return name_pairings;
 		}
@@ -78,7 +82,7 @@ int main(int const argc, char const *const *const argv)
 	SdlHandler sdl_handler{&Configuration::Technical::window_creation, Configuration::Technical::get_clear_colors()};
 
 	EventHandler event_handler;
-	Camera camera({0.0f, 0.0f, 10.0f});
+	Camera camera({0.0f, 0.0f, 0.0f});
 	Clock clock;
 
 	// load shaders and models to render

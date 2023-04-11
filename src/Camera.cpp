@@ -22,7 +22,7 @@ Camera::Camera(
 							world_up(world_up),
 							yaw(yaw),
 							pitch(pitch),
-							front(glm::vec3(0.0f, 0.0f, -1.0f)),
+							front(glm::vec3(0.0f, 0.0f, 0.0f)),
 							movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
 							mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
 							zoom(CAMERA_DEFAULT_ZOOM)

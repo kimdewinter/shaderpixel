@@ -13,11 +13,11 @@ public:
 	Renderer(
 		std::map<std::string, Shader> const &shaders,
 		std::map<std::string, Model> const &models,
-		std::map<std::string, std::string> const &render_pair_names) noexcept;
+		std::multimap<std::string, std::string> const &render_pair_names) noexcept;
 	Renderer(
 		std::map<std::string, Shader> &&shaders,
 		std::map<std::string, Model> &&models,
-		std::map<std::string, std::string> &&render_pair_names) noexcept;
+		std::multimap<std::string, std::string> &&render_pair_names) noexcept;
 
 	/// @brief draw the models specified in member variable "render_pair_names"
 	void draw_all(
@@ -34,7 +34,7 @@ private:
 	/// @brief all loaded models; first is the name, second is the Model instance
 	std::map<std::string, Model> models;
 	/// @brief what to render each frame; first is the Shader name, second is the Model name
-	std::map<std::string, std::string> render_pair_names;
+	std::multimap<std::string, std::string> render_pair_names;
 };
 
 #endif
