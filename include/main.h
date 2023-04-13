@@ -7,8 +7,8 @@
 #define DOUBLE_BUFFER 1		   // whether to use a double buffer; set to 0 or 1, defaults to 1
 #define DEPTH_SIZE 24		   // min number of bits in depth buffer; defaults to 16
 #define VSYNC 1				   // 0 for immediate updates, 1 for updates synched with vertical retrace, -1 for adaptive vsync
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
 #define CLEAR_COLOR_R 0.7f	 // red
 #define CLEAR_COLOR_G 0.7f	 // green
 #define CLEAR_COLOR_B 0.7f	 // blue
