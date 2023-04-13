@@ -2,18 +2,17 @@ include(FetchContent)
 
 FetchContent_Populate(imgui
   URL https://github.com/ocornut/imgui/archive/docking.zip
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui
 )
 
 add_library(imgui_sdl2 STATIC
-  imgui/imgui.cpp
-  imgui/imgui_draw.cpp
-  imgui/imgui_demo.cpp
-  imgui/imgui_tables.cpp
-  imgui/imgui_widgets.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_draw.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_demo.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_tables.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_widgets.cpp
 
-  imgui/backends/imgui_impl_sdl2.cpp
-  imgui/backends/imgui_impl_opengl3.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_sdl2.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
 )
 
 target_link_libraries(imgui_sdl2 PUBLIC sdl2 ${OPENGL_LIBRARIES})
@@ -21,6 +20,5 @@ target_link_libraries(imgui_sdl2 PUBLIC sdl2 ${OPENGL_LIBRARIES})
 target_include_directories(imgui_sdl2
 PUBLIC
   ${sdl2_SOURCE_DIR}/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src
 )

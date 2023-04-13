@@ -11,6 +11,9 @@
 #include <cstdlib>
 #include <map>
 #include "Renderer.h"
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_opengl3.h>
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
 namespace Configuration
@@ -92,6 +95,17 @@ int main(int const argc, char const *const *const argv)
 		Configuration::WorldCreation::load_models(),
 		Configuration::WorldCreation::pair_shader_and_model_names());
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO &io = ImGui::GetIO();
+	(void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	// io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	ImGui::StyleColorsDark();
+	// ImGui::StyleColorsLight();1
+	ImGui_ImplSDL2_InitForOpenGL(sdl_handler.window->get_window_ptr(), sdl_handler.window->get_context());
+	ImGui_ImplOpenGL3_Init(GLSL_VERSION);
+
 	while (!event_handler.get_should_quit())
 	{
 		// UPDATE CLOCK
@@ -108,6 +122,18 @@ int main(int const argc, char const *const *const argv)
 			sdl_handler.window->make_current(); // ensure window context is made current so it can be acted upon
 			sdl_handler.window->clear();		// clear the buffer so we can start composing a new frame
 
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplSDL2_NewFrame();
+			ImGui::NewFrame();
+
+			ImGui::Begin("Hello, world!");
+			static int counter = 0;
+			if (ImGui::Button("Button"))
+				counter++;
+			ImGui::End();
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 			// tell renderer to draw all actively loaded Models, using their assigned Shaders
 			renderer.draw_all(camera.get_projection_matrix(), camera.get_view_matrix());
 
@@ -115,6 +141,9 @@ int main(int const argc, char const *const *const argv)
 			sdl_handler.window->swap();
 		}
 	}
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;
 }

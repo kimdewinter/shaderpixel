@@ -119,7 +119,7 @@ endif()
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 
 # Set build type to Release or Debug
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 target_compile_options(shaderpixel
 PRIVATE

@@ -2,11 +2,12 @@
 #define MAIN_H_INCLUDED
 
 #define APP_NAME "shaderpixel"
-#define OPENGL_VERSION_MAJOR 4 // OpenGL version to use before the decimal
-#define OPENGL_VERSION_MINOR 1 // OpenGL version to use after the decimal
-#define DOUBLE_BUFFER 1		   // whether to use a double buffer; set to 0 or 1, defaults to 1
-#define DEPTH_SIZE 24		   // min number of bits in depth buffer; defaults to 16
-#define VSYNC 1				   // 0 for immediate updates, 1 for updates synched with vertical retrace, -1 for adaptive vsync
+#define OPENGL_VERSION_MAJOR 4		// OpenGL version to use before the decimal
+#define OPENGL_VERSION_MINOR 1		// OpenGL version to use after the decimal
+#define GLSL_VERSION "#version 410" // needed by ImGui
+#define DOUBLE_BUFFER 1				// whether to use a double buffer; set to 0 or 1, defaults to 1
+#define DEPTH_SIZE 24				// min number of bits in depth buffer; defaults to 16
+#define VSYNC 1						// 0 for immediate updates, 1 for updates synched with vertical retrace, -1 for adaptive vsync
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
 #define CLEAR_COLOR_R 0.7f	 // red

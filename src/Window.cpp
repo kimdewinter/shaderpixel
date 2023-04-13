@@ -68,3 +68,13 @@ void Window::make_current() const noexcept
 	ASSERT(SDL_GL_MakeCurrent(this->window_ptr, this->context_ptr) == 0,
 		   "failure to make_current() for window: " + this->window_name + "\nSDL error: " + SDL_GetError());
 }
+
+SDL_GLContext const Window::get_context() const noexcept
+{
+	return this->context_ptr;
+}
+
+SDL_Window *const Window::get_window_ptr() const noexcept
+{
+	return this->window_ptr;
+}
