@@ -20,6 +20,7 @@ target_link_libraries(imgui_sdl2 PUBLIC sdl2 ${OPENGL_LIBRARIES})
 
 target_include_directories(imgui_sdl2
 PUBLIC
+  ${sdl2_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends
 )

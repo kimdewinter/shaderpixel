@@ -61,10 +61,10 @@ add_executable(${CMAKE_PROJECT_NAME} ${sources})
 
 # Enable C++17
 set(CMAKE_CXX_STANDARD 17)
-# set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
-#     CXX_STANDARD 17
-#     CXX_STANDARD_REQUIRED YES
-#     CXX_EXTENSIONS NO)
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO)
 
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/include
