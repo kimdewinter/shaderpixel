@@ -18,12 +18,14 @@ public:
 		Clock const &clock) noexcept;
 	void handle_mouse_motion(SDL_Event const &event, Camera &camera) noexcept;
 	void handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler) noexcept;
+	void toggle_camera_lock() noexcept;
 
 private:
 	bool should_quit = false;	   // if game should quit after current render loop
 	bool first_mouse_event = true; // should become false after a mouse event has occurred
 	float mouse_rel_x = 0;
 	float mouse_rel_y = 0;
+	bool camera_locked = true;
 };
 
 #endif

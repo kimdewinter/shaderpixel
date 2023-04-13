@@ -35,7 +35,7 @@ namespace Configuration
 		std::map<std::string, Model> load_models() noexcept
 		{
 			std::map<std::string, Model> models;
-			models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, 0.0f, -10.0f})});
+			// models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, 0.0f, -10.0f})});
 			models.insert(std::pair<std::string, Model>{"pillar", Model("pillar", "resources/Pillar/LP_Pillar_Textured.obj", {0.0f, 0.0f, -20.0f})});
 			models.insert(std::pair<std::string, Model>{"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {0.0f, 10.0f, -30.0f}, glm::quat({0.0f, 0.0f, 0.0f}), {0.1f, 0.1f, 0.1f})});
 			models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, -10.0f, 0.0f})});
@@ -48,7 +48,7 @@ namespace Configuration
 		std::multimap<std::string, std::string> pair_shader_and_model_names() noexcept
 		{
 			std::multimap<std::string, std::string> name_pairings;
-			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "backpack"});
+			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "backpack"});
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pillar"});
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pedestal"});
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "terrain"});
@@ -131,11 +131,12 @@ int main(int const argc, char const *const *const argv)
 			if (ImGui::Button("Button"))
 				counter++;
 			ImGui::End();
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			// tell renderer to draw all actively loaded Models, using their assigned Shaders
 			renderer.draw_all(camera.get_projection_matrix(), camera.get_view_matrix());
+
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			// swap window's buffer so that it gets rendered onto the screen
 			sdl_handler.window->swap();

@@ -20,6 +20,20 @@ namespace
 	*/
 }
 
+void EventHandler::toggle_camera_lock() noexcept
+{
+	if (this->camera_locked)
+	{
+		this->camera_locked = false;
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	}
+	else
+	{
+		this->camera_locked = true;
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
+}
+
 void EventHandler::handle_keyboard_event(
 	SDL_Event const &event,
 	SdlHandler &sdl_handler,
@@ -32,28 +46,39 @@ void EventHandler::handle_keyboard_event(
 		this->should_quit = true;
 		break;
 	case SDLK_w:
-		camera.move_camera(Camera::Direction::FORWARD, clock.get_time_delta());
+		if (!this->camera_locked)
+			camera.move_camera(Camera::Direction::FORWARD, clock.get_time_delta());
 		break;
 	case SDLK_s:
-		camera.move_camera(Camera::Direction::BACKWARD, clock.get_time_delta());
+		if (!this->camera_locked)
+			camera.move_camera(Camera::Direction::BACKWARD, clock.get_time_delta());
 		break;
 	case SDLK_a:
-		camera.move_camera(Camera::Direction::LEFT, clock.get_time_delta());
+		if (!this->camera_locked)
+			camera.move_camera(Camera::Direction::LEFT, clock.get_time_delta());
 		break;
 	case SDLK_d:
-		camera.move_camera(Camera::Direction::RIGHT, clock.get_time_delta());
+		if (!this->camera_locked)
+			camera.move_camera(Camera::Direction::RIGHT, clock.get_time_delta());
 		break;
 	case SDLK_r:
-		camera.move_camera(Camera::Direction::UP, clock.get_time_delta());
+		if (!this->camera_locked)
+			camera.move_camera(Camera::Direction::UP, clock.get_time_delta());
 		break;
 	case SDLK_f:
-		camera.move_camera(Camera::Direction::DOWN, clock.get_time_delta());
+		if (!this->camera_locked)
+			camera.move_camera(Camera::Direction::DOWN, clock.get_time_delta());
 		break;
 	case SDLK_q:
-		camera.roll_camera(Camera::Direction::LEFT, clock.get_time_delta());
+		if (!this->camera_locked)
+			camera.roll_camera(Camera::Direction::LEFT, clock.get_time_delta());
 		break;
 	case SDLK_e:
-		camera.roll_camera(Camera::Direction::RIGHT, clock.get_time_delta());
+		if (!this->camera_locked)
+			camera.roll_camera(Camera::Direction::RIGHT, clock.get_time_delta());
+		break;
+	case SDLK_c:
+		this->toggle_camera_lock();
 		break;
 	}
 }
@@ -70,6 +95,9 @@ void EventHandler::handle_mouse_motion(SDL_Event const &event, Camera &camera) n
 	{
 		this->mouse_rel_x = static_cast<float>(event.motion.xrel);
 		this->mouse_rel_y = static_cast<float>(event.motion.yrel);
+	}
+	if (!this->camera_locked)
+	{
 		camera.pan_camera(this->mouse_rel_x, this->mouse_rel_y, true);
 	}
 }
