@@ -23,6 +23,7 @@
 #define CAMERA_DEFAULT_MOVEMENT_SPEED 10.0f
 #define CAMERA_DEFAULT_MOUSE_SENSITIVITY 0.1f
 #define CAMERA_DEFAULT_ZOOM 45.0f
+#define CAMERA_LOCKED_BY_DEFAULT 1
 
 // things that might later be needed, but should preferrably not be included in main.h:
 // #define FOV 45 // In degrees

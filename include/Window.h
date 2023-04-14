@@ -17,7 +17,7 @@ public:
 	void swap() const noexcept;
 	/// @brief makes this window and it's context the "current" window and context
 	void make_current() const noexcept;
-	SDL_GLContext const get_context() const noexcept;
+	SDL_GLContext const get_context_ptr() const noexcept;
 	SDL_Window *const get_window_ptr() const noexcept;
 
 private:

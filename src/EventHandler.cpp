@@ -1,6 +1,6 @@
 #include "EventHandler.h"
 #include "ErrorHandler.h"
-#include <backends/imgui_impl_sdl2.h>
+#include "Gui.h"
 
 namespace
 {
@@ -123,12 +123,16 @@ void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_h
 	}
 }
 
-void EventHandler::handle_all_events(SdlHandler &sdl_handler, Camera &camera, Clock const &clock) noexcept
+void EventHandler::handle_all_events(
+	SdlHandler &sdl_handler,
+	Camera &camera,
+	Clock const &clock,
+	Gui &gui) noexcept
 {
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
-		ImGui_ImplSDL2_ProcessEvent(&event);
+		gui.process_event(&event);
 		switch (event.type)
 		{
 		case SDL_KEYDOWN:

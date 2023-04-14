@@ -55,6 +55,7 @@ ${SOURCE_DIR}/Window.cpp
 ${SOURCE_DIR}/Mesh.cpp
 ${SOURCE_DIR}/Model.cpp
 ${SOURCE_DIR}/Shader.cpp
+${SOURCE_DIR}/Gui.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
@@ -119,7 +120,7 @@ endif()
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 
 # Set build type to Release or Debug
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 target_compile_options(shaderpixel
 PRIVATE

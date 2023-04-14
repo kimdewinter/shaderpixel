@@ -11,9 +11,7 @@
 #include <cstdlib>
 #include <map>
 #include "Renderer.h"
-#include <imgui.h>
-#include <backends/imgui_impl_sdl2.h>
-#include <backends/imgui_impl_opengl3.h>
+#include "Gui.h"
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
 namespace Configuration
@@ -85,6 +83,9 @@ int main(int const argc, char const *const *const argv)
 	// start up SDL and OpenGL, create window via the use of function pointer, and make window context current
 	SdlHandler sdl_handler{&Configuration::Technical::window_creation, Configuration::Technical::get_clear_colors()};
 
+	// start up ImGui to get a GUI
+	Gui gui(sdl_handler.window->get_window_ptr(), sdl_handler.window->get_context_ptr());
+
 	EventHandler event_handler;
 	Camera camera({0.0f, 0.0f, 0.0f});
 	Clock clock;
@@ -95,17 +96,6 @@ int main(int const argc, char const *const *const argv)
 		Configuration::WorldCreation::load_models(),
 		Configuration::WorldCreation::pair_shader_and_model_names());
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO &io = ImGui::GetIO();
-	(void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-	// io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-	ImGui::StyleColorsDark();
-	// ImGui::StyleColorsLight();1
-	ImGui_ImplSDL2_InitForOpenGL(sdl_handler.window->get_window_ptr(), sdl_handler.window->get_context());
-	ImGui_ImplOpenGL3_Init(GLSL_VERSION);
-
 	while (!event_handler.get_should_quit())
 	{
 		// UPDATE CLOCK
@@ -114,7 +104,7 @@ int main(int const argc, char const *const *const argv)
 		// INPUT HANDLING
 		{
 			// poll and handle events (including input)
-			event_handler.handle_all_events(sdl_handler, camera, clock);
+			event_handler.handle_all_events(sdl_handler, camera, clock, gui);
 		}
 
 		// RENDERING

@@ -41,8 +41,12 @@ SdlHandler::SdlHandler(
 {
 	ASSERT(SDL_Init(SDL_INIT_VIDEO) == 0, "Error initializing SDL: " + std::string(SDL_GetError()));
 
-	// set required SDL settings
+// set required SDL settings
+#if CAMERA_LOCKED_BY_DEFAULT 1
 	SDL_SetRelativeMouseMode(SDL_FALSE);
+#else
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+#endif
 
 	// create window via the supplied function pointer
 	this->window = window_creation_after_sdl_init();
@@ -79,4 +83,9 @@ SdlHandler::~SdlHandler() noexcept
 		this->window = NULL;
 	}
 	SDL_Quit();
+}
+
+void SdlHandler::set_relative_mouse_mode(SDL_bool const value) const noexcept
+{
+	SDL_SetRelativeMouseMode(value);
 }
