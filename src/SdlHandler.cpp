@@ -42,7 +42,7 @@ SdlHandler::SdlHandler(
 	ASSERT(SDL_Init(SDL_INIT_VIDEO) == 0, "Error initializing SDL: " + std::string(SDL_GetError()));
 
 // set required SDL settings
-#if CAMERA_LOCKED_BY_DEFAULT 1
+#if CAMERA_LOCKED_BY_DEFAULT == 1
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 #else
 	SDL_SetRelativeMouseMode(SDL_TRUE);

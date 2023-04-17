@@ -112,29 +112,16 @@ int main(int const argc, char const *const *const argv)
 			sdl_handler.window->make_current(); // ensure window context is made current so it can be acted upon
 			sdl_handler.window->clear();		// clear the buffer so we can start composing a new frame
 
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplSDL2_NewFrame();
-			ImGui::NewFrame();
-
-			ImGui::Begin("Hello, world!");
-			static int counter = 0;
-			if (ImGui::Button("Button"))
-				counter++;
-			ImGui::End();
-
 			// tell renderer to draw all actively loaded Models, using their assigned Shaders
 			renderer.draw_all(camera.get_projection_matrix(), camera.get_view_matrix());
 
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			// draw the GUI
+			gui.draw();
 
 			// swap window's buffer so that it gets rendered onto the screen
 			sdl_handler.window->swap();
 		}
 	}
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
-	ImGui::DestroyContext();
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;
 }
