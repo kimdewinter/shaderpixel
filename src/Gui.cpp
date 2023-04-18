@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_opengl3.h>
+#include <string>
 
 void Gui::draw() const noexcept
 {
@@ -10,7 +11,7 @@ void Gui::draw() const noexcept
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::Begin("Hello, world!");
+	ImGui::Begin(std::string(APP_NAME).c_str());
 	static int counter = 0;
 	if (ImGui::Button("Button"))
 		counter++;

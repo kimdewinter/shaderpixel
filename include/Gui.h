@@ -10,6 +10,7 @@ public:
 	~Gui() noexcept;
 	void process_event(SDL_Event const *const event) const noexcept;
 	void draw() const noexcept;
+	void signal_model_removal(ModelOwner *model) noexcept;
 };
 
 #endif

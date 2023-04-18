@@ -197,3 +197,18 @@ glm::mat4 Model::get_model_matrix() const noexcept
 	matrix = glm::scale(matrix, this->scaling);		 // add scaling
 	return matrix;
 }
+
+glm::vec3 Model::get_position() const noexcept
+{
+	return this->position;
+}
+
+glm::vec3 Model::get_orientation() const noexcept
+{
+	return glm::eulerAngles(this->orientation);
+}
+
+glm::vec3 Model::get_scaling() const noexcept
+{
+	return glm::vec3(this->scaling);
+}

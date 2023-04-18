@@ -45,17 +45,18 @@ set(CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(sources
 ${SOURCE_DIR}/main.cpp
-${SOURCE_DIR}/Camera.cpp
-${SOURCE_DIR}/Clock.cpp
-${SOURCE_DIR}/ErrorHandler.cpp
-${SOURCE_DIR}/EventHandler.cpp
-${SOURCE_DIR}/Renderer.cpp
-${SOURCE_DIR}/SdlHandler.cpp
-${SOURCE_DIR}/Window.cpp
-${SOURCE_DIR}/Mesh.cpp
-${SOURCE_DIR}/Model.cpp
-${SOURCE_DIR}/Shader.cpp
-${SOURCE_DIR}/Gui.cpp
+# ${SOURCE_DIR}/Camera.cpp
+# ${SOURCE_DIR}/Clock.cpp
+# ${SOURCE_DIR}/ErrorHandler.cpp
+# ${SOURCE_DIR}/EventHandler.cpp
+# ${SOURCE_DIR}/Renderer.cpp
+# ${SOURCE_DIR}/SdlHandler.cpp
+# ${SOURCE_DIR}/Window.cpp
+# ${SOURCE_DIR}/Mesh.cpp
+# ${SOURCE_DIR}/Model.cpp
+# ${SOURCE_DIR}/Owner.cpp
+# ${SOURCE_DIR}/Shader.cpp
+# ${SOURCE_DIR}/Gui.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
