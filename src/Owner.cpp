@@ -19,6 +19,7 @@ ModelOwner::~ModelOwner() noexcept
 	this->gui.signal_model_removal(this);
 
 	// owned objects should be either freed by stack-collapse or be manually deleted hereunder
+	for (this->referrers.signal_deletion();)
 }
 
 ShaderOwner::ShaderOwner(std::string const name, Shader shader, Renderer &renderer) noexcept

@@ -133,3 +133,76 @@
 // 	std::cerr << APP_NAME << " exited normally." << std::endl;
 // 	return EXIT_SUCCESS;
 // }
+
+#include <iostream>
+#include <unistd.h>
+
+class Possession
+{
+public:
+	std::string member_str;
+
+	Possession(std::string param_str) noexcept : member_str(param_str)
+	{
+		std::cout << "Possession constructor called" << std::endl;
+	};
+
+	Possession(Possession &old) noexcept : member_str(old.member_str)
+	{
+		std::cout << "Possession copy constructor called" << std::endl;
+	};
+
+	Possession(Possession &&old) noexcept : member_str(std::move(old.member_str))
+	{
+		std::cout << "Possession move constructor called" << std::endl;
+	};
+
+	~Possession() noexcept
+	{
+		std::cout << "Possession destructor called" << std::endl;
+	};
+};
+
+class Owner
+{
+public:
+	Owner(Possession &param_possession) noexcept : member_possession(param_possession)
+	{
+		std::cout << "Owner constructor variant #1 called" << std::endl;
+	};
+
+	Owner(Possession &&param_possession) noexcept : member_possession(std::move(param_possession))
+	{
+		std::cout << "Owner constructor variant #2 called" << std::endl;
+	};
+
+	~Owner() noexcept
+	{
+		std::cout << "Owner destructor called" << std::endl;
+	};
+
+	Possession member_possession;
+};
+
+int main(void)
+{
+	// std::cout << std::endl;
+	// {
+	// 	std::cout << "WHEN USING KEYWORD NEW:" << std::endl;
+	// 	Owner owner(std::move(*(new Possession(1))));
+	// }
+	// std::cout << std::endl;
+
+	// std::cout << std::endl;
+	// {
+	// 	std::cout << "WITHOUT USING KEYWORD NEW:" << std::endl;
+	// 	Owner owner_two(std::move(Possession(1)));
+	// }
+	// std::cout << std::endl;
+
+	{
+		Owner owner(Possession("test"));
+	}
+
+	return (0);
+}
