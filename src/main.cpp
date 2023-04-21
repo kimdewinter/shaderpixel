@@ -136,23 +136,22 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <vector>
 
 class Possession
 {
 public:
-	std::string member_str;
-
-	Possession(std::string param_str) noexcept : member_str(param_str)
+	Possession(std::string const &str) noexcept : _str(str)
 	{
 		std::cout << "Possession constructor called" << std::endl;
 	};
 
-	Possession(Possession &old) noexcept : member_str(old.member_str)
+	Possession(Possession &p) noexcept : _str(p._str)
 	{
 		std::cout << "Possession copy constructor called" << std::endl;
 	};
 
-	Possession(Possession &&old) noexcept : member_str(std::move(old.member_str))
+	Possession(Possession &&p) noexcept : _str(std::move(p._str))
 	{
 		std::cout << "Possession move constructor called" << std::endl;
 	};
@@ -161,17 +160,19 @@ public:
 	{
 		std::cout << "Possession destructor called" << std::endl;
 	};
+
+	std::string _str;
 };
 
 class Owner
 {
 public:
-	Owner(Possession &param_possession) noexcept : member_possession(param_possession)
+	Owner(Possession &p) noexcept : _p(p)
 	{
 		std::cout << "Owner constructor variant #1 called" << std::endl;
 	};
 
-	Owner(Possession &&param_possession) noexcept : member_possession(std::move(param_possession))
+	Owner(Possession &&p) noexcept : _p(std::move(p))
 	{
 		std::cout << "Owner constructor variant #2 called" << std::endl;
 	};
@@ -181,28 +182,43 @@ public:
 		std::cout << "Owner destructor called" << std::endl;
 	};
 
-	Possession member_possession;
+	Possession _p;
 };
+
+Possession create_possession(std::string const &str)
+{
+	return Possession(str);
+}
 
 int main(void)
 {
-	// std::cout << std::endl;
-	// {
-	// 	std::cout << "WHEN USING KEYWORD NEW:" << std::endl;
-	// 	Owner owner(std::move(*(new Possession(1))));
-	// }
-	// std::cout << std::endl;
+	// WITH NEW
 
-	// std::cout << std::endl;
-	// {
-	// 	std::cout << "WITHOUT USING KEYWORD NEW:" << std::endl;
-	// 	Owner owner_two(std::move(Possession(1)));
-	// }
-	// std::cout << std::endl;
+	std::cout << "\nTEST #1, with keyword new (produces 2 Possession destructor calls)" << std::endl;
 
-	{
-		Owner owner(Possession("test"));
-	}
+	// Possession *possum = new Possession("hej");
+
+	// std::cout << "possum->_str before moving: " << possum->_str << std::endl;
+
+	// Owner my_own(std::move(*possum));
+
+	// std::cout << "possum->_str after moving: " << possum->_str << std::endl;
+
+	// WITHOUT NEW
+
+	std::cout << "\nTEST #2, without keyword new (produces 2 Possession destructor calls)" << std::endl;
+
+	Possession possum("hej");
+
+	std::cout << "possum->_str before moving: " << possum._str << std::endl;
+
+	Owner my_own(std::move(possum));
+
+	std::cout << "possum->_str after moving: " << possum._str << std::endl;
+
+	// while (1)
+	// {
+	// }
 
 	return (0);
 }

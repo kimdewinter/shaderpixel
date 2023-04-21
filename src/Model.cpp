@@ -50,13 +50,13 @@ namespace
 
 void Model::draw(Shader const &shader) const noexcept
 {
-	for (Mesh mesh : this->meshes)
+	for (Mesh const &mesh : this->meshes)
 		mesh.draw(shader);
 }
 
 std::optional<Texture> Model::find_loaded_texture(char const *const path) const noexcept
 {
-	for (Texture texture : this->textures_loaded)
+	for (Texture const &texture : this->textures_loaded)
 	{
 		if (std::strcmp(texture.path.data(), path) == 0)
 			return texture;

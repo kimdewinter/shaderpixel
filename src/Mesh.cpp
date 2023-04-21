@@ -94,12 +94,14 @@ void Mesh::draw(Shader const &shader) const noexcept
 	unsigned int texture_specularn = 1;
 	unsigned int texture_normaln = 1;
 	unsigned int texture_heightn = 1;
+	std::string number;
+	std::string name;
+	std::string name_and_number;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
 		// retrieve texture number (the n in texture_diffusen)
-		std::string number;
-		std::string name = this->textures[i].type;
+		name = this->textures[i].type;
 		if (name == "texture_diffuse")
 			number = std::to_string(texture_diffusen++);
 		else if (name == "texture_specular")
@@ -109,7 +111,9 @@ void Mesh::draw(Shader const &shader) const noexcept
 		else if (name == "texture_height")
 			number = std::to_string(texture_heightn++);
 
-		glUniform1i(glGetUniformLocation(shader.get_opengl_id(), (name + number).c_str()), i);
+		name_and_number = name;
+		name += number;
+		glUniform1i(glGetUniformLocation(shader.get_opengl_id(), name_and_number.c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 	glActiveTexture(GL_TEXTURE0);
