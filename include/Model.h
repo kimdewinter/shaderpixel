@@ -33,10 +33,16 @@ public:
 		std::string const &name,
 		std::string const &path,
 		glm::vec3 const &position = glm::vec3({1.0f, 1.0f, 1.0f}),
-		glm::quat const &orientation = glm::quat(glm::vec3({1.0f, 1.0f, 1.0f})),
+		glm::quat const &orientation = glm::quat(glm::vec3({0.0f, 0.0f, 0.0f})),
 		glm::vec3 const &scaling = glm::vec3({1.0f, 1.0f, 1.0f})) noexcept;
 	void draw(Shader const &shader) const noexcept;
 	glm::mat4 get_model_matrix() const noexcept;
+	glm::vec3 get_position() const noexcept;
+	glm::vec3 get_orientation() const noexcept;
+	glm::vec3 get_scaling() const noexcept;
+	// void set_position(glm::vec3 const &position) noexcept;
+	// void set_orientation(glm::vec3 const &orientation) noexcept;
+	// void set_scaling(glm::vec3 const &scaling) noexcept;
 
 	std::string const name;
 	std::string const directory; // directory where model file is stored

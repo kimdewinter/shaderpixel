@@ -18,7 +18,7 @@
 #define MSAA_SAMPLES 8		 // MSAA samples (anti-aliasing)
 #define WIREFRAME_MODE 0	 // set to 1 if you want to only the lines between vertices
 #define MAX_BONE_INFLUENCE 4 // maximum amount of bones that may influence a vertex
-#define CAMERA_DEFAULT_YAW -90.0f
+#define CAMERA_DEFAULT_YAW 0.0f
 #define CAMERA_DEFAULT_PITCH 0.0f
 #define CAMERA_DEFAULT_MOVEMENT_SPEED 10.0f
 #define CAMERA_DEFAULT_MOUSE_SENSITIVITY 0.1f

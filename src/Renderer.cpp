@@ -5,7 +5,7 @@
 std::vector<std::pair<Shader &, Model &>> Renderer::assemble_pairs() noexcept
 {
 	std::vector<std::pair<Shader &, Model &>> render_pair_refs;
-	for (std::pair<std::string, std::string> name_pair : this->render_pair_names)
+	for (std::pair<std::string, std::string> &name_pair : this->render_pair_names)
 	{
 		auto shader_iter = this->shaders.find(name_pair.first);
 		auto model_iter = this->models.find(name_pair.second);
@@ -26,7 +26,7 @@ void Renderer::draw_all(
 	// create queue of Shader-Model pairs to render
 	std::vector<std::pair<Shader &, Model &>> render_pair_refs = this->assemble_pairs();
 
-	for (std::pair<Shader &, Model &> ref_pair : render_pair_refs)
+	for (std::pair<Shader &, Model &> &ref_pair : render_pair_refs)
 	{
 		ref_pair.first.use();									 // might be more elegant to call "use" once on a Shader and execute all it's draws
 		ref_pair.first.set_projection_matrix(projection_matrix); // unlikely it needs to be set again every frame

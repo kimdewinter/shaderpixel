@@ -50,13 +50,13 @@ namespace
 
 void Model::draw(Shader const &shader) const noexcept
 {
-	for (Mesh mesh : this->meshes)
+	for (Mesh const &mesh : this->meshes)
 		mesh.draw(shader);
 }
 
 std::optional<Texture> Model::find_loaded_texture(char const *const path) const noexcept
 {
-	for (Texture texture : this->textures_loaded)
+	for (Texture const &texture : this->textures_loaded)
 	{
 		if (std::strcmp(texture.path.data(), path) == 0)
 			return texture;
@@ -196,4 +196,19 @@ glm::mat4 Model::get_model_matrix() const noexcept
 	matrix = matrix * glm::mat4(this->orientation);	 // add rotation
 	matrix = glm::scale(matrix, this->scaling);		 // add scaling
 	return matrix;
+}
+
+glm::vec3 Model::get_position() const noexcept
+{
+	return this->position;
+}
+
+glm::vec3 Model::get_orientation() const noexcept
+{
+	return glm::eulerAngles(this->orientation);
+}
+
+glm::vec3 Model::get_scaling() const noexcept
+{
+	return glm::vec3(this->scaling);
 }
