@@ -2,14 +2,24 @@
 #define GUI_H_INCLUDED
 
 #include <SDL.h>
+#include "Renderer.h"
 
 class Gui
 {
 public:
-	Gui(SDL_Window *const window_ptr, SDL_GLContext const context_ptr) noexcept;
+	Gui(
+		SDL_Window *const window_ptr,
+		SDL_GLContext const context_ptr,
+		Renderer &renderer,
+		std::string const &selected_model_name = {}) noexcept;
 	~Gui() noexcept;
 	void process_event(SDL_Event const *const event) const noexcept;
 	void draw() const noexcept;
+	void select_model(std::string const &model_name) noexcept;
+
+private:
+	Renderer &renderer;
+	std::string selected_model_name;
 };
 
 #endif

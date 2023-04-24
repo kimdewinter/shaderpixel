@@ -83,9 +83,6 @@ int main(int const argc, char const *const *const argv)
 	// start up SDL and OpenGL, create window via the use of function pointer, and make window context current
 	SdlHandler sdl_handler{&Configuration::Technical::window_creation, Configuration::Technical::get_clear_colors()};
 
-	// start up ImGui to get a GUI
-	Gui gui(sdl_handler.window->get_window_ptr(), sdl_handler.window->get_context_ptr());
-
 	EventHandler event_handler;
 	Camera camera({0.0f, 0.0f, 0.0f});
 	Clock clock;
@@ -95,6 +92,13 @@ int main(int const argc, char const *const *const argv)
 		Configuration::WorldCreation::load_shaders(),
 		Configuration::WorldCreation::load_models(),
 		Configuration::WorldCreation::pair_shader_and_model_names());
+
+	// start up ImGui to get a GUI
+	Gui gui(
+		sdl_handler.window->get_window_ptr(),
+		sdl_handler.window->get_context_ptr(),
+		renderer,
+		DEFAULT_SELECTED_MODEL);
 
 	while (!event_handler.get_should_quit())
 	{
@@ -122,7 +126,7 @@ int main(int const argc, char const *const *const argv)
 			sdl_handler.window->swap();
 		}
 
-		std::optional<Model *> temp_model_ptr = renderer.find_model("pedestal");
+		std::optional<Model *> temp_model_ptr = renderer.find_model(DEFAULT_SELECTED_MODEL);
 		if (temp_model_ptr)
 		{
 			glm::vec3 vec = (*temp_model_ptr)->get_orientation();

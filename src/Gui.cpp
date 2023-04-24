@@ -21,12 +21,23 @@ void Gui::draw() const noexcept
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void Gui::select_model(std::string const &name) noexcept
+{
+	this->selected_model_name = name;
+}
+
 void Gui::process_event(SDL_Event const *const event) const noexcept
 {
 	ImGui_ImplSDL2_ProcessEvent(event);
 }
 
-Gui::Gui(SDL_Window *const window_ptr, SDL_GLContext const context_ptr) noexcept
+Gui::Gui(
+	SDL_Window *const window_ptr,
+	SDL_GLContext const context_ptr,
+	Renderer &renderer,
+	std::string const &selected_model_name) noexcept
+	: renderer(renderer),
+	  selected_model_name(selected_model_name)
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();

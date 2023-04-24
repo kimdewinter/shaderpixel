@@ -2,6 +2,7 @@
 #define MAIN_H_INCLUDED
 
 #define APP_NAME "shaderpixel"
+#define DEFAULT_SELECTED_MODEL "pedestal"
 #define OPENGL_VERSION_MAJOR 4		// OpenGL version to use before the decimal
 #define OPENGL_VERSION_MINOR 1		// OpenGL version to use after the decimal
 #define GLSL_VERSION "#version 410" // needed by ImGui
