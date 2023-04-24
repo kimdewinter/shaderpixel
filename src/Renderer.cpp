@@ -5,7 +5,7 @@
 std::vector<std::pair<Shader &, Model &>> Renderer::assemble_pairs() noexcept
 {
 	std::vector<std::pair<Shader &, Model &>> render_pair_refs;
-	for (std::pair<std::string, std::string> &name_pair : this->render_pair_names)
+	for (auto &name_pair : this->render_pair_names)
 	{
 		auto shader_iter = this->shaders.find(name_pair.first);
 		auto model_iter = this->models.find(name_pair.second);
@@ -17,6 +17,14 @@ std::vector<std::pair<Shader &, Model &>> Renderer::assemble_pairs() noexcept
 		render_pair_refs.push_back({shader_iter->second, model_iter->second});
 	}
 	return render_pair_refs;
+}
+
+std::optional<Model *> Renderer::find_model(std::string const &name) noexcept
+{
+	std::map<std::string, Model>::iterator model_iter = this->models.find(name);
+	if (model_iter == this->models.end())
+		return std::nullopt;
+	return &model_iter->second;
 }
 
 void Renderer::draw_all(

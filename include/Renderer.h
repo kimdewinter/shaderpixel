@@ -24,6 +24,9 @@ public:
 		glm::mat4 const &projection_matrix,
 		glm::mat4 const &view_matrix) noexcept;
 
+	/// @return returns std::nullopt if model is not found
+	std::optional<Model *> find_model(std::string const &name) noexcept;
+
 private:
 	/// @brief helper function that pairs Shaders and Models so they can be rendered, according to member variable "render_pair_names"
 	/// @return vector of paired Shader and Model instance refs
