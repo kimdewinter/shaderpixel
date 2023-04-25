@@ -14,12 +14,12 @@ public:
 		std::string const &selected_model_name = {}) noexcept;
 	~Gui() noexcept;
 	void process_event(SDL_Event const *const event) const noexcept;
-	void draw() const noexcept;
+	void draw() noexcept;
 	void select_model(std::string const &model_name) noexcept;
 
 private:
 	Renderer &renderer;
-	std::string selected_model_name;
+	char selection_name_buffer[256];
 };
 
 #endif

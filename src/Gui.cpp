@@ -1,20 +1,29 @@
 #include "Gui.h"
 #include "main.h"
+#include "ErrorHandler.h"
 #include <imgui.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <string>
 
-void Gui::draw() const noexcept
+void Gui::draw() noexcept
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
-
 	ImGui::Begin(std::string(APP_NAME).c_str());
-	static int counter = 0;
-	if (ImGui::Button("Button"))
-		counter++;
+	ImGui::InputText("string", this->selection_name_buffer, IM_ARRAYSIZE(this->selection_name_buffer));
+	std::optional<Model *> model_opt = this->renderer.find_model(std::string(this->selection_name_buffer));
+	if (model_opt == std::nullopt)
+	{
+		ImGui::Text("Selected model: none\n(no model found with that name)");
+	}
+	else
+	{
+		Model &model = **model_opt;
+		ImGui::Text("Selected model: %s", model.name.data());
+	}
+
 	ImGui::End();
 
 	ImGui::Render();
@@ -23,7 +32,8 @@ void Gui::draw() const noexcept
 
 void Gui::select_model(std::string const &name) noexcept
 {
-	this->selected_model_name = name;
+	ASSERT(sizeof(char) * name.length() < sizeof(this->selection_name_buffer), "Entered model name too long for buffer");
+	memcpy(this->selection_name_buffer, name.data(), sizeof(char) * name.length());
 }
 
 void Gui::process_event(SDL_Event const *const event) const noexcept
@@ -36,9 +46,10 @@ Gui::Gui(
 	SDL_GLContext const context_ptr,
 	Renderer &renderer,
 	std::string const &selected_model_name) noexcept
-	: renderer(renderer),
-	  selected_model_name(selected_model_name)
+	: renderer(renderer)
 {
+	memset(this->selection_name_buffer, '\0', sizeof(this->selection_name_buffer));
+	memcpy(this->selection_name_buffer, selected_model_name.data(), sizeof(char) * selected_model_name.length());
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO &io = ImGui::GetIO();
