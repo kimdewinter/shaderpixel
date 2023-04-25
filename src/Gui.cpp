@@ -6,6 +6,19 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <string>
 
+namespace
+{
+	bool vec3_changed(glm::vec3 const &before, glm::vec3 const &after) noexcept
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			if (before[i] != after[i])
+				return true;
+		}
+		return false;
+	}
+}
+
 void Gui::draw() noexcept
 {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -24,12 +37,29 @@ void Gui::draw() noexcept
 		ImGui::Text("Selected model: %s", model.name.data());
 
 		// print model's current property values
-		glm::vec3 pos = model.get_position();
-		ImGui::Text("x pos: %f\ny pos: %f\nz pos: %f\n", pos.x, pos.y, pos.z);
-		glm::vec3 rot = model.get_orientation();
-		ImGui::Text("x rot: %f\ny rot: %f\nz rot: %f\n", rot.x, rot.y, rot.z);
-		glm::vec3 scale = model.get_scaling();
-		ImGui::Text("x scale: %f\ny scale: %f\nz scale: %f\n", scale.x, scale.y, scale.z);
+		glm::vec3 position = model.get_position();
+		glm::vec3 orientation = model.get_orientation();
+		glm::vec3 scaling = model.get_scaling();
+
+		// create adjustment sliders for property values
+		ImGui::SliderFloat("position.x", &position.x, -10.0f, 10.0f);
+		ImGui::SliderFloat("position.y", &position.y, -10.0f, 10.0f);
+		ImGui::SliderFloat("position.z", &position.z, -10.0f, 10.0f);
+
+		ImGui::SliderFloat("orientation.x", &orientation.x, -10.0f, 10.0f);
+		ImGui::SliderFloat("orientation.y", &orientation.y, -10.0f, 10.0f);
+		ImGui::SliderFloat("orientation.z", &orientation.z, -10.0f, 10.0f);
+
+		ImGui::SliderFloat("scaling.x", &scaling.x, -1.0f, 1.0f);
+		ImGui::SliderFloat("scaling.y", &scaling.y, -1.0f, 1.0f);
+		ImGui::SliderFloat("scaling.z", &scaling.z, -1.0f, 1.0f);
+
+		if (vec3_changed(model.get_position(), position))
+			model.set_position(position);
+		if (vec3_changed(model.get_orientation(), orientation))
+			model.set_orientation(orientation);
+		if (vec3_changed(model.get_scaling(), scaling))
+			model.set_scaling(scaling);
 	}
 
 	ImGui::End();

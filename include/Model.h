@@ -40,9 +40,9 @@ public:
 	glm::vec3 get_position() const noexcept;
 	glm::vec3 get_orientation() const noexcept;
 	glm::vec3 get_scaling() const noexcept;
-	// void set_position(glm::vec3 const &position) noexcept;
-	// void set_orientation(glm::vec3 const &orientation) noexcept;
-	// void set_scaling(glm::vec3 const &scaling) noexcept;
+	void set_position(glm::vec3 &position) noexcept;
+	void set_orientation(glm::vec3 &orientation) noexcept;
+	void set_scaling(glm::vec3 &scaling) noexcept;
 
 	std::string const name;
 	std::string const directory; // directory where model file is stored

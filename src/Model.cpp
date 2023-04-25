@@ -212,3 +212,18 @@ glm::vec3 Model::get_scaling() const noexcept
 {
 	return glm::vec3(this->scaling);
 }
+
+void Model::set_position(glm::vec3 &position) noexcept
+{
+	this->position = position;
+}
+
+void Model::set_orientation(glm::vec3 &orientation) noexcept
+{
+	this->orientation = orientation;
+}
+
+void Model::set_scaling(glm::vec3 &scaling) noexcept
+{
+	this->scaling = scaling;
+}

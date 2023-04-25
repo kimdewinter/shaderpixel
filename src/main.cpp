@@ -33,10 +33,10 @@ namespace Configuration
 		std::map<std::string, Model> load_models() noexcept
 		{
 			std::map<std::string, Model> models;
-			models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, -10.0f, 0.0f})});
+			models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, 1.053f, 0.0f})});
 			// models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, 0.0f, -10.0f})});
 			// models.insert(std::pair<std::string, Model>{"pillar", Model("pillar", "resources/Pillar/LP_Pillar_Textured.obj", {0.0f, 0.0f, -20.0f})});
-			models.insert(std::pair<std::string, Model>{"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {0.0f, 0.0f, 0.0f}, glm::quat({0.0f, 0.0f, 0.0f}), {0.01f, 0.01f, 0.01f})});
+			models.insert(std::pair<std::string, Model>{"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {3.0f, -0.2f, 0.1f}, glm::quat({1.567f, 0.0f, 0.0f}), {0.01f, 0.01f, 0.01f})});
 
 			return models;
 		}
