@@ -12,7 +12,7 @@ void Gui::draw() noexcept
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 	ImGui::Begin(std::string(APP_NAME).c_str());
-	ImGui::InputText("string", this->selection_name_buffer, IM_ARRAYSIZE(this->selection_name_buffer));
+	ImGui::InputText("model name", this->selection_name_buffer, IM_ARRAYSIZE(this->selection_name_buffer));
 	std::optional<Model *> model_opt = this->renderer.find_model(std::string(this->selection_name_buffer));
 	if (model_opt == std::nullopt)
 	{
@@ -22,6 +22,14 @@ void Gui::draw() noexcept
 	{
 		Model &model = **model_opt;
 		ImGui::Text("Selected model: %s", model.name.data());
+
+		// print model's current property values
+		glm::vec3 pos = model.get_position();
+		ImGui::Text("x pos: %f\ny pos: %f\nz pos: %f\n", pos.x, pos.y, pos.z);
+		glm::vec3 rot = model.get_orientation();
+		ImGui::Text("x rot: %f\ny rot: %f\nz rot: %f\n", rot.x, rot.y, rot.z);
+		glm::vec3 scale = model.get_scaling();
+		ImGui::Text("x scale: %f\ny scale: %f\nz scale: %f\n", scale.x, scale.y, scale.z);
 	}
 
 	ImGui::End();

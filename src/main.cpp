@@ -125,14 +125,6 @@ int main(int const argc, char const *const *const argv)
 			// swap window's buffer so that it gets rendered onto the screen
 			sdl_handler.window->swap();
 		}
-
-		std::optional<Model *> temp_model_ptr = renderer.find_model(DEFAULT_SELECTED_MODEL);
-		if (temp_model_ptr)
-		{
-			glm::vec3 vec = (*temp_model_ptr)->get_orientation();
-			std::string vec_str = std::to_string(vec.x) + ", " + std::to_string(vec.y) + ", " + std::to_string(vec.z);
-			std::cout << vec_str << std::endl;
-		}
 	}
 	std::cerr << APP_NAME << " exited normally." << std::endl;
 	return EXIT_SUCCESS;
