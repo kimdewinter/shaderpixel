@@ -121,7 +121,7 @@ Shader::Shader(
 		glDeleteShader(geometry_id);
 }
 
-void Shader::use() const noexcept
+void Shader::use(bool const disable_textures) const noexcept
 {
 	glUseProgram(this->opengl_id);
 }

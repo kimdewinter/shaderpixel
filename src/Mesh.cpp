@@ -89,30 +89,37 @@ Mesh::Mesh(
 
 void Mesh::draw(Shader const &shader) const noexcept
 {
-	// bind appropriate textures
-	unsigned int texture_diffusen = 1;
-	unsigned int texture_specularn = 1;
-	unsigned int texture_normaln = 1;
-	unsigned int texture_heightn = 1;
-	for (unsigned int i = 0; i < textures.size(); i++)
+	if (!this->textures.size())
+		glUniform1i(glGetUniformLocation(shader.get_opengl_id(), "disable_textures"), 1);
+	else
 	{
-		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
-		// retrieve texture number (the n in texture_diffusen)
-		std::string number;
-		std::string name = this->textures[i].type;
-		if (name == "texture_diffuse")
-			number = std::to_string(texture_diffusen++);
-		else if (name == "texture_specular")
-			number = std::to_string(texture_specularn++);
-		else if (name == "texture_normal")
-			number = std::to_string(texture_normaln++);
-		else if (name == "texture_height")
-			number = std::to_string(texture_heightn++);
+		glUniform1i(glGetUniformLocation(shader.get_opengl_id(), "disable_textures"), 0);
 
-		glUniform1i(glGetUniformLocation(shader.get_opengl_id(), (name + number).c_str()), i);
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+		// bind appropriate textures
+		unsigned int texture_diffusen = 1;
+		unsigned int texture_specularn = 1;
+		unsigned int texture_normaln = 1;
+		unsigned int texture_heightn = 1;
+		for (unsigned int i = 0; i < textures.size(); i++)
+		{
+			glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
+			// retrieve texture number (the n in texture_diffusen)
+			std::string number;
+			std::string name = this->textures[i].type;
+			if (name == "texture_diffuse")
+				number = std::to_string(texture_diffusen++);
+			else if (name == "texture_specular")
+				number = std::to_string(texture_specularn++);
+			else if (name == "texture_normal")
+				number = std::to_string(texture_normaln++);
+			else if (name == "texture_height")
+				number = std::to_string(texture_heightn++);
+
+			glUniform1i(glGetUniformLocation(shader.get_opengl_id(), (name + number).c_str()), i);
+			glBindTexture(GL_TEXTURE_2D, textures[i].id);
+		}
+		glActiveTexture(GL_TEXTURE0);
 	}
-	glActiveTexture(GL_TEXTURE0);
 
 	// draw
 	glBindVertexArray(VAO);

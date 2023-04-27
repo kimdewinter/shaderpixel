@@ -22,7 +22,7 @@ public:
 		std::string const &vertex_path,
 		std::string const &fragment_path,
 		std::string const &geometry_path = {}) noexcept;
-	void use() const noexcept;
+	void use(bool const disable_textures) const noexcept;
 	unsigned int get_opengl_id() const noexcept;
 	void set_projection_matrix(glm::mat4 const &value) const noexcept;
 	void set_view_matrix(glm::mat4 const &value) const noexcept;
