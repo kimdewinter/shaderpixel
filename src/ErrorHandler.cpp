@@ -1,7 +1,10 @@
 #include "ErrorHandler.h"
-#include <execinfo.h>
 #include <cstring>
 #include <signal.h>
+#include <string>
+#ifdef __APPLE__ || __linux__
+#include <execinfo.h>
+#endif
 
 namespace
 {
@@ -16,6 +19,7 @@ namespace
 	}
 }
 
+#ifdef __APPLE__ || __linux__
 std::optional<std::string> Error::get_stacktrace() noexcept
 {
 	// get the backtrace symbols
@@ -40,6 +44,12 @@ std::optional<std::string> Error::get_stacktrace() noexcept
 	char_lines = NULL;
 	return output;
 }
+#else
+std::optional<std::string> Error::get_stacktrace() noexcept
+{
+	return "<unable to retrieve stacktrace; execinfo.h function backtrace() only available on mac and linux";
+}
+#endif
 
 void Error::output_stacktrace(std::ostream &output_stream) noexcept
 {

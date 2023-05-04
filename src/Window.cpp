@@ -3,11 +3,11 @@
 #include "ErrorHandler.h"
 
 Window::Window(
-	std::string const &window_name,
+	std::string const& window_name,
 	int const window_width,
 	int const window_height) noexcept : window_name(window_name),
-										window_width(window_width),
-										window_height(window_height)
+	window_width(window_width),
+	window_height(window_height)
 {
 	// check arguments
 	ASSERT(window_width > 0 && window_height > 0, "invalid window dimension, width and height must be > 0");
@@ -15,17 +15,19 @@ Window::Window(
 
 	// set attributes
 	ASSERT(
-#ifdef __APPLE__
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) == 0 && // For extra performance, don't allow pre-3.0 backward compatability
-#endif
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) == 0 &&
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_VERSION_MINOR) == 0 &&
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_VERSION_MINOR) == 0 &&
-			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, DOUBLE_BUFFER) == 0 &&
-			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, DEPTH_SIZE) == 0 &&
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, MSAA_BUFFERS) == 0 &&
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, MSAA_SAMPLES) == 0,
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) == 0 &&
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_VERSION_MINOR) == 0 &&
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_VERSION_MINOR) == 0 &&
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, DOUBLE_BUFFER) == 0 &&
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, DEPTH_SIZE) == 0 &&
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, MSAA_BUFFERS) == 0 &&
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, MSAA_SAMPLES) == 0,
 		"error calling SDL_GL_SetAttribute(): " + std::string(SDL_GetError()));
+#ifdef __APPLE__
+	ASSERT(
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) == 0, // For extra performance, don't allow pre-3.0 backward compatability
+		"error calling SDL_GL_SetAttribute(): " + std::string(SDL_GetError()));
+#endif
 
 	// create window
 	ASSERT(this->window_ptr = SDL_CreateWindow(
