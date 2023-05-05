@@ -33,16 +33,17 @@ namespace
 }
 
 Shader::Shader(
-	std::string const &name,
-	std::string const &projection_uniform_name,
-	std::string const &view_uniform_name,
-	std::string const &model_uniform_name,
-	std::string const &vertex_path,
-	std::string const &fragment_path,
-	std::string const &geometry_path) noexcept : name(name),
-												 projection_uniform_name(projection_uniform_name),
-												 view_uniform_name(view_uniform_name),
-												 model_uniform_name(model_uniform_name)
+	std::string const& name,
+	std::string const& projection_uniform_name,
+	std::string const& view_uniform_name,
+	std::string const& model_uniform_name,
+	std::string const& vertex_path,
+	std::string const& fragment_path,
+	std::string const& geometry_path) noexcept :
+	name(name),
+	projection_uniform_name(projection_uniform_name),
+	view_uniform_name(view_uniform_name),
+	model_uniform_name(model_uniform_name)
 {
 	// retrieve source code
 	std::string vertex_code, fragment_code, geometry_code;
@@ -80,7 +81,7 @@ Shader::Shader(
 	}
 
 	// compile vertex shader
-	const char *vertex_code_cstr = vertex_code.c_str();
+	const char* vertex_code_cstr = vertex_code.c_str();
 	unsigned int vertex_id;
 	vertex_id = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex_id, 1, &vertex_code_cstr, NULL);
@@ -88,17 +89,17 @@ Shader::Shader(
 	check_compile_errors(vertex_id, "VERTEX");
 
 	// compile fragment shader
-	const char *fragment_code_cstr = fragment_code.c_str();
+	const char* fragment_code_cstr = fragment_code.c_str();
 	unsigned int fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment_id, 1, &fragment_code_cstr, NULL);
 	glCompileShader(fragment_id);
 	check_compile_errors(fragment_id, "FRAGMENT");
 
-	unsigned int geometry_id = 0;
 	// compile geometry shader (if necessary)
+	unsigned int geometry_id = 0;
 	if (geometry_path.empty() == false)
 	{
-		const char *geometry_code_cstr = geometry_code.c_str();
+		const char* geometry_code_cstr = geometry_code.c_str();
 		unsigned int geometry_id = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geometry_id, 1, &geometry_code_cstr, NULL);
 		glCompileShader(geometry_id);
@@ -131,29 +132,29 @@ unsigned int Shader::get_opengl_id() const noexcept
 	return this->opengl_id;
 }
 
-void Shader::set_projection_matrix(glm::mat4 const &value) const noexcept
+void Shader::set_projection_matrix(glm::mat4 const& value) const noexcept
 {
 	this->set_uniform_mat4(this->projection_uniform_name, value);
 }
 
-void Shader::set_view_matrix(glm::mat4 const &value) const noexcept
+void Shader::set_view_matrix(glm::mat4 const& value) const noexcept
 {
 	this->set_uniform_mat4(this->view_uniform_name, value);
 }
 
-void Shader::set_model_matrix(glm::mat4 const &value) const noexcept
+void Shader::set_model_matrix(glm::mat4 const& value) const noexcept
 {
 	this->set_uniform_mat4(this->model_uniform_name, value);
 }
 
-void Shader::set_uniform_int(std::string const &name, int const value) const noexcept
+void Shader::set_uniform_int(std::string const& name, int const value) const noexcept
 {
 	// ideally you wouldn't want to call glUseProgram() more than necessary
 	this->use();
 	glUniform1i(glGetUniformLocation(this->opengl_id, name.c_str()), value);
 }
 
-void Shader::set_uniform_mat4(std::string const &name, glm::mat4 const &value) const noexcept
+void Shader::set_uniform_mat4(std::string const& name, glm::mat4 const& value) const noexcept
 {
 	// ideally you wouldn't want to call glUseProgram() more than necessary
 	this->use();

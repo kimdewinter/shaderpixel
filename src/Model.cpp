@@ -7,7 +7,7 @@
 
 namespace
 {
-	unsigned int TextureFromFile(std::string const &path, std::string const &directory)
+	unsigned int TextureFromFile(std::string const& path, std::string const& directory)
 	{
 		std::string file_name = directory + '/' + path;
 
@@ -18,7 +18,7 @@ namespace
 		// use stb_image to import an image
 		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded textures on the y-axis before loading model
 		int width, height, n_components;
-		unsigned char *data = stbi_load(file_name.c_str(), &width, &height, &n_components, 0);
+		unsigned char* data = stbi_load(file_name.c_str(), &width, &height, &n_components, 0);
 		ASSERT(data, "texture failed to load at path: " + path);
 
 		// set the colour components
@@ -48,15 +48,15 @@ namespace
 	}
 }
 
-void Model::draw(Shader const &shader) const noexcept
+void Model::draw(Shader const& shader) const noexcept
 {
-	for (Mesh const &mesh : this->meshes)
+	for (Mesh const& mesh : this->meshes)
 		mesh.draw(shader);
 }
 
-std::optional<Texture> Model::find_loaded_texture(char const *const path) const noexcept
+std::optional<Texture> Model::find_loaded_texture(char const* const path) const noexcept
 {
-	for (Texture const &texture : this->textures_loaded)
+	for (Texture const& texture : this->textures_loaded)
 	{
 		if (std::strcmp(texture.path.data(), path) == 0)
 			return texture;
@@ -65,9 +65,9 @@ std::optional<Texture> Model::find_loaded_texture(char const *const path) const 
 }
 
 std::vector<Texture> Model::load_material_textures(
-	aiMaterial const *const mat,
+	aiMaterial const* const mat,
 	aiTextureType const type,
-	std::string const &type_name) noexcept
+	std::string const& type_name) noexcept
 {
 	std::vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
@@ -93,18 +93,18 @@ std::vector<Texture> Model::load_material_textures(
 	return textures;
 }
 
-Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) noexcept
+Mesh Model::process_mesh(aiMesh const* const mesh, aiScene const* const scene) noexcept
 {
 	std::vector<Vertex> vertices;
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
 		// process vertex positions
-		vertex.position = {mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z};
+		vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 
 		// process vertex normals
 		if (mesh->HasNormals())
-			vertex.normal = {mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z};
+			vertex.normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
 		// process texture coordinates
 		if (mesh->mTextureCoords[0])
@@ -112,9 +112,9 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 			// a vertex can contain up to 8 different texture coordinates
 			// we make the assumption that we won't use models where a vertex can have
 			// multiple texture coordinates so we always take the first set (0)
-			vertex.texture_coordinates = {mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y};
-			vertex.tangent = {mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z};
-			vertex.bitangent = {mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z};
+			vertex.texture_coordinates = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+			vertex.tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+			vertex.bitangent = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
 		}
 
 		vertices.push_back(vertex);
@@ -135,7 +135,7 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	// diffuse: texture_diffuseN
 	// specular: texture_specularN
 	// normal: texture_normalN
-	aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 	// diffuse maps
 	std::vector<Texture> const diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
@@ -152,12 +152,12 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	return Mesh(std::move(vertices), std::move(indices), std::move(textures));
 }
 
-void Model::process_node(aiNode const *const node, aiScene const *const scene) noexcept
+void Model::process_node(aiNode const* const node, aiScene const* const scene) noexcept
 {
 	// process all of the node's meshes
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh const *const assimp_type_mesh = scene->mMeshes[node->mMeshes[i]];
+		aiMesh const* const assimp_type_mesh = scene->mMeshes[node->mMeshes[i]];
 		Mesh own_type_mesh = process_mesh(assimp_type_mesh, scene);
 		this->meshes.push_back(own_type_mesh);
 	}
@@ -167,23 +167,23 @@ void Model::process_node(aiNode const *const node, aiScene const *const scene) n
 }
 
 Model::Model(
-	std::string const &name,
-	std::string const &path,
-	glm::vec3 const &position,
-	glm::quat const &orientation,
-	glm::vec3 const &scaling) noexcept : name(name),
-										 directory(path.substr(0, path.find_last_of('/'))),
-										 position(position),
-										 orientation(orientation),
-										 scaling(scaling)
+	std::string const& name,
+	std::string const& path,
+	glm::vec3 const& position,
+	glm::quat const& orientation,
+	glm::vec3 const& scaling) noexcept : name(name),
+	directory(path.substr(0, path.find_last_of('/'))),
+	position(position),
+	orientation(orientation),
+	scaling(scaling)
 {
 	// read file with Assimp
 	Assimp::Importer importer;
-	aiScene const *const scene = importer.ReadFile(path, ASSIMP_POSTPROCESSING);
+	aiScene const* const scene = importer.ReadFile(path, ASSIMP_POSTPROCESSING);
 
 	// check if read was succesful, if data is complete, and if the root node is not null
 	ASSERT(scene && !(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) && scene->mRootNode,
-		   "error with Assimp file read error: " + std::string(importer.GetErrorString()));
+		"error with Assimp file read error: " + std::string(importer.GetErrorString()));
 
 	// process Assimp's root node recursively
 	process_node(scene->mRootNode, scene);
@@ -213,17 +213,17 @@ glm::vec3 Model::get_scaling() const noexcept
 	return glm::vec3(this->scaling);
 }
 
-void Model::set_position(glm::vec3 &position) noexcept
+void Model::set_position(glm::vec3& position) noexcept
 {
 	this->position = position;
 }
 
-void Model::set_orientation(glm::vec3 &orientation) noexcept
+void Model::set_orientation(glm::vec3& orientation) noexcept
 {
 	this->orientation = orientation;
 }
 
-void Model::set_scaling(glm::vec3 &scaling) noexcept
+void Model::set_scaling(glm::vec3& scaling) noexcept
 {
 	this->scaling = scaling;
 }

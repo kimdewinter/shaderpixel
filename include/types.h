@@ -11,10 +11,10 @@
 struct Vertex
 {
 	glm::vec3 position;
-	glm::vec3 normal = glm::vec3{0.0f, 0.0f, 0.0f};
-	glm::vec2 texture_coordinates = glm::vec2{0.0f, 0.0f};
-	glm::vec3 tangent = glm::vec3{0.0f, 0.0f, 0.0f};
-	glm::vec3 bitangent = glm::vec3{0.0f, 0.0f, 0.0f};
+	glm::vec3 normal = glm::vec3{ 0.0f, 0.0f, 0.0f };
+	glm::vec2 texture_coordinates = glm::vec2{ 0.0f, 0.0f };
+	glm::vec3 tangent = glm::vec3{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 bitangent = glm::vec3{ 0.0f, 0.0f, 0.0f };
 	std::array<int, MAX_BONE_INFLUENCE> bone_ids;		// bone indexes that influence this vertex
 	std::array<float, MAX_BONE_INFLUENCE> bone_weights; // weights of each bone
 };

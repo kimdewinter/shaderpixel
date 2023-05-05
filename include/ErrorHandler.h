@@ -34,7 +34,7 @@ namespace Error
 	std::optional<std::string> get_stacktrace() noexcept;
 
 	/// @param output_stream where to output the stacktrace to; default is std::cerr
-	void output_stacktrace(std::ostream &output_stream = std::cerr) noexcept;
+	void output_stacktrace(std::ostream& output_stream = std::cerr) noexcept;
 
 	/// @brief prints stack trace upon segfault; to use, simply call at the very beginning of main
 	void setup_segfault_signalhandler() noexcept;

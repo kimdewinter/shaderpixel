@@ -15,17 +15,17 @@ namespace
 }
 
 Camera::Camera(
-	glm::vec3 const &position,
-	glm::vec3 const &world_up,
+	glm::vec3 const& position,
+	glm::vec3 const& world_up,
 	float yaw,
 	float pitch) noexcept : position(position),
-							world_up(world_up),
-							yaw(yaw),
-							pitch(pitch),
-							front(glm::vec3(0.0f, 0.0f, 0.0f)),
-							movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
-							mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
-							zoom(CAMERA_DEFAULT_ZOOM)
+	world_up(world_up),
+	yaw(yaw),
+	pitch(pitch),
+	front(glm::vec3(0.0f, 0.0f, 0.0f)),
+	movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
+	mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
+	zoom(CAMERA_DEFAULT_ZOOM)
 {
 	update_camera_vectors();
 }
@@ -35,13 +35,13 @@ Camera::Camera(
 	float world_up[3],
 	float yaw,
 	float pitch) noexcept : position(glm::vec3(position[0], position[1], position[2])),
-							world_up(glm::vec3(world_up[0], world_up[1], world_up[2])),
-							yaw(yaw),
-							pitch(pitch),
-							front(glm::vec3(0.0f, 0.0f, -1.0f)),
-							movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
-							mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
-							zoom(CAMERA_DEFAULT_ZOOM)
+	world_up(glm::vec3(world_up[0], world_up[1], world_up[2])),
+	yaw(yaw),
+	pitch(pitch),
+	front(glm::vec3(0.0f, 0.0f, -1.0f)),
+	movement_speed(CAMERA_DEFAULT_MOVEMENT_SPEED),
+	mouse_sensitivity(CAMERA_DEFAULT_MOUSE_SENSITIVITY),
+	zoom(CAMERA_DEFAULT_ZOOM)
 {
 	update_camera_vectors();
 }
@@ -52,7 +52,7 @@ glm::mat4 Camera::get_view_matrix() noexcept
 	return glm::lookAt(this->position, this->position + this->front, this->up);
 }
 
-glm::mat4 Camera ::get_projection_matrix() const noexcept
+glm::mat4 Camera::get_projection_matrix() const noexcept
 {
 	return this->projection_matrix;
 }
@@ -73,7 +73,7 @@ void Camera::update_camera_vectors() noexcept
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 }
 
-void Camera::move_camera(Camera::Direction const direction, std::chrono::duration<long long, std::nano> const &delta_time) noexcept
+void Camera::move_camera(Camera::Direction const direction, std::chrono::duration<long long, std::nano> const& delta_time) noexcept
 {
 	float const movement_magnitude = this->movement_speed * nanoseconds_to_seconds(delta_time);
 	switch (direction)

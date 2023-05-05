@@ -6,7 +6,7 @@
 void Mesh::constructor_helper() noexcept
 {
 	ASSERT(!this->vertices.empty() && !this->indices.empty(),
-		   "warning: mesh constructor encountered invalid argument");
+		"warning: mesh constructor encountered invalid argument");
 
 	// request OpenGL to generate VAO, VBO, EBO objects
 	glGenVertexArrays(1, &this->VAO);
@@ -35,40 +35,40 @@ void Mesh::constructor_helper() noexcept
 	// now we set vertex attribute pointers, which explains where in the Vertex struct each attribute begins
 	// vertex positions
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
 	// vertex normals
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
 	// vertex texture coords
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texture_coordinates));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texture_coordinates));
 
 	// vertex tangent
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tangent));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
 
 	// vertex bitangent
 	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bitangent));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
 	// ids
 	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bone_ids));
+	glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bone_ids));
 
 	// weights
 	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, bone_weights));
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bone_weights));
 
 	// release VAO binding
 	glBindVertexArray(0);
 }
 
 Mesh::Mesh(
-	std::vector<Vertex> &&vertices,
-	std::vector<unsigned int> &&indices,
-	std::vector<Texture> &&textures) noexcept
+	std::vector<Vertex>&& vertices,
+	std::vector<unsigned int>&& indices,
+	std::vector<Texture>&& textures) noexcept
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -77,9 +77,9 @@ Mesh::Mesh(
 }
 
 Mesh::Mesh(
-	std::vector<Vertex> const &vertices,
-	std::vector<unsigned int> const &indices,
-	std::vector<Texture> const &textures) noexcept
+	std::vector<Vertex> const& vertices,
+	std::vector<unsigned int> const& indices,
+	std::vector<Texture> const& textures) noexcept
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -87,7 +87,7 @@ Mesh::Mesh(
 	constructor_helper();
 }
 
-void Mesh::draw(Shader const &shader) const noexcept
+void Mesh::draw(Shader const& shader) const noexcept
 {
 	if (!this->textures.size())
 		glUniform1i(glGetUniformLocation(shader.get_opengl_id(), "disable_textures"), 1);
