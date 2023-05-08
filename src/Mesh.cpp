@@ -68,22 +68,22 @@ void Mesh::constructor_helper() noexcept
 Mesh::Mesh(
 	std::vector<Vertex>&& vertices,
 	std::vector<unsigned int>&& indices,
-	std::vector<Texture>&& textures) noexcept
+	std::vector<Texture>&& textures) noexcept :
+	vertices(vertices),
+	indices(indices),
+	textures(textures)
 {
-	this->vertices = vertices;
-	this->indices = indices;
-	this->textures = textures;
 	constructor_helper();
 }
 
 Mesh::Mesh(
 	std::vector<Vertex> const& vertices,
 	std::vector<unsigned int> const& indices,
-	std::vector<Texture> const& textures) noexcept
+	std::vector<Texture> const& textures) noexcept :
+	vertices(vertices),
+	indices(indices),
+	textures(textures)
 {
-	this->vertices = vertices;
-	this->indices = indices;
-	this->textures = textures;
 	constructor_helper();
 }
 

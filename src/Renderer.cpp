@@ -47,8 +47,8 @@ void Renderer::draw_all(
 Renderer::Renderer(
 	std::map<std::string, Shader> const& shaders,
 	std::map<std::string, Model> const& models,
-	std::multimap<std::string, std::string> const& render_pair_names) noexcept
-	: shaders(shaders),
+	std::multimap<std::string, std::string> const& render_pair_names) noexcept :
+	shaders(shaders),
 	models(models),
 	render_pair_names(render_pair_names)
 {
@@ -57,8 +57,8 @@ Renderer::Renderer(
 Renderer::Renderer(
 	std::map<std::string, Shader>&& shaders,
 	std::map<std::string, Model>&& models,
-	std::multimap<std::string, std::string>&& render_pair_names) noexcept
-	: shaders(std::move(shaders)),
+	std::multimap<std::string, std::string>&& render_pair_names) noexcept :
+	shaders(std::move(shaders)),
 	models(std::move(models)),
 	render_pair_names(std::move(render_pair_names))
 {
