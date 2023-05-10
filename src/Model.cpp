@@ -18,6 +18,7 @@ namespace
 		// use stb_image to import an image
 		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded textures on the y-axis before loading model
 		int width, height, n_components;
+		// Warning: on Windows, it sometimes only loads correctly if it's a square image of at least 1024 pixels in each dimension
 		unsigned char* data = stbi_load(file_name.c_str(), &width, &height, &n_components, 0);
 		ASSERT(data, "texture failed to load at path: " + path);
 
@@ -25,10 +26,12 @@ namespace
 		GLenum format;
 		if (n_components == 1)
 			format = GL_RED;
+		else if (n_components == 3)
+			format = GL_RGB;
 		else if (n_components == 4)
 			format = GL_RGBA;
 		else
-			format = GL_RGB;
+			ASSERT(false, "texture failed to load due to n_components being: " + n_components);
 
 		// send texture to GPU
 		glBindTexture(GL_TEXTURE_2D, id);
