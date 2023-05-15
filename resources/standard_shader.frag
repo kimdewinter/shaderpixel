@@ -9,7 +9,7 @@ uniform bool disable_textures; //at time of writing, this uniform is set in Mesh
 void main()
 {    
     if (disable_textures)
-		FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	else
 		FragColor = texture(texture_diffuse1, TexCoords);
 }
