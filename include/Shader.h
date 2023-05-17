@@ -4,6 +4,20 @@
 #include <glm/mat4x4.hpp>
 #include <string>
 
+namespace Shader
+{
+	struct ShaderRecipe
+	{
+		std::string const name = {};
+		std::string const vertex_source_path = {};
+		std::string const fragment_source_path = {};
+		std::string const geometry_source_path = {};
+		std::string const enable_pos_uniform_name = "u_pos_on";
+		std::string const modelview_uniform_name = "u_modelview";
+		std::string const projection_uniform_name = "u_projection";
+	};
+}
+
 class Shader
 {
 public:
@@ -35,9 +49,8 @@ private:
 	void set_uniform_mat4(std::string const& name, glm::mat4 const& value) const noexcept;
 
 	unsigned int opengl_id;
-	std::string const projection_uniform_name;
-	std::string const view_uniform_name;
-	std::string const model_uniform_name;
+	std::string const modelview_uniform_name = "u_modelview";
+	std::string const projection_uniform_name = "u_projection";
 };
 
 #endif
