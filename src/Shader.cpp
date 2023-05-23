@@ -59,6 +59,11 @@ namespace
 	}
 }
 
+void AbstractShader::use() const noexcept
+{
+	glUseProgram(this->opengl_id);
+}
+
 Shader::Shader(
 	std::string const &name,
 	std::string const &modelview_uniform_name,
@@ -69,6 +74,7 @@ Shader::Shader(
 												 modelview_uniform_name(modelview_uniform_name),
 												 projection_uniform_name(projection_uniform_name)
 {
+
 	// retrieve source code
 	std::string vertex_code, fragment_code, geometry_code;
 	std::ifstream vertex_file, fragment_file, geometry_file;
