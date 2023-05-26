@@ -105,44 +105,51 @@ void ShaderInterface::use() const noexcept
 }
 
 template <typename T>
-void Uniform<T>::set(ShaderInterface const &p, T const &value) const noexcept
+Uniform<T>::Uniform(std::string const &name, ShaderInterface const &p) noexcept
+	: location(glGetUniformLocation(p.get_id(), this->name.c_str()))
+
 {
-	ASSERT(false, "unrecognized type given to Uniform::set");
+}
+
+template <typename T>
+void Uniform<T>::set(T const &value) const noexcept
+{
+	ASSERT(false, "unrecognized type given to Uniform::set()");
 }
 
 template <>
-void Uniform<int>::set(ShaderInterface const &p, int const &value) const noexcept
+void Uniform<int>::set(int const &value) const noexcept
 {
-	glUniform1i(this->get_uniform_location(p), static_cast<GLint>(value));
+	glUniform1i(this->location, static_cast<GLint>(value));
 }
 
 template <>
-void Uniform<unsigned int>::set(ShaderInterface const &p, unsigned int const &value) const noexcept
+void Uniform<unsigned int>::set(unsigned int const &value) const noexcept
 {
-	glUniform1ui(this->get_uniform_location(p), static_cast<GLuint>(value));
+	glUniform1ui(this->location, static_cast<GLuint>(value));
 }
 
 template <>
-void Uniform<float>::set(ShaderInterface const &p, float const &value) const noexcept
+void Uniform<float>::set(float const &value) const noexcept
 {
-	glUniform1f(this->get_uniform_location(p), static_cast<GLfloat>(value));
+	glUniform1f(this->location, static_cast<GLfloat>(value));
 }
 
 template <>
-void Uniform<glm::vec3>::set(ShaderInterface const &p, glm::vec3 const &value) const noexcept
+void Uniform<glm::vec3>::set(glm::vec3 const &value) const noexcept
 {
 	glUniform3f(
-		this->get_uniform_location(p),
+		this->location,
 		static_cast<GLfloat>(value.x),
 		static_cast<GLfloat>(value.y),
 		static_cast<GLfloat>(value.z));
 }
 
 template <>
-void Uniform<glm::vec4>::set(ShaderInterface const &p, glm::vec4 const &value) const noexcept
+void Uniform<glm::vec4>::set(glm::vec4 const &value) const noexcept
 {
 	glUniform4f(
-		this->get_uniform_location(p),
+		this->location,
 		static_cast<GLfloat>(value.x),
 		static_cast<GLfloat>(value.y),
 		static_cast<GLfloat>(value.z),
@@ -150,19 +157,11 @@ void Uniform<glm::vec4>::set(ShaderInterface const &p, glm::vec4 const &value) c
 }
 
 template <>
-void Uniform<glm::mat4>::set(ShaderInterface const &p, glm::mat4 const &value) const noexcept
+void Uniform<glm::mat4>::set(glm::mat4 const &value) const noexcept
 {
 	glUniformMatrix4fv(
-		this->get_uniform_location(p),
+		this->location,
 		1,
 		GL_FALSE,
 		static_cast<GLfloat const *>(&value[0][0]));
-}
-
-template <typename T>
-GLint Uniform<T>::get_uniform_location(ShaderInterface const &p) const noexcept
-{
-	GLint const n = glGetUniformLocation(p.get_id(), this->name.c_str());
-	ASSERT(static_cast<int>(n) >= 0, "glGetUniformLocation returned -1");
-	return n;
 }

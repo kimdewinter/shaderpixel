@@ -21,26 +21,23 @@ protected:
 	GLuint id; // id that OpenGL knows the shader program by
 };
 
-class StandardShader : public ShaderInterface
-{
-public:
-};
-
-/// @brief a Shader class can own one or more instances of this to handle setting of uniforms
+/// @brief a ShaderInterface-derived class can own one or more instances of this to handle setting of uniforms
 /// @tparam T the type of uniform (can be ints, floats, and vectors/matrices of these)
 template <typename T>
 class Uniform
 {
 public:
-	std::string const name = {}; // what the uniform is called in the shader's source code
+	/// @param name what the uniform is called in the shader's source code
+	/// @param p const reference to caller (which should own this Uniform)
+	Uniform(std::string const &name, ShaderInterface const &p) noexcept;
 
 	/// @brief before you call this, first call glUseProgram()
 	/// @param p the ShaderInterface that owns this Uniform
 	/// @param value value to set to the uniform in OpenGL
-	void set(ShaderInterface const &p, T const &value) const noexcept;
+	void set(T const &value) const noexcept;
 
 private:
-	GLint get_uniform_location(ShaderInterface const &p) const noexcept;
+	GLint const location;
 };
 
 #endif
