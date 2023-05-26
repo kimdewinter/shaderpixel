@@ -13,8 +13,9 @@ public:
 		std::string const &vertex_path,
 		std::string const &fragment_path,
 		std::string const &geometry_path) noexcept;
-	virtual void apply_uniforms() const noexcept = 0;
 	void use() const noexcept;
+	GLuint get_id() const noexcept;
+	virtual void apply_uniforms() const noexcept = 0;
 
 protected:
 	GLuint id; // id that OpenGL knows the shader program by

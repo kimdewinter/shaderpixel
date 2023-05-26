@@ -66,6 +66,7 @@ namespace
 			glAttachShader(program, *geometry);
 		glLinkProgram(program);
 		check_compile_errors(program, "PROGRAM");
+		return program;
 	}
 }
 
@@ -93,6 +94,11 @@ ShaderInterface::ShaderInterface(
 		glDeleteShader(*geometry);
 }
 
+GLuint ShaderInterface::get_id() const noexcept
+{
+	return this->id;
+}
+
 void ShaderInterface::use() const noexcept
 {
 	glUseProgram(this->id);
@@ -103,22 +109,25 @@ void Uniform<T>::set(ShaderInterface const &p, T value) const noexcept
 {
 	ASSERT(false, "unrecognized type given to Uniform::set");
 }
-
+template <>
 void Uniform<int>::set(ShaderInterface const &p, int value) const noexcept
 {
 	glUniform1i(this->get_uniform_location(p), static_cast<GLint>(value));
 }
 
+template <>
 void Uniform<unsigned int>::set(ShaderInterface const &p, unsigned int value) const noexcept
 {
 	glUniform1ui(this->get_uniform_location(p), static_cast<GLuint>(value));
 }
 
+template <>
 void Uniform<float>::set(ShaderInterface const &p, float value) const noexcept
 {
 	glUniform1f(this->get_uniform_location(p), static_cast<GLfloat>(value));
 }
 
+template <>
 void Uniform<glm::vec3>::set(ShaderInterface const &p, glm::vec3 value) const noexcept
 {
 	glUniform3f(
@@ -128,6 +137,7 @@ void Uniform<glm::vec3>::set(ShaderInterface const &p, glm::vec3 value) const no
 		static_cast<GLfloat>(value.z));
 }
 
+template <>
 void Uniform<glm::vec4>::set(ShaderInterface const &p, glm::vec4 value) const noexcept
 {
 	glUniform4f(
@@ -138,6 +148,7 @@ void Uniform<glm::vec4>::set(ShaderInterface const &p, glm::vec4 value) const no
 		static_cast<GLfloat>(value.w));
 }
 
+template <>
 void Uniform<glm::mat4>::set(ShaderInterface const &p, glm::mat4 value) const noexcept
 {
 	glUniformMatrix4fv(
@@ -150,7 +161,7 @@ void Uniform<glm::mat4>::set(ShaderInterface const &p, glm::mat4 value) const no
 template <typename T>
 GLint Uniform<T>::get_uniform_location(ShaderInterface const &p) const noexcept
 {
-	GLint n = glGetUniformLocation(p->id, this.name);
+	GLint n = glGetUniformLocation(p.get_id(), this->name.c_str());
 	ASSERT(static_cast<int>(n) >= 0, "glGetUniformLocation returned -1");
 	return n;
 }
