@@ -94,6 +94,11 @@ ShaderInterface::ShaderInterface(
 		glDeleteShader(*geometry);
 }
 
+ShaderInterface::~ShaderInterface() noexcept
+{
+	glDeleteProgram(this->id);
+}
+
 GLuint ShaderInterface::get_id() const noexcept
 {
 	return this->id;
@@ -105,9 +110,8 @@ void ShaderInterface::use() const noexcept
 }
 
 template <typename T>
-Uniform<T>::Uniform(std::string const &name, ShaderInterface const &p) noexcept
-	: location(glGetUniformLocation(p.get_id(), this->name.c_str()))
-
+Uniform<T>::Uniform(ShaderInterface const &p, std::string const &name) noexcept
+	: location(glGetUniformLocation(p.get_id(), name.c_str()))
 {
 }
 
@@ -164,4 +168,16 @@ void Uniform<glm::mat4>::set(glm::mat4 const &value) const noexcept
 		1,
 		GL_FALSE,
 		static_cast<GLfloat const *>(&value[0][0]));
+}
+
+StandardShader::StandardShader(
+	std::string const &vertex_path,
+	std::string const &fragment_path,
+	std::string const &geometry_path) noexcept
+	: ShaderInterface{vertex_path, fragment_path, geometry_path},
+	  modelview_matrix(Uniform<glm::mat4>((ShaderInterface)this, "u_modelview"))
+{
+	// ShaderInterface const *ptr = this;
+	// this->modelview_matrix = Uniform<glm::mat4>(ptr, "u_modelview");
+	// this->modelview_matrix = Uniform<glm::mat4>((ShaderInterface *)this, "u_modelview");
 }

@@ -12,9 +12,10 @@ public:
 	ShaderInterface(
 		std::string const &vertex_path,
 		std::string const &fragment_path,
-		std::string const &geometry_path) noexcept;
-	void use() const noexcept;
+		std::string const &geometry_path = {}) noexcept;
+	~ShaderInterface() noexcept;
 	GLuint get_id() const noexcept;
+	void use() const noexcept;
 	virtual void apply_uniforms() const noexcept = 0;
 
 protected:
@@ -27,9 +28,11 @@ template <typename T>
 class Uniform
 {
 public:
-	/// @param name what the uniform is called in the shader's source code
 	/// @param p const reference to caller (which should own this Uniform)
-	Uniform(std::string const &name, ShaderInterface const &p) noexcept;
+	/// @param name what the uniform is called in the shader's source code
+	Uniform(ShaderInterface const &p, std::string const &name) noexcept;
+	// ~Uniform() noexcept = default;
+	// Uniform(Uniform const &orig) noexcept = default;
 
 	/// @brief before you call this, first call glUseProgram()
 	/// @param p the ShaderInterface that owns this Uniform
@@ -38,6 +41,19 @@ public:
 
 private:
 	GLint const location;
+};
+
+class StandardShader : public ShaderInterface
+{
+public:
+	StandardShader(
+		std::string const &vertex_path,
+		std::string const &fragment_path,
+		std::string const &geometry_path = {}) noexcept;
+	void apply_uniforms() const noexcept;
+
+	Uniform<glm::mat4> modelview_matrix;
+	// Uniform<glm::mat4> const projection_matrix;
 };
 
 #endif
