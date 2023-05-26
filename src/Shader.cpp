@@ -6,25 +6,25 @@
 
 namespace
 {
-	void check_compile_errors(GLuint const shader_id, std::string const type)
+	void check_compile_errors(GLuint const id, std::string const &type)
 	{
 		GLint success;
 		GLchar info_log[1024];
 		if (type != "PROGRAM")
 		{
-			glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
+			glGetShaderiv(id, GL_COMPILE_STATUS, &success);
 			if (!success)
 			{
-				glGetShaderInfoLog(shader_id, 1024, NULL, info_log);
+				glGetShaderInfoLog(id, 1024, NULL, info_log);
 				ASSERT(false, "Shader compilation error of type: " + type + "\n" + std::string(info_log) + "\n");
 			}
 		}
 		else
 		{
-			glGetProgramiv(shader_id, GL_LINK_STATUS, &success);
+			glGetProgramiv(id, GL_LINK_STATUS, &success);
 			if (!success)
 			{
-				glGetProgramInfoLog(shader_id, 1024, NULL, info_log);
+				glGetProgramInfoLog(id, 1024, NULL, info_log);
 				ASSERT(false, "Shader linking error of type: " + type + "\n" + std::string(info_log) + "\n");
 			}
 		}
@@ -45,11 +45,11 @@ namespace
 		file.close();
 
 		// convert stringstream to string
-		std::string code = stream.str();
+		std::string const code = stream.str();
 
 		// compile shader
-		const char *code_cstr = code.c_str();
-		GLuint id = glCreateShader(shader_type);
+		char const *code_cstr = code.c_str();
+		GLuint const id = glCreateShader(shader_type);
 		glShaderSource(id, 1, &code_cstr, NULL);
 		glCompileShader(id);
 		check_compile_errors(id, "SHADER");
@@ -57,9 +57,9 @@ namespace
 		return id;
 	}
 
-	GLuint link_shaders(GLuint vertex, GLuint fragment, std::optional<GLuint> geometry)
+	GLuint link_shaders(GLuint const vertex, GLuint const fragment, std::optional<GLuint> const &geometry)
 	{
-		GLuint program = glCreateProgram();
+		GLuint const program = glCreateProgram();
 		glAttachShader(program, vertex);
 		glAttachShader(program, fragment);
 		if (geometry.has_value())
@@ -76,9 +76,9 @@ ShaderInterface::ShaderInterface(
 	std::string const &geometry_path) noexcept
 {
 	// prepare vertex shader
-	GLuint vertex = compile_shader(vertex_path, GL_VERTEX_SHADER);
+	GLuint const vertex = compile_shader(vertex_path, GL_VERTEX_SHADER);
 	// prepare fragment shader
-	GLuint fragment = compile_shader(fragment_path, GL_FRAGMENT_SHADER);
+	GLuint const fragment = compile_shader(fragment_path, GL_FRAGMENT_SHADER);
 	// prepare geometry shader if source code is provided, otherwise set to null
 	std::optional<GLuint> geometry = std::nullopt;
 	if (geometry_path.empty() == false)
@@ -105,30 +105,31 @@ void ShaderInterface::use() const noexcept
 }
 
 template <typename T>
-void Uniform<T>::set(ShaderInterface const &p, T value) const noexcept
+void Uniform<T>::set(ShaderInterface const &p, T const &value) const noexcept
 {
 	ASSERT(false, "unrecognized type given to Uniform::set");
 }
+
 template <>
-void Uniform<int>::set(ShaderInterface const &p, int value) const noexcept
+void Uniform<int>::set(ShaderInterface const &p, int const &value) const noexcept
 {
 	glUniform1i(this->get_uniform_location(p), static_cast<GLint>(value));
 }
 
 template <>
-void Uniform<unsigned int>::set(ShaderInterface const &p, unsigned int value) const noexcept
+void Uniform<unsigned int>::set(ShaderInterface const &p, unsigned int const &value) const noexcept
 {
 	glUniform1ui(this->get_uniform_location(p), static_cast<GLuint>(value));
 }
 
 template <>
-void Uniform<float>::set(ShaderInterface const &p, float value) const noexcept
+void Uniform<float>::set(ShaderInterface const &p, float const &value) const noexcept
 {
 	glUniform1f(this->get_uniform_location(p), static_cast<GLfloat>(value));
 }
 
 template <>
-void Uniform<glm::vec3>::set(ShaderInterface const &p, glm::vec3 value) const noexcept
+void Uniform<glm::vec3>::set(ShaderInterface const &p, glm::vec3 const &value) const noexcept
 {
 	glUniform3f(
 		this->get_uniform_location(p),
@@ -138,7 +139,7 @@ void Uniform<glm::vec3>::set(ShaderInterface const &p, glm::vec3 value) const no
 }
 
 template <>
-void Uniform<glm::vec4>::set(ShaderInterface const &p, glm::vec4 value) const noexcept
+void Uniform<glm::vec4>::set(ShaderInterface const &p, glm::vec4 const &value) const noexcept
 {
 	glUniform4f(
 		this->get_uniform_location(p),
@@ -149,7 +150,7 @@ void Uniform<glm::vec4>::set(ShaderInterface const &p, glm::vec4 value) const no
 }
 
 template <>
-void Uniform<glm::mat4>::set(ShaderInterface const &p, glm::mat4 value) const noexcept
+void Uniform<glm::mat4>::set(ShaderInterface const &p, glm::mat4 const &value) const noexcept
 {
 	glUniformMatrix4fv(
 		this->get_uniform_location(p),
@@ -161,7 +162,7 @@ void Uniform<glm::mat4>::set(ShaderInterface const &p, glm::mat4 value) const no
 template <typename T>
 GLint Uniform<T>::get_uniform_location(ShaderInterface const &p) const noexcept
 {
-	GLint n = glGetUniformLocation(p.get_id(), this->name.c_str());
+	GLint const n = glGetUniformLocation(p.get_id(), this->name.c_str());
 	ASSERT(static_cast<int>(n) >= 0, "glGetUniformLocation returned -1");
 	return n;
 }

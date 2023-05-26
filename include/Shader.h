@@ -37,7 +37,7 @@ public:
 	/// @brief before you call this, first call glUseProgram()
 	/// @param p the ShaderInterface that owns this Uniform
 	/// @param value value to set to the uniform in OpenGL
-	void set(ShaderInterface const &p, T value) const noexcept;
+	void set(ShaderInterface const &p, T const &value) const noexcept;
 
 private:
 	GLint get_uniform_location(ShaderInterface const &p) const noexcept;
