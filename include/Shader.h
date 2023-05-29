@@ -34,12 +34,16 @@ public:
 	// ~Uniform() noexcept = default;
 	// Uniform(Uniform const &orig) noexcept = default;
 
-	/// @brief before you call this, first call glUseProgram()
-	/// @param p the ShaderInterface that owns this Uniform
-	/// @param value value to set to the uniform in OpenGL
-	void set(T const &value) const noexcept;
+	/// @brief sets value to this Uniform; does not send to OpenGL yet
+	void set(T const &value) noexcept;
+
+	/// @brief sends member of this->value to OpenGL; you must first call glUseProgram()
+	void apply() const noexcept;
+
+	T get() const noexcept;
 
 private:
+	T value;
 	GLint const location;
 };
 
@@ -53,7 +57,7 @@ public:
 	void apply_uniforms() const noexcept;
 
 	Uniform<glm::mat4> modelview_matrix;
-	// Uniform<glm::mat4> const projection_matrix;
+	Uniform<glm::mat4> projection_matrix;
 };
 
 #endif

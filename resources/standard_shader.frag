@@ -1,25 +1,25 @@
+// naming convention:
+// inter_name = interpolated input sent from vertex shader
+// u_name = uniform
+// o_name = output
+
 #version 410 core
 
 // position-related
-uniform bool u_pos_on;
 in vec3 inter_pos;
 
 // normal-related
-uniform bool u_normals_on;
 in vec3 inter_normal;
 
-// texture-related
+// texture_related
 uniform bool u_textures_on;
 uniform sampler2D u_texture_diffuse1;
 in vec2 inter_tex_coords;
-
-// mvp-matrix components
-uniform bool u_modelview_on;
-uniform mat4 u_modelview;
-uniform bool u_projection_on;
-uniform mat4 u_projection;
-
 out vec4 o_frag_color;
+
+// mvp-matrix
+uniform mat4 u_modelview;
+uniform mat4 u_projection;
 
 void main()
 {
