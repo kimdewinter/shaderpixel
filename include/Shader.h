@@ -58,6 +58,7 @@ public:
 
 	Uniform<glm::mat4> modelview_matrix;
 	Uniform<glm::mat4> projection_matrix;
+	Uniform<int> texture_diffuse1;
 };
 
 #endif

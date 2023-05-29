@@ -3,7 +3,7 @@
 #include "ErrorHandler.h"
 #include "EventHandler.h"
 #include "SdlHandler.h"
-#include "oldShader.h"
+#include "Shader.h"
 #include "Window.h"
 #include "Model.h"
 #include <functional>
@@ -19,12 +19,11 @@ namespace Configuration
 	namespace WorldCreation
 	{
 		/// @brief here you define what shaders you want to load, and from what files, names must be unique
-		/// @return a map<string, Shader>, where the string is a name to identify that Shader
-		std::map<std::string, Shader> load_shaders() noexcept
+		/// @return a map<string, ShaderInterface>, where the string is a name to identify that Shader
+		std::map<std::string, ShaderInterface> load_shaders() noexcept
 		{
-			std::map<std::string, Shader> shaders;
-			shaders.insert({"standard_shader", Shader("standard_shader", "projection", "view", "model", "../resources/standard_shader.vert", "../resources/standard_shader.frag")});
-			// shaders.insert({ "diffuse_shader", Shader{"diffuse_shader", "projection", "view", "model", "../resources/diffuse_shader.vert", "../resources/diffuse_shader.frag"} });
+			std::map<std::string, ShaderInterface> shaders;
+			shaders.insert({"standard_shader", StandardShader("../resources/standard_shader.vert", "../resources/standard_shader.frag")});
 			return shaders;
 		}
 
