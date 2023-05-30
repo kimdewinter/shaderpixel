@@ -15,7 +15,7 @@ void Mesh::constructor_helper() noexcept
 
 	// bind the objects we just made so we can modify them
 	glBindVertexArray(this->VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 
 	// send vertex data to the GPU, all vertices memory is sequential because we use a struct
 	glBufferData(
@@ -88,32 +88,36 @@ Mesh::Mesh(
 void Mesh::draw(ShaderInterface const &shader) const noexcept
 {
 	// bind appropriate textures
-	unsigned int texture_diffusen = 1;
-	unsigned int texture_specularn = 1;
-	unsigned int texture_normaln = 1;
-	unsigned int texture_heightn = 1;
-	for (unsigned int i = 0; i < textures.size(); i++)
+	unsigned int u_texture_diffusen = 1;
+	unsigned int u_texture_specularn = 1;
+	unsigned int u_texture_normaln = 1;
+	unsigned int u_texture_heightn = 1;
+	for (unsigned int i = 0; i < this->textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
-		// retrieve texture number (the n in texture_diffusen)
+		// retrieve texture number (the n in u_texture_diffusen)
 		std::string number;
 		std::string name = this->textures[i].type;
 		if (name == "u_texture_diffuse")
-			number = std::to_string(texture_diffusen++);
+			number = std::to_string(u_texture_diffusen++);
 		else if (name == "u_texture_specular")
-			number = std::to_string(texture_specularn++);
+			number = std::to_string(u_texture_specularn++);
 		else if (name == "u_texture_normal")
-			number = std::to_string(texture_normaln++);
+			number = std::to_string(u_texture_normaln++);
 		else if (name == "u_texture_height")
-			number = std::to_string(texture_heightn++);
+			number = std::to_string(u_texture_heightn++);
 
-		glUniform1i(glGetUniformLocation(shader.get_id(), (name + number).c_str()), i);
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+		glUniform1i(
+			glGetUniformLocation(
+				shader.get_id(),
+				(name + number).c_str()),
+			static_cast<GLint>(i));
+		glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
 	}
 	glActiveTexture(GL_TEXTURE0);
 
 	// draw
-	glBindVertexArray(VAO);
+	glBindVertexArray(this->VAO);
 	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(this->indices.size()), GL_UNSIGNED_INT, 0);
 
 	// reset everything for safety

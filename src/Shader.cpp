@@ -109,6 +109,15 @@ void ShaderInterface::use() const noexcept
 	glUseProgram(this->id);
 }
 
+void ShaderInterface::draw(
+	unsigned int const VAO_id,
+	int const element_count) const noexcept
+{
+	glBindVertexArray(VAO_id);
+	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(element_count), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
 template <typename T>
 Uniform<T>::Uniform(ShaderInterface const &p, std::string const &name) noexcept
 	: location(glGetUniformLocation(p.get_id(), name.c_str()))
@@ -182,13 +191,45 @@ T Uniform<T>::get() const noexcept
 	return this->value;
 }
 
+void TextureBinder::bind_textures(
+	unsigned int const shader_id,
+	std::vector<Texture> const &textures) const noexcept
+{
+	// bind appropriate textures
+	unsigned int u_texture_diffusen = 1;
+	unsigned int u_texture_specularn = 1;
+	unsigned int u_texture_normaln = 1;
+	unsigned int u_texture_heightn = 1;
+	for (unsigned int i = 0; i < textures.size(); i++)
+	{
+		// retrieve texture number (the n in u_texture_diffusen)
+		std::string number;
+		std::string name = textures[i].type;
+		if (name == "u_texture_diffuse")
+			number = std::to_string(u_texture_diffusen++);
+		else if (name == "u_texture_specular")
+			number = std::to_string(u_texture_specularn++);
+		else if (name == "u_texture_normal")
+			number = std::to_string(u_texture_normaln++);
+		else if (name == "u_texture_height")
+			number = std::to_string(u_texture_heightn++);
+
+		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
+		int location = glGetUniformLocation(
+			static_cast<GLuint>(shader_id),
+			(name + number).c_str());
+		ASSERT(location != -1, "texture uniform not found in TextureBinder::bind_textures()");
+		glUniform1i(location, static_cast<GLint>(i));
+		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	}
+	glActiveTexture(GL_TEXTURE0);
+}
+
 StandardShader::StandardShader(
 	std::string const &vertex_path,
 	std::string const &fragment_path,
 	std::string const &geometry_path) noexcept
-	: ShaderInterface{vertex_path, fragment_path, geometry_path},
-	  modelview_matrix(Uniform<glm::mat4>(*this, "u_modelview")),
-	  projection_matrix(Uniform<glm::mat4>(*this, "u_projection"))
+	: ShaderInterface{vertex_path, fragment_path, geometry_path}
 {
 }
 
