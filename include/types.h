@@ -29,7 +29,7 @@ would in memory translate into:
 
 struct Texture
 {
-	unsigned int id;
+	unsigned int id;  // OpenGL-id of texture
 	std::string type; // e.g. texture_diffuse, texture_specular, texture_normal, texture_height
 	std::string path;
 };

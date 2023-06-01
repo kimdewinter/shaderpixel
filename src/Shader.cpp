@@ -125,75 +125,66 @@ Uniform<T>::Uniform(ShaderInterface const &p, std::string const &name) noexcept
 }
 
 template <typename T>
-void Uniform<T>::set(T const &value) noexcept
-{
-	this->value = value;
-}
-
-template <typename T>
-void Uniform<T>::apply() const noexcept
+void Uniform<T>::set(T const &value) const noexcept
 {
 	ASSERT(false, "unrecognized class type detected in Uniform::apply()");
 }
 
 template <>
-void Uniform<int>::apply() const noexcept
+void Uniform<int>::set(int const &value) const noexcept
 {
-	glUniform1i(this->location, static_cast<GLint>(this->value));
+	glUniform1i(this->location, static_cast<GLint>(value));
 }
 
 template <>
-void Uniform<unsigned int>::apply() const noexcept
+void Uniform<unsigned int>::set(unsigned int const &value) const noexcept
 {
-	glUniform1ui(this->location, static_cast<GLuint>(this->value));
+	glUniform1ui(this->location, static_cast<GLuint>(value));
 }
 
 template <>
-void Uniform<float>::apply() const noexcept
+void Uniform<float>::set(float const &value) const noexcept
 {
-	glUniform1f(this->location, static_cast<GLfloat>(this->value));
+	glUniform1f(this->location, static_cast<GLfloat>(value));
 }
 
 template <>
-void Uniform<glm::vec3>::apply() const noexcept
+void Uniform<glm::vec3>::set(glm::vec3 const &value) const noexcept
 {
 	glUniform3f(
 		this->location,
-		static_cast<GLfloat>(this->value.x),
-		static_cast<GLfloat>(this->value.y),
-		static_cast<GLfloat>(this->value.z));
+		static_cast<GLfloat>(value.x),
+		static_cast<GLfloat>(value.y),
+		static_cast<GLfloat>(value.z));
 }
 
 template <>
-void Uniform<glm::vec4>::apply() const noexcept
+void Uniform<glm::vec4>::set(glm::vec4 const &value) const noexcept
 {
 	glUniform4f(
 		this->location,
-		static_cast<GLfloat>(this->value.x),
-		static_cast<GLfloat>(this->value.y),
-		static_cast<GLfloat>(this->value.z),
-		static_cast<GLfloat>(this->value.w));
+		static_cast<GLfloat>(value.x),
+		static_cast<GLfloat>(value.y),
+		static_cast<GLfloat>(value.z),
+		static_cast<GLfloat>(value.w));
 }
 
 template <>
-void Uniform<glm::mat4>::apply() const noexcept
+void Uniform<glm::mat4>::set(glm::mat4 const &value) const noexcept
 {
 	glUniformMatrix4fv(
 		this->location,
 		1,
 		GL_FALSE,
-		static_cast<GLfloat const *>(&this->value[0][0]));
+		static_cast<GLfloat const *>(&value[0][0]));
 }
 
-template <typename T>
-T Uniform<T>::get() const noexcept
+TextureUniform::TextureUniform(unsigned int const shader_id) noexcept
+	: shader_id(shader_id)
 {
-	return this->value;
 }
 
-void TextureBinder::bind_textures(
-	unsigned int const shader_id,
-	std::vector<Texture> const &textures) const noexcept
+void TextureUniform::set(std::vector<Texture> const &textures) const noexcept
 {
 	// bind appropriate textures
 	unsigned int u_texture_diffusen = 1;
@@ -216,7 +207,7 @@ void TextureBinder::bind_textures(
 
 		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
 		int location = glGetUniformLocation(
-			static_cast<GLuint>(shader_id),
+			static_cast<GLuint>(this->shader_id),
 			(name + number).c_str());
 		ASSERT(location != -1, "texture uniform not found in TextureBinder::bind_textures()");
 		glUniform1i(location, static_cast<GLint>(i));
@@ -231,10 +222,4 @@ StandardShader::StandardShader(
 	std::string const &geometry_path) noexcept
 	: ShaderInterface{vertex_path, fragment_path, geometry_path}
 {
-}
-
-void StandardShader::apply_uniforms() const noexcept
-{
-	this->modelview_matrix.apply();
-	this->projection_matrix.apply();
 }
