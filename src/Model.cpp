@@ -31,7 +31,7 @@ namespace
 		else if (n_components == 4)
 			format = GL_RGBA;
 		else
-			ASSERT(false, "texture failed to load due to n_components being: " + n_components);
+			ASSERT(false, "texture failed to load due to n_components being: " + std::to_string(n_components));
 
 		// send texture to GPU
 		glBindTexture(GL_TEXTURE_2D, id);
@@ -216,6 +216,11 @@ glm::vec3 Model::get_orientation() const noexcept
 glm::vec3 Model::get_scaling() const noexcept
 {
 	return glm::vec3(this->scaling);
+}
+
+std::vector<Mesh> const &Model::get_meshes() const noexcept
+{
+	return this->meshes;
 }
 
 void Model::set_position(glm::vec3 &position) noexcept

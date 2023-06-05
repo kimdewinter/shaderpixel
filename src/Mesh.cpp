@@ -87,34 +87,7 @@ Mesh::Mesh(
 
 void Mesh::draw(ShaderInterface const &shader) const noexcept
 {
-	// bind appropriate textures
-	unsigned int u_texture_diffusen = 1;
-	unsigned int u_texture_specularn = 1;
-	unsigned int u_texture_normaln = 1;
-	unsigned int u_texture_heightn = 1;
-	for (unsigned int i = 0; i < this->textures.size(); i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
-		// retrieve texture number (the n in u_texture_diffusen)
-		std::string number;
-		std::string name = this->textures[i].type;
-		if (name == "u_texture_diffuse")
-			number = std::to_string(u_texture_diffusen++);
-		else if (name == "u_texture_specular")
-			number = std::to_string(u_texture_specularn++);
-		else if (name == "u_texture_normal")
-			number = std::to_string(u_texture_normaln++);
-		else if (name == "u_texture_height")
-			number = std::to_string(u_texture_heightn++);
-
-		glUniform1i(
-			glGetUniformLocation(
-				shader.get_id(),
-				(name + number).c_str()),
-			static_cast<GLint>(i));
-		glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
-	}
-	glActiveTexture(GL_TEXTURE0);
+	shader.texture_binder.set();
 
 	// draw
 	glBindVertexArray(this->VAO);
@@ -123,4 +96,19 @@ void Mesh::draw(ShaderInterface const &shader) const noexcept
 	// reset everything for safety
 	glBindVertexArray(0);
 	glActiveTexture(GL_TEXTURE0);
+}
+
+unsigned int Mesh::get_VAO() const noexcept
+{
+	return this->VAO;
+}
+
+size_t Mesh::get_indices_size() const noexcept
+{
+	return this->indices.size();
+}
+
+std::vector<Texture> const &Mesh::get_textures() const noexcept
+{
+	return this->textures;
 }

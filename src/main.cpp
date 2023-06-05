@@ -23,7 +23,7 @@ namespace Configuration
 		std::map<std::string, ShaderInterface> load_shaders() noexcept
 		{
 			std::map<std::string, ShaderInterface> shaders;
-			shaders.insert({"standard_shader", StandardShader("../resources/standard_shader.vert", "../resources/standard_shader.frag")});
+			shaders.insert({"standard_shader", std::move(StandardShader("../resources/standard_shader.vert", "../resources/standard_shader.frag"))});
 			return shaders;
 		}
 

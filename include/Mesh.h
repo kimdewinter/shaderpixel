@@ -17,7 +17,9 @@ public:
 		std::vector<Vertex> &&vertices,
 		std::vector<unsigned int> &&indices,
 		std::vector<Texture> &&textures) noexcept;
-	void draw(ShaderInterface const &shader) const noexcept;
+	unsigned int get_VAO() const noexcept;
+	size_t get_indices_size() const noexcept;
+	std::vector<Texture> const &get_textures() const noexcept;
 
 private:
 	void constructor_helper() noexcept;

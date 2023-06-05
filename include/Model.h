@@ -37,10 +37,15 @@ public:
 		glm::quat const &orientation = glm::quat(glm::vec3({0.0f, 0.0f, 0.0f})),
 		glm::vec3 const &scaling = glm::vec3({1.0f, 1.0f, 1.0f})) noexcept;
 	void draw(ShaderInterface const &shader) const noexcept;
+	void draw(std::function<void(ShaderInterface const &shader)> f) const noexcept;
+	void draw(
+		std::function<void(ShaderInterface const &shader)> per_model,
+		std::function<void(ShaderInterface const &shader)> per_mesh) const noexcept;
 	glm::mat4 get_model_matrix() const noexcept;
 	glm::vec3 get_position() const noexcept;
 	glm::vec3 get_orientation() const noexcept;
 	glm::vec3 get_scaling() const noexcept;
+	std::vector<Mesh> const &get_meshes() const noexcept;
 	void set_position(glm::vec3 &position) noexcept;
 	void set_orientation(glm::vec3 &orientation) noexcept;
 	void set_scaling(glm::vec3 &scaling) noexcept;

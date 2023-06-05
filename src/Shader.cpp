@@ -6,7 +6,7 @@
 
 namespace
 {
-	void check_compile_errors(GLuint const id, std::string const &type)
+	void check_compile_errors(GLuint const id, std::string const &type) noexcept
 	{
 		GLint success;
 		GLchar info_log[1024];
@@ -109,13 +109,22 @@ void ShaderInterface::use() const noexcept
 	glUseProgram(this->id);
 }
 
-void ShaderInterface::draw(
-	unsigned int const VAO_id,
-	int const element_count) const noexcept
+void StandardShader::draw(
+	Model const &model,
+	glm::mat4 const &view,
+	glm::mat4 const &projection) const noexcept
 {
-	glBindVertexArray(VAO_id);
-	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(element_count), GL_UNSIGNED_INT, 0);
+	this->use();												 // make this shader program the currently active shader program in OpenGL
+	this->modelview_matrix.set(view * model.get_model_matrix()); // combine and send view & model matrices
+	this->projection_matrix.set(projection);					 // send perspective / projection matrix
+	for (Mesh const &mesh : model.get_meshes())
+	{
+		this->texture_binder.set(mesh.get_textures());													// activate & bind textures
+		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO
+		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(mesh.get_indices_size()), GL_UNSIGNED_INT, 0); // draw
+	}
 	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
 }
 
 template <typename T>
@@ -205,11 +214,14 @@ void TextureUniform::set(std::vector<Texture> const &textures) const noexcept
 		else if (name == "u_texture_height")
 			number = std::to_string(u_texture_heightn++);
 
-		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
+		// retrieve location of uniform
 		int location = glGetUniformLocation(
 			static_cast<GLuint>(this->shader_id),
 			(name + number).c_str());
 		ASSERT(location != -1, "texture uniform not found in TextureBinder::bind_textures()");
+
+		// activate and bind in OpenGL
+		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
 		glUniform1i(location, static_cast<GLint>(i));
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
