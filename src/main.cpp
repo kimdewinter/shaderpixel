@@ -6,11 +6,12 @@
 #include "Shader.h"
 #include "Window.h"
 #include "Model.h"
+#include "Renderer.h"
+#include "Gui.h"
 #include <functional>
 #include <cstdlib>
 #include <map>
-#include "Renderer.h"
-#include "Gui.h"
+#include <memory>
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
 namespace Configuration
@@ -20,10 +21,10 @@ namespace Configuration
 	{
 		/// @brief here you define what shaders you want to load, and from what files, names must be unique
 		/// @return a map<string, ShaderInterface>, where the string is a name to identify that Shader
-		std::map<std::string, ShaderInterface> load_shaders() noexcept
+		std::map<std::string, std::unique_ptr<ShaderInterface>> load_shaders() noexcept
 		{
-			std::map<std::string, ShaderInterface> shaders;
-			shaders.insert({"standard_shader", std::move(StandardShader("../resources/standard_shader.vert", "../resources/standard_shader.frag"))});
+			std::map<std::string, std::unique_ptr<ShaderInterface>> shaders;
+			shaders.insert({"standard_shader", std::unique_ptr<ShaderInterface>(new StandardShader("../resources/standard_shader.vert", "../resources/standard_shader.frag"))});
 			return shaders;
 		}
 
@@ -47,7 +48,7 @@ namespace Configuration
 			std::multimap<std::string, std::string> name_pairings;
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "terrain"});
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pedestal"});
-			name_pairings.insert(std::pair<std::string, std::string>{"diffuse_shader", "sphere"});
+			// name_pairings.insert(std::pair<std::string, std::string>{"diffuse_shader", "sphere"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "backpack"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pillar"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "cube1"});

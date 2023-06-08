@@ -85,19 +85,6 @@ Mesh::Mesh(
 	constructor_helper();
 }
 
-void Mesh::draw(ShaderInterface const &shader) const noexcept
-{
-	shader.texture_binder.set();
-
-	// draw
-	glBindVertexArray(this->VAO);
-	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(this->indices.size()), GL_UNSIGNED_INT, 0);
-
-	// reset everything for safety
-	glBindVertexArray(0);
-	glActiveTexture(GL_TEXTURE0);
-}
-
 unsigned int Mesh::get_VAO() const noexcept
 {
 	return this->VAO;

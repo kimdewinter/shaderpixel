@@ -53,12 +53,6 @@ namespace
 	}
 }
 
-void Model::draw(ShaderInterface const &shader) const noexcept
-{
-	for (Mesh const &mesh : this->meshes)
-		mesh.draw(shader);
-}
-
 std::optional<Texture> Model::find_loaded_texture(char const *const path) const noexcept
 {
 	for (Texture const &texture : this->textures_loaded)

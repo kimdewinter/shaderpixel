@@ -6,8 +6,29 @@
 #include <glm/mat4x4.hpp>
 #include <vector>
 #include "types.h"
-#include "Model.h"
 #include "Mesh.h"
+#include "Model.h"
+
+/*
+ShaderInterface is there as a base for individual shaders you wish to implement
+
+Uniform is there to set the uniforms for each shader program prior to drawing
+
+When you implement a new shader:
+- derive from ShaderInterface
+- add Uniforms as necessary
+- add a Uniform<std::vector<Texture>> to handle texture binding
+- implement a .draw() function on your new shader
+
+Drawing is done by:
+- calling YourNewShader.draw(Model const &, etc),
+- your .draw() function should call .use(),
+- then it should call .set() on the Uniforms,
+- then for each Mesh:
+	call .set() on the texture-Uniform
+	bind the VAO (glBindVertexArray())
+	draw elements (glDrawElements())
+*/
 
 /// @brief base class to create shaders from, which will need additional Uniforms to be added.
 /// Usage: call .use(), then .set() on each Uniform/TextureUniform, then .draw()
@@ -28,20 +49,23 @@ public:
 
 	void use() const noexcept;
 
-	virtual void draw() const noexcept = 0;
+	virtual void draw(
+		Model const &model,
+		glm::mat4 const &view,
+		glm::mat4 const &projection) const noexcept = 0;
 
 protected:
 	GLuint id; // id that OpenGL knows the shader program by
 };
 
 /// @brief can be owned by a ShaderInterface-derived class, to handle setting of uniforms
-/// @tparam T the type of uniform (can be ints, floats, and vectors/matrices of these)
+/// @tparam T the type of uniform (can be ints, floats, and vectors/matrices of these, as well as a std::vector<Texture>)
 template <typename T>
 class Uniform
 {
 public:
 	/// @param p const reference to caller (which should own this Uniform)
-	/// @param name what the uniform is called in the shader's source code
+	/// @param name what the uniform is called in the shader's source code; empty string if T=std::vector<Texture>
 	Uniform(ShaderInterface const &p, std::string const &name) noexcept;
 	~Uniform() noexcept = default;
 	Uniform(Uniform const &other) noexcept = delete;
@@ -52,25 +76,10 @@ public:
 	void set(T const &value) const noexcept;
 
 private:
-	GLint const location;
-};
+	GLuint get_uniform_location(std::string const &name) const noexcept;
 
-/// @brief handles multiple textures, must be named like "u_texture_diffuse" (or specular/normal/height)
-class TextureUniform
-{
-public:
-	/// @param shader_id OpenGL-id of this TextureUniform's owner
-	TextureUniform(unsigned int const shader_id) noexcept;
-	~TextureUniform() noexcept = default;
-	TextureUniform(TextureUniform const &other) noexcept = delete;
-	TextureUniform(TextureUniform const &&other) noexcept = delete;
-	TextureUniform &operator=(TextureUniform const &other) noexcept = delete;
-	TextureUniform &operator=(TextureUniform const &&other) noexcept = delete;
-
-	void set(std::vector<Texture> const &textures) const noexcept;
-
-private:
-	GLint const shader_id; // id of owner
+	GLuint const shader_id;		 // id of owner (a Shader of some kind)
+	std::string const name = {}; // what uniform is called in shader's source code
 };
 
 class StandardShader : public ShaderInterface
@@ -89,7 +98,7 @@ public:
 	// the public variables hereunder must be set before .draw() is called
 	Uniform<glm::mat4> const modelview_matrix = Uniform<glm::mat4>(*this, "u_modelview");
 	Uniform<glm::mat4> const projection_matrix = Uniform<glm::mat4>(*this, "u_projection");
-	TextureUniform const texture_binder = TextureUniform(this->id);
+	Uniform<std::vector<Texture>> const textures = Uniform<std::vector<Texture>>(*this, "");
 };
 
 #endif

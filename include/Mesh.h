@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "types.h"
-#include "Shader.h"
 
 /// @brief holds vertex and texture data, and draw functionality
 class Mesh

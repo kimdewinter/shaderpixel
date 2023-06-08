@@ -109,27 +109,10 @@ void ShaderInterface::use() const noexcept
 	glUseProgram(this->id);
 }
 
-void StandardShader::draw(
-	Model const &model,
-	glm::mat4 const &view,
-	glm::mat4 const &projection) const noexcept
-{
-	this->use();												 // make this shader program the currently active shader program in OpenGL
-	this->modelview_matrix.set(view * model.get_model_matrix()); // combine and send view & model matrices
-	this->projection_matrix.set(projection);					 // send perspective / projection matrix
-	for (Mesh const &mesh : model.get_meshes())
-	{
-		this->texture_binder.set(mesh.get_textures());													// activate & bind textures
-		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO
-		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(mesh.get_indices_size()), GL_UNSIGNED_INT, 0); // draw
-	}
-	glBindVertexArray(0);
-	glActiveTexture(GL_TEXTURE0);
-}
-
 template <typename T>
 Uniform<T>::Uniform(ShaderInterface const &p, std::string const &name) noexcept
-	: location(glGetUniformLocation(p.get_id(), name.c_str()))
+	: shader_id(p.get_id()),
+	  name(name)
 {
 }
 
@@ -142,26 +125,26 @@ void Uniform<T>::set(T const &value) const noexcept
 template <>
 void Uniform<int>::set(int const &value) const noexcept
 {
-	glUniform1i(this->location, static_cast<GLint>(value));
+	glUniform1i(this->get_uniform_location(this->name), static_cast<GLint>(value));
 }
 
 template <>
 void Uniform<unsigned int>::set(unsigned int const &value) const noexcept
 {
-	glUniform1ui(this->location, static_cast<GLuint>(value));
+	glUniform1ui(this->get_uniform_location(this->name), static_cast<GLuint>(value));
 }
 
 template <>
 void Uniform<float>::set(float const &value) const noexcept
 {
-	glUniform1f(this->location, static_cast<GLfloat>(value));
+	glUniform1f(this->get_uniform_location(this->name), static_cast<GLfloat>(value));
 }
 
 template <>
 void Uniform<glm::vec3>::set(glm::vec3 const &value) const noexcept
 {
 	glUniform3f(
-		this->location,
+		this->get_uniform_location(this->name),
 		static_cast<GLfloat>(value.x),
 		static_cast<GLfloat>(value.y),
 		static_cast<GLfloat>(value.z));
@@ -171,7 +154,7 @@ template <>
 void Uniform<glm::vec4>::set(glm::vec4 const &value) const noexcept
 {
 	glUniform4f(
-		this->location,
+		this->get_uniform_location(this->name),
 		static_cast<GLfloat>(value.x),
 		static_cast<GLfloat>(value.y),
 		static_cast<GLfloat>(value.z),
@@ -182,18 +165,14 @@ template <>
 void Uniform<glm::mat4>::set(glm::mat4 const &value) const noexcept
 {
 	glUniformMatrix4fv(
-		this->location,
+		this->get_uniform_location(this->name),
 		1,
 		GL_FALSE,
 		static_cast<GLfloat const *>(&value[0][0]));
 }
 
-TextureUniform::TextureUniform(unsigned int const shader_id) noexcept
-	: shader_id(shader_id)
-{
-}
-
-void TextureUniform::set(std::vector<Texture> const &textures) const noexcept
+template <>
+void Uniform<std::vector<Texture>>::set(std::vector<Texture> const &textures) const noexcept
 {
 	// bind appropriate textures
 	unsigned int u_texture_diffusen = 1;
@@ -215,6 +194,7 @@ void TextureUniform::set(std::vector<Texture> const &textures) const noexcept
 			number = std::to_string(u_texture_heightn++);
 
 		// retrieve location of uniform
+		int location = this->get_uniform_location((name + number).c_str());
 		int location = glGetUniformLocation(
 			static_cast<GLuint>(this->shader_id),
 			(name + number).c_str());
@@ -228,10 +208,34 @@ void TextureUniform::set(std::vector<Texture> const &textures) const noexcept
 	glActiveTexture(GL_TEXTURE0);
 }
 
+template <typename T>
+GLuint Uniform<T>::get_uniform_location(std::string const &name) const noexcept
+{
+	return glGetUniformLocation(this->shader_id, name.c_str());
+}
+
 StandardShader::StandardShader(
 	std::string const &vertex_path,
 	std::string const &fragment_path,
 	std::string const &geometry_path) noexcept
 	: ShaderInterface{vertex_path, fragment_path, geometry_path}
 {
+}
+
+void StandardShader::draw(
+	Model const &model,
+	glm::mat4 const &view,
+	glm::mat4 const &projection) const noexcept
+{
+	this->use();												 // make this shader program the currently active shader program in OpenGL
+	this->modelview_matrix.set(view * model.get_model_matrix()); // combine and send view & model matrices
+	this->projection_matrix.set(projection);					 // send perspective / projection matrix
+	for (Mesh const &mesh : model.get_meshes())
+	{
+		this->textures.set(mesh.get_textures());														// activate & bind textures
+		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO
+		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(mesh.get_indices_size()), GL_UNSIGNED_INT, 0); // draw
+	}
+	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
 }
