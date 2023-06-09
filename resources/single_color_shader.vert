@@ -14,7 +14,6 @@ layout (location = 1) in vec3 i_normal;
 out vec3 inter_normal;
 
 // texture-related
-uniform sampler2D u_texture_diffuse1;
 layout (location = 2) in vec2 i_tex_coords;
 out vec2 inter_tex_coords;
 

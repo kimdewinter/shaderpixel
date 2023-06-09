@@ -20,6 +20,10 @@ public:
 		std::map<std::string, Model> &&models,
 		std::multimap<std::string, std::string> &&render_pair_names) noexcept;
 	~Renderer() noexcept;
+	Renderer(Renderer const &other) noexcept = delete;
+	Renderer(Renderer &&other) noexcept = default;
+	Renderer &operator=(Renderer const &other) noexcept = delete;
+	Renderer &operator=(Renderer &&other) noexcept = default;
 
 	/// @brief draw the models specified in member variable "render_pair_names"
 	void draw_all(

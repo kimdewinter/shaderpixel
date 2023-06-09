@@ -8,6 +8,12 @@
 #include "types.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "main.h"
+
+#define SINGLECOLORSHADER_COLOR_R 1.0f
+#define SINGLECOLORSHADER_COLOR_G 1.0f
+#define SINGLECOLORSHADER_COLOR_B 1.0f
+#define SINGLECOLORSHADER_COLOR_A 1.0f
 
 /*
 ShaderInterface is there as a base for individual shaders you wish to implement
@@ -40,9 +46,9 @@ public:
 		std::string const &fragment_path,
 		std::string const &geometry_path = {}) noexcept;
 	virtual ~ShaderInterface() noexcept;
-	ShaderInterface(ShaderInterface const &other) noexcept = default;
+	ShaderInterface(ShaderInterface const &other) noexcept = delete;
 	ShaderInterface(ShaderInterface &&other) noexcept = default;
-	ShaderInterface &operator=(ShaderInterface const &other) noexcept = default;
+	ShaderInterface &operator=(ShaderInterface const &other) noexcept = delete;
 	ShaderInterface &operator=(ShaderInterface &&other) noexcept = default;
 
 	GLuint get_id() const noexcept;
@@ -58,7 +64,8 @@ protected:
 	GLuint id; // id that OpenGL knows the shader program by
 };
 
-/// @brief can be owned by a ShaderInterface-derived class, to handle setting of uniforms
+/// @brief can be owned by a ShaderInterface-derived class, to handle setting of uniforms,
+/// note that it does not store any kind of actual value, it just sends it to the GPU and forgets it
 /// @tparam T the type of uniform (can be ints, floats, and vectors/matrices of these, as well as a std::vector<Texture>)
 template <typename T>
 class Uniform
@@ -68,10 +75,10 @@ public:
 	/// @param name what the uniform is called in the shader's source code; empty string if T=std::vector<Texture>
 	Uniform(ShaderInterface const &p, std::string const &name) noexcept;
 	~Uniform() noexcept = default;
-	Uniform(Uniform const &other) noexcept = delete;
-	Uniform(Uniform const &&other) noexcept = delete;
+	Uniform(Uniform const &other) = default;
+	Uniform(Uniform &&other) = default;
 	Uniform &operator=(Uniform const &other) noexcept = delete;
-	Uniform &operator=(Uniform const &&other) noexcept = delete;
+	Uniform &operator=(Uniform &&other) noexcept = delete;
 
 	void set(T const &value) const noexcept;
 
@@ -89,16 +96,45 @@ public:
 		std::string const &vertex_path,
 		std::string const &fragment_path,
 		std::string const &geometry_path = {}) noexcept;
+	~StandardShader() noexcept = default;
+	StandardShader(StandardShader const &other) noexcept = delete;
+	StandardShader(StandardShader &&other) = default;
+	StandardShader &operator=(StandardShader const &other) noexcept = delete;
+	StandardShader &operator=(StandardShader &&other) noexcept = delete;
 
 	void draw(
 		Model const &model,
 		glm::mat4 const &view,
 		glm::mat4 const &projection) const noexcept;
 
-	// the public variables hereunder must be set before .draw() is called
-	Uniform<glm::mat4> const modelview_matrix = Uniform<glm::mat4>(*this, "u_modelview");
-	Uniform<glm::mat4> const projection_matrix = Uniform<glm::mat4>(*this, "u_projection");
-	Uniform<std::vector<Texture>> const textures = Uniform<std::vector<Texture>>(*this, "");
+private:
+	Uniform<glm::mat4> const modelview_matrix;
+	Uniform<glm::mat4> const projection_matrix;
+	Uniform<std::vector<Texture>> const textures;
 };
+
+// class SingleColorShader : public ShaderInterface
+// {
+// public:
+// 	SingleColorShader(
+// 		std::string const &vertex_path,
+// 		std::string const &fragment_path,
+// 		std::string const &geometry_path = {}) noexcept;
+// 	~SingleColorShader() noexcept = default;
+// 	SingleColorShader(SingleColorShader const &other) noexcept = delete;
+// 	SingleColorShader(SingleColorShader &&other) noexcept = default;
+// 	SingleColorShader &operator=(SingleColorShader const &other) noexcept = delete;
+// 	SingleColorShader &operator=(SingleColorShader &&other) noexcept = default;
+
+// 	void draw(
+// 		Model const &model,
+// 		glm::mat4 const &view,
+// 		glm::mat4 const &projection) const noexcept;
+
+// private:
+// 	Uniform<glm::mat4> const modelview_matrix = Uniform<glm::mat4>(*this, "u_modelview");
+// 	Uniform<glm::mat4> const projection_matrix = Uniform<glm::mat4>(*this, "u_projection");
+// 	Uniform<glm::vec4> const color = Uniform<glm::vec4>(*this, "u_color");
+// };
 
 #endif
