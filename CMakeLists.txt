@@ -113,7 +113,7 @@ endif()
 if (${ENABLE_IMGUI})
 	include(${CMAKE_DIR}/LinkIMGUI.cmake)
 
-	target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui_sdl2)
+	target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui)
 endif()
 
 # Set project folders
@@ -122,6 +122,8 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 # Set build type to Release or Debug
 set(CMAKE_BUILD_TYPE Debug)
 
-target_compile_options(shaderpixel
-PRIVATE
--fno-exceptions)
+if (!WIN32)
+	target_compile_options(shaderpixel
+		PRIVATE
+		-fno-exceptions)
+endif()

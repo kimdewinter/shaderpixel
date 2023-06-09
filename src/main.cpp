@@ -1,4 +1,3 @@
-#include "main.h"
 #include "Camera.h"
 #include "Clock.h"
 #include "ErrorHandler.h"
@@ -7,11 +6,12 @@
 #include "Shader.h"
 #include "Window.h"
 #include "Model.h"
+#include "Renderer.h"
+#include "Gui.h"
 #include <functional>
 #include <cstdlib>
 #include <map>
-#include "Renderer.h"
-#include "Gui.h"
+#include <memory>
 
 /// @brief the configuration namespace is where you manually change what you want the gameworld to be like, note that there are also defines that can be set in main.h
 namespace Configuration
@@ -20,12 +20,11 @@ namespace Configuration
 	namespace WorldCreation
 	{
 		/// @brief here you define what shaders you want to load, and from what files, names must be unique
-		/// @return a map<string, Shader>, where the string is a name to identify that Shader
-		std::map<std::string, Shader> load_shaders() noexcept
+		/// @return a map<string, ShaderInterface>, where the string is a name to identify that Shader
+		std::map<std::string, ShaderInterface *> load_shaders() noexcept
 		{
-			std::map<std::string, Shader> shaders;
-			shaders.insert({"standard_shader", Shader("standard_shader", "projection", "view", "model", "resources/standard_shader.vert", "resources/standard_shader.frag")});
-			// shaders.insert({"standard_shader", Shader("standard_shader2", "projection", "view", "model", "resources/standard_shader.vert", "resources/standard_shader.frag")});
+			std::map<std::string, ShaderInterface *> shaders;
+			shaders.insert({"standard_shader", new StandardShader("resources/standard_shader.vert", "resources/standard_shader.frag")});
 			return shaders;
 		}
 
@@ -34,10 +33,11 @@ namespace Configuration
 		{
 			std::map<std::string, Model> models;
 			models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, 1.053f, 0.0f})});
-			// models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "resources/backpack/backpack.obj", {0.0f, 0.0f, -10.0f})});
-			// models.insert(std::pair<std::string, Model>{"pillar", Model("pillar", "resources/Pillar/LP_Pillar_Textured.obj", {0.0f, 0.0f, -20.0f})});
 			models.insert(std::pair<std::string, Model>{"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {3.0f, -0.2f, 0.1f}, glm::quat({1.567f, 0.0f, 0.0f}), {0.01f, 0.01f, 0.01f})});
-
+			// models.insert(std::pair<std::string, Model>{"sphere", Model("sphere", "../resources/sphere/sphere.obj", { 3.0f, 0.4f, 0.1f }, glm::quat({ 0.0f, 0.0f, 0.0f }), { 0.35f, 0.35f, 0.35f })});
+			// models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "../resources/backpack/backpack.obj", { 0.0f, 0.0f, -10.0f })});
+			// models.insert(std::pair<std::string, Model>{"pillar", Model("pillar", "../resources/Pillar/LP_Pillar_Textured.obj", {0.0f, 0.0f, -20.0f})});
+			// models.insert(std::pair<std::string, Model>{"cube1", Model("cube1", "../resources/cube/cube.obj", { 3.0f, 0.4f, 0.1f })});
 			return models;
 		}
 
@@ -46,10 +46,13 @@ namespace Configuration
 		std::multimap<std::string, std::string> pair_shader_and_model_names() noexcept
 		{
 			std::multimap<std::string, std::string> name_pairings;
+			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "terrain"});
+			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pedestal"});
+			// name_pairings.insert(std::pair<std::string, std::string>{"diffuse_shader", "sphere"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "backpack"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pillar"});
-			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pedestal"});
-			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "terrain"});
+			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "cube1"});
+
 			return name_pairings;
 		}
 	}
@@ -72,7 +75,7 @@ namespace Configuration
 	}
 }
 
-int main(int const argc, char const *const *const argv)
+int main(int argc, char **argv)
 {
 	// if segfaulting, this'll dump a stacktrace into cerr
 	Error::setup_segfault_signalhandler();

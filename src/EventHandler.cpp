@@ -35,10 +35,10 @@ void EventHandler::toggle_camera_lock() noexcept
 }
 
 void EventHandler::handle_keyboard_event(
-	SDL_Event const &event,
-	SdlHandler &sdl_handler,
-	Camera &camera,
-	Clock const &clock) noexcept
+	SDL_Event const& event,
+	SdlHandler& sdl_handler,
+	Camera& camera,
+	Clock const& clock) noexcept
 {
 	switch (event.key.keysym.sym)
 	{
@@ -83,7 +83,7 @@ void EventHandler::handle_keyboard_event(
 	}
 }
 
-void EventHandler::handle_mouse_motion(SDL_Event const &event, Camera &camera) noexcept
+void EventHandler::handle_mouse_motion(SDL_Event const& event, Camera& camera) noexcept
 {
 	if (this->first_mouse_event)
 	{
@@ -102,7 +102,7 @@ void EventHandler::handle_mouse_motion(SDL_Event const &event, Camera &camera) n
 	}
 }
 
-void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler) noexcept
+void EventHandler::handle_window_event(SDL_Event const& event, SdlHandler& sdl_handler) noexcept
 {
 	switch (event.window.event)
 	{
@@ -124,10 +124,10 @@ void EventHandler::handle_window_event(SDL_Event const &event, SdlHandler &sdl_h
 }
 
 void EventHandler::handle_all_events(
-	SdlHandler &sdl_handler,
-	Camera &camera,
-	Clock const &clock,
-	Gui &gui) noexcept
+	SdlHandler& sdl_handler,
+	Camera& camera,
+	Clock const& clock,
+	Gui& gui) noexcept
 {
 	SDL_Event event;
 	while (SDL_PollEvent(&event))

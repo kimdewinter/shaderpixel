@@ -24,8 +24,8 @@ public:
 
 	/// @brief constructs with vectors
 	Camera(
-		glm::vec3 const &position = glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3 const &world_up = glm::vec3(0.0f, 1.0f, 0.0),
+		glm::vec3 const& position = glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3 const& world_up = glm::vec3(0.0f, 1.0f, 0.0),
 		float yaw = CAMERA_DEFAULT_YAW,
 		float pitch = CAMERA_DEFAULT_PITCH) noexcept;
 	/// @brief constructs with scalars
@@ -43,7 +43,7 @@ public:
 	/// @param delta_time how much time has passed since last frame
 	void move_camera(
 		Camera::Direction const direction,
-		std::chrono::duration<long long, std::nano> const &delta_time) noexcept;
+		std::chrono::duration<long long, std::nano> const& delta_time) noexcept;
 	/// @brief Pans camera around, usually depending on how much the mouse has moved
 	/// @param x_offset
 	/// @param y_offset

@@ -12,17 +12,17 @@ class EventHandler
 public:
 	bool get_should_quit() const noexcept;
 	void handle_all_events(
-		SdlHandler &sdl_handler,
-		Camera &camera,
-		Clock const &clock,
-		Gui &gui) noexcept;
+		SdlHandler& sdl_handler,
+		Camera& camera,
+		Clock const& clock,
+		Gui& gui) noexcept;
 	void handle_keyboard_event(
-		SDL_Event const &event,
-		SdlHandler &sdl_handler,
-		Camera &camera,
-		Clock const &clock) noexcept;
-	void handle_mouse_motion(SDL_Event const &event, Camera &camera) noexcept;
-	void handle_window_event(SDL_Event const &event, SdlHandler &sdl_handler) noexcept;
+		SDL_Event const& event,
+		SdlHandler& sdl_handler,
+		Camera& camera,
+		Clock const& clock) noexcept;
+	void handle_mouse_motion(SDL_Event const& event, Camera& camera) noexcept;
+	void handle_window_event(SDL_Event const& event, SdlHandler& sdl_handler) noexcept;
 	void toggle_camera_lock() noexcept;
 
 private:

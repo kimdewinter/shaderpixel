@@ -2,9 +2,9 @@
 #include "ErrorHandler.h"
 #include <utility>
 
-std::vector<std::pair<Shader &, Model &>> Renderer::assemble_pairs() noexcept
+std::vector<std::pair<ShaderInterface const &, Model &>> Renderer::assemble_pairs() noexcept
 {
-	std::vector<std::pair<Shader &, Model &>> render_pair_refs;
+	std::vector<std::pair<ShaderInterface const &, Model &>> render_pair_refs;
 	for (auto &name_pair : this->render_pair_names)
 	{
 		auto shader_iter = this->shaders.find(name_pair.first);
@@ -14,7 +14,8 @@ std::vector<std::pair<Shader &, Model &>> Renderer::assemble_pairs() noexcept
 			ASSERT(false, "Renderer unable to find Shader or Model");
 			continue;
 		}
-		render_pair_refs.push_back({shader_iter->second, model_iter->second});
+		render_pair_refs.push_back({*shader_iter->second, model_iter->second});
+		// render_pair_refs.push_back({shader_iter->second, model_iter->second});
 	}
 	return render_pair_refs;
 }
@@ -27,39 +28,44 @@ std::optional<Model *> Renderer::find_model(std::string const &name) noexcept
 	return &model_iter->second;
 }
 
-void Renderer::draw_all(
+void draw_one(
 	glm::mat4 const &projection_matrix,
-	glm::mat4 const &view_matrix) noexcept
+	glm::mat4 const &view_matrix,
+	std::unique_ptr<ShaderInterface> const &shader,
+	Model &model) noexcept
 {
-	// create queue of Shader-Model pairs to render
-	std::vector<std::pair<Shader &, Model &>> render_pair_refs = this->assemble_pairs();
+	ASSERT(false, "draw_one() called on unimplemented ShaderInterface-derivation");
+}
 
-	for (std::pair<Shader &, Model &> &ref_pair : render_pair_refs)
-	{
-		ref_pair.first.use();									 // might be more elegant to call "use" once on a Shader and execute all it's draws
-		ref_pair.first.set_projection_matrix(projection_matrix); // unlikely it needs to be set again every frame
-		ref_pair.first.set_view_matrix(view_matrix);
-		ref_pair.first.set_model_matrix(ref_pair.second.get_model_matrix());
-		ref_pair.second.draw(ref_pair.first);
-	}
+void Renderer::draw_all(
+	glm::mat4 const &projection_matrix = glm::mat4(1.0f),
+	glm::mat4 const &view_matrix = glm::mat4(1.0f)) noexcept
+{
+	std::vector<std::pair<ShaderInterface const &, Model &>> pair_vec = this->assemble_pairs();
+	for (auto pair_iter = pair_vec.begin(); pair_iter < pair_vec.end(); pair_iter++)
+		pair_iter->first.draw(pair_iter->second, view_matrix, projection_matrix);
 }
 
 Renderer::Renderer(
-	std::map<std::string, Shader> const &shaders,
+	std::map<std::string, ShaderInterface *> const &shaders,
 	std::map<std::string, Model> const &models,
-	std::multimap<std::string, std::string> const &render_pair_names) noexcept
-	: shaders(shaders),
-	  models(models),
-	  render_pair_names(render_pair_names)
+	std::multimap<std::string, std::string> const &render_pair_names) noexcept : shaders(shaders),
+																				 models(models),
+																				 render_pair_names(render_pair_names)
 {
 }
 
 Renderer::Renderer(
-	std::map<std::string, Shader> &&shaders,
+	std::map<std::string, ShaderInterface *> &&shaders,
 	std::map<std::string, Model> &&models,
-	std::multimap<std::string, std::string> &&render_pair_names) noexcept
-	: shaders(std::move(shaders)),
-	  models(std::move(models)),
-	  render_pair_names(std::move(render_pair_names))
+	std::multimap<std::string, std::string> &&render_pair_names) noexcept : shaders(std::move(shaders)),
+																			models(std::move(models)),
+																			render_pair_names(std::move(render_pair_names))
 {
+}
+
+Renderer::~Renderer() noexcept
+{
+	for (auto shader : this->shaders)
+		delete shader.second;
 }

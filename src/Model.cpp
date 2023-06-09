@@ -18,6 +18,7 @@ namespace
 		// use stb_image to import an image
 		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded textures on the y-axis before loading model
 		int width, height, n_components;
+		// Warning: on Windows, it sometimes only loads correctly if it's a square image of at least 1024 pixels in each dimension
 		unsigned char *data = stbi_load(file_name.c_str(), &width, &height, &n_components, 0);
 		ASSERT(data, "texture failed to load at path: " + path);
 
@@ -25,15 +26,15 @@ namespace
 		GLenum format;
 		if (n_components == 1)
 			format = GL_RED;
+		else if (n_components == 3)
+			format = GL_RGB;
 		else if (n_components == 4)
 			format = GL_RGBA;
 		else
-			format = GL_RGB;
+			ASSERT(false, "texture failed to load due to n_components being: " + std::to_string(n_components));
 
 		// send texture to GPU
 		glBindTexture(GL_TEXTURE_2D, id);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
 
 		// set miscellaneous image characteristics
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -41,17 +42,15 @@ namespace
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+		// buffer image and generate mipmap
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
 		// now that the GPU holds the texture, we no longer need to keep it in RAM
 		stbi_image_free(data);
 
 		return id;
 	}
-}
-
-void Model::draw(Shader const &shader) const noexcept
-{
-	for (Mesh const &mesh : this->meshes)
-		mesh.draw(shader);
 }
 
 std::optional<Texture> Model::find_loaded_texture(char const *const path) const noexcept
@@ -130,23 +129,23 @@ Mesh Model::process_mesh(aiMesh const *const mesh, aiScene const *const scene) n
 	std::vector<Texture> textures;
 	// process materials
 	// we assume a convention for sampler names in the shaders
-	// each diffuse texture should be named as 'texture_diffuseN' where N is a sequential number
+	// each diffuse texture should be named as 'u_texture_diffuseN' where N is a sequential number
 	// same applies to other textures such as:
-	// diffuse: texture_diffuseN
-	// specular: texture_specularN
-	// normal: texture_normalN
+	// diffuse: u_texture_diffuseN
+	// specular: u_texture_specularN
+	// normal: u_texture_normalN
 	aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 	// diffuse maps
-	std::vector<Texture> const diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+	std::vector<Texture> const diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "u_texture_diffuse");
 	textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
 	// specular maps
-	std::vector<Texture> const specular_maps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
+	std::vector<Texture> const specular_maps = load_material_textures(material, aiTextureType_SPECULAR, "u_texture_specular");
 	textures.insert(textures.end(), specular_maps.begin(), specular_maps.end());
 	// normal maps
-	std::vector<Texture> const normal_maps = load_material_textures(material, aiTextureType_NORMALS, "texture_normal");
+	std::vector<Texture> const normal_maps = load_material_textures(material, aiTextureType_NORMALS, "u_texture_normal");
 	textures.insert(textures.end(), normal_maps.begin(), normal_maps.end());
 	// height maps
-	std::vector<Texture> const height_maps = load_material_textures(material, aiTextureType_HEIGHT, "texture_height");
+	std::vector<Texture> const height_maps = load_material_textures(material, aiTextureType_HEIGHT, "u_texture_height");
 	textures.insert(textures.end(), height_maps.begin(), height_maps.end());
 
 	return Mesh(std::move(vertices), std::move(indices), std::move(textures));
@@ -211,6 +210,11 @@ glm::vec3 Model::get_orientation() const noexcept
 glm::vec3 Model::get_scaling() const noexcept
 {
 	return glm::vec3(this->scaling);
+}
+
+std::vector<Mesh> const &Model::get_meshes() const noexcept
+{
+	return this->meshes;
 }
 
 void Model::set_position(glm::vec3 &position) noexcept

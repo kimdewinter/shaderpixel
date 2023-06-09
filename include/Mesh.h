@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "types.h"
-#include "Shader.h"
 
 /// @brief holds vertex and texture data, and draw functionality
 class Mesh
@@ -17,7 +16,9 @@ public:
 		std::vector<Vertex> &&vertices,
 		std::vector<unsigned int> &&indices,
 		std::vector<Texture> &&textures) noexcept;
-	void draw(Shader const &shader) const noexcept;
+	unsigned int get_VAO() const noexcept;
+	size_t get_indices_size() const noexcept;
+	std::vector<Texture> const &get_textures() const noexcept;
 
 private:
 	void constructor_helper() noexcept;

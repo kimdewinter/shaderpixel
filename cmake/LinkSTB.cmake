@@ -4,7 +4,7 @@ macro(LinkSTB TARGET ACCESS)
     FetchContent_Declare(
         stb
         GIT_REPOSITORY https://github.com/nothings/stb
-        GIT_TAG b42009b3b9d4ca35bc703f5310eedc74f584be58
+        GIT_TAG 5736b15f7ea0ffb08dd38af21067c314d6a3aae9
     )
 
     FetchContent_GetProperties(stb)

@@ -1,161 +1,239 @@
-#include <string>
 #include <fstream>
 #include <sstream>
-#include <glad/glad.h>
+#include <optional>
 #include "Shader.h"
 #include "ErrorHandler.h"
 
 namespace
 {
-	void check_compile_errors(GLuint const shader_id, std::string const type)
+	void check_compile_errors(GLuint const id, std::string const &type) noexcept
 	{
 		GLint success;
 		GLchar info_log[1024];
 		if (type != "PROGRAM")
 		{
-			glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
+			glGetShaderiv(id, GL_COMPILE_STATUS, &success);
 			if (!success)
 			{
-				glGetShaderInfoLog(shader_id, 1024, NULL, info_log);
+				glGetShaderInfoLog(id, 1024, NULL, info_log);
 				ASSERT(false, "Shader compilation error of type: " + type + "\n" + std::string(info_log) + "\n");
 			}
 		}
 		else
 		{
-			glGetProgramiv(shader_id, GL_LINK_STATUS, &success);
+			glGetProgramiv(id, GL_LINK_STATUS, &success);
 			if (!success)
 			{
-				glGetProgramInfoLog(shader_id, 1024, NULL, info_log);
+				glGetProgramInfoLog(id, 1024, NULL, info_log);
 				ASSERT(false, "Shader linking error of type: " + type + "\n" + std::string(info_log) + "\n");
 			}
 		}
 	}
+
+	GLuint compile_shader(std::string const &path, GLenum const shader_type) noexcept
+	{
+		// open file
+		std::ifstream file;
+		file.open(path);
+		ASSERT(file.is_open(), "compile_shader failed to open shader source file: " + path);
+
+		// read file buffer into stringstream
+		std::stringstream stream;
+		stream << file.rdbuf();
+
+		// close file handler
+		file.close();
+
+		// convert stringstream to string
+		std::string const code = stream.str();
+
+		// compile shader
+		char const *code_cstr = code.c_str();
+		GLuint const id = glCreateShader(shader_type);
+		glShaderSource(id, 1, &code_cstr, NULL);
+		glCompileShader(id);
+		check_compile_errors(id, "SHADER");
+
+		return id;
+	}
+
+	GLuint link_shaders(GLuint const vertex, GLuint const fragment, std::optional<GLuint> const &geometry)
+	{
+		GLuint const program = glCreateProgram();
+		glAttachShader(program, vertex);
+		glAttachShader(program, fragment);
+		if (geometry.has_value())
+			glAttachShader(program, *geometry);
+		glLinkProgram(program);
+		check_compile_errors(program, "PROGRAM");
+		return program;
+	}
 }
 
-Shader::Shader(
-	std::string const &name,
-	std::string const &projection_uniform_name,
-	std::string const &view_uniform_name,
-	std::string const &model_uniform_name,
+ShaderInterface::ShaderInterface(
 	std::string const &vertex_path,
 	std::string const &fragment_path,
-	std::string const &geometry_path) noexcept : name(name),
-												 projection_uniform_name(projection_uniform_name),
-												 view_uniform_name(view_uniform_name),
-												 model_uniform_name(model_uniform_name)
+	std::string const &geometry_path) noexcept
 {
-	// retrieve source code
-	std::string vertex_code, fragment_code, geometry_code;
-	std::ifstream vertex_file, fragment_file, geometry_file;
-
-	// open files
-	vertex_file.open(vertex_path);
-	fragment_file.open(fragment_path);
-	ASSERT(
-		vertex_file.is_open() && fragment_file.is_open(),
-		"failed to open vertex_file and/or fragment_file in Shader constructor");
-
-	// read file buffer into stringstreams
-	std::stringstream vertex_stream, fragment_stream;
-	vertex_stream << vertex_file.rdbuf();
-	fragment_stream << fragment_file.rdbuf();
-
-	// close file handlers
-	vertex_file.close();
-	fragment_file.close();
-
-	// convert stringstream to string
-	vertex_code = vertex_stream.str();
-	fragment_code = fragment_stream.str();
-
-	// if geometry shader path provided: load geometry shader
+	// prepare vertex shader
+	GLuint const vertex = compile_shader(vertex_path, GL_VERTEX_SHADER);
+	// prepare fragment shader
+	GLuint const fragment = compile_shader(fragment_path, GL_FRAGMENT_SHADER);
+	// prepare geometry shader if source code is provided, otherwise set to null
+	std::optional<GLuint> geometry = std::nullopt;
 	if (geometry_path.empty() == false)
-	{
-		geometry_file.open(geometry_path);
-		ASSERT(geometry_file.is_open(), "failed to open geometry_file in Shader constructor");
-		std::stringstream geometry_stream;
-		geometry_stream << geometry_file.rdbuf();
-		geometry_file.close();
-		geometry_code = geometry_stream.str();
-	}
-
-	// compile vertex shader
-	const char *vertex_code_cstr = vertex_code.c_str();
-	unsigned int vertex_id;
-	vertex_id = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex_id, 1, &vertex_code_cstr, NULL);
-	glCompileShader(vertex_id);
-	check_compile_errors(vertex_id, "VERTEX");
-
-	// compile fragment shader
-	const char *fragment_code_cstr = fragment_code.c_str();
-	unsigned int fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment_id, 1, &fragment_code_cstr, NULL);
-	glCompileShader(fragment_id);
-	check_compile_errors(fragment_id, "FRAGMENT");
-
-	unsigned int geometry_id = 0;
-	// compile geometry shader (if necessary)
-	if (geometry_path.empty() == false)
-	{
-		const char *geometry_code_cstr = geometry_code.c_str();
-		unsigned int geometry_id = glCreateShader(GL_GEOMETRY_SHADER);
-		glShaderSource(geometry_id, 1, &geometry_code_cstr, NULL);
-		glCompileShader(geometry_id);
-		check_compile_errors(geometry_id, "GEOMETRY");
-	}
+		geometry = compile_shader(geometry_path, GL_GEOMETRY_SHADER);
 
 	// link shaders and create shader program
-	this->opengl_id = glCreateProgram();
-	glAttachShader(this->opengl_id, vertex_id);
-	glAttachShader(this->opengl_id, fragment_id);
-	if (geometry_path.empty() == false)
-		glAttachShader(this->opengl_id, geometry_id);
-	glLinkProgram(this->opengl_id);
-	check_compile_errors(this->opengl_id, "PROGRAM");
+	this->id = link_shaders(vertex, fragment, geometry);
 
-	// shaders no logner necessary now that they've been linked and the shader program compiled
-	glDeleteShader(vertex_id);
-	glDeleteShader(fragment_id);
-	if (geometry_path.empty() == false)
-		glDeleteShader(geometry_id);
+	// shaders no longer necessary now that they've been linked and the shader program compiled
+	glDeleteShader(vertex);
+	glDeleteShader(fragment);
+	if (geometry.has_value())
+		glDeleteShader(*geometry);
 }
 
-void Shader::use() const noexcept
+ShaderInterface::~ShaderInterface() noexcept
 {
-	glUseProgram(this->opengl_id);
+	glDeleteProgram(this->id);
 }
 
-unsigned int Shader::get_opengl_id() const noexcept
+GLuint ShaderInterface::get_id() const noexcept
 {
-	return this->opengl_id;
+	return this->id;
 }
 
-void Shader::set_projection_matrix(glm::mat4 const &value) const noexcept
+void ShaderInterface::use() const noexcept
 {
-	this->set_uniform_mat4(this->projection_uniform_name, value);
+	glUseProgram(this->id);
 }
 
-void Shader::set_view_matrix(glm::mat4 const &value) const noexcept
+template <typename T>
+Uniform<T>::Uniform(ShaderInterface const &p, std::string const &name) noexcept
+	: shader_id(p.get_id()),
+	  name(name)
 {
-	this->set_uniform_mat4(this->view_uniform_name, value);
 }
 
-void Shader::set_model_matrix(glm::mat4 const &value) const noexcept
+template <typename T>
+void Uniform<T>::set(T const &value) const noexcept
 {
-	this->set_uniform_mat4(this->model_uniform_name, value);
+	ASSERT(false, "unrecognized class type detected in Uniform::apply()");
 }
 
-void Shader::set_uniform_int(std::string const &name, int const value) const noexcept
+template <>
+void Uniform<int>::set(int const &value) const noexcept
 {
-	// ideally you wouldn't want to call glUseProgram() more than necessary
-	this->use();
-	glUniform1i(glGetUniformLocation(this->opengl_id, name.c_str()), value);
+	glUniform1i(this->get_uniform_location(this->name), static_cast<GLint>(value));
 }
 
-void Shader::set_uniform_mat4(std::string const &name, glm::mat4 const &value) const noexcept
+template <>
+void Uniform<unsigned int>::set(unsigned int const &value) const noexcept
 {
-	// ideally you wouldn't want to call glUseProgram() more than necessary
-	this->use();
-	glUniformMatrix4fv(glGetUniformLocation(this->opengl_id, name.c_str()), 1, GL_FALSE, &value[0][0]);
+	glUniform1ui(this->get_uniform_location(this->name), static_cast<GLuint>(value));
+}
+
+template <>
+void Uniform<float>::set(float const &value) const noexcept
+{
+	glUniform1f(this->get_uniform_location(this->name), static_cast<GLfloat>(value));
+}
+
+template <>
+void Uniform<glm::vec3>::set(glm::vec3 const &value) const noexcept
+{
+	glUniform3f(
+		this->get_uniform_location(this->name),
+		static_cast<GLfloat>(value.x),
+		static_cast<GLfloat>(value.y),
+		static_cast<GLfloat>(value.z));
+}
+
+template <>
+void Uniform<glm::vec4>::set(glm::vec4 const &value) const noexcept
+{
+	glUniform4f(
+		this->get_uniform_location(this->name),
+		static_cast<GLfloat>(value.x),
+		static_cast<GLfloat>(value.y),
+		static_cast<GLfloat>(value.z),
+		static_cast<GLfloat>(value.w));
+}
+
+template <>
+void Uniform<glm::mat4>::set(glm::mat4 const &value) const noexcept
+{
+	glUniformMatrix4fv(
+		this->get_uniform_location(this->name),
+		1,
+		GL_FALSE,
+		static_cast<GLfloat const *>(&value[0][0]));
+}
+
+template <>
+void Uniform<std::vector<Texture>>::set(std::vector<Texture> const &textures) const noexcept
+{
+	// bind appropriate textures
+	unsigned int u_texture_diffusen = 1;
+	unsigned int u_texture_specularn = 1;
+	unsigned int u_texture_normaln = 1;
+	unsigned int u_texture_heightn = 1;
+	for (unsigned int i = 0; i < textures.size(); i++)
+	{
+		// retrieve texture number (the n in u_texture_diffusen)
+		std::string number;
+		std::string name = textures[i].type;
+		if (name == "u_texture_diffuse")
+			number = std::to_string(u_texture_diffusen++);
+		else if (name == "u_texture_specular")
+			number = std::to_string(u_texture_specularn++);
+		else if (name == "u_texture_normal")
+			number = std::to_string(u_texture_normaln++);
+		else if (name == "u_texture_height")
+			number = std::to_string(u_texture_heightn++);
+
+		// retrieve location of uniform
+		GLint location = this->get_uniform_location((name + number).c_str());
+
+		// activate and bind in OpenGL
+		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
+		glUniform1i(location, static_cast<GLint>(i));
+		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	}
+	glActiveTexture(GL_TEXTURE0);
+}
+
+template <typename T>
+GLint Uniform<T>::get_uniform_location(std::string const &name) const noexcept
+{
+	GLint location = glGetUniformLocation(this->shader_id, name.c_str());
+	ASSERT(location >= 0, "texture uniform not found in Uniform::get_uniform_location()");
+	return location;
+}
+
+StandardShader::StandardShader(
+	std::string const &vertex_path,
+	std::string const &fragment_path,
+	std::string const &geometry_path) noexcept
+	: ShaderInterface{vertex_path, fragment_path, geometry_path}
+{
+}
+
+void StandardShader::draw(
+	Model const &model,
+	glm::mat4 const &view,
+	glm::mat4 const &projection) const noexcept
+{
+	this->use();												 // make this shader program the currently active shader program in OpenGL
+	this->modelview_matrix.set(view * model.get_model_matrix()); // combine and send view & model matrices
+	this->projection_matrix.set(projection);					 // send perspective / projection matrix
+	for (Mesh const &mesh : model.get_meshes())
+	{
+		this->textures.set(mesh.get_textures());														// activate & bind textures
+		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO
+		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(mesh.get_indices_size()), GL_UNSIGNED_INT, 0); // draw
+	}
+	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
 }
