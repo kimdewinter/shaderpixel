@@ -21,10 +21,10 @@ namespace Configuration
 	{
 		/// @brief here you define what shaders you want to load, and from what files, names must be unique
 		/// @return a map<string, ShaderInterface>, where the string is a name to identify that Shader
-		std::map<std::string, std::unique_ptr<ShaderInterface>> load_shaders() noexcept
+		std::map<std::string, ShaderInterface *> load_shaders() noexcept
 		{
-			std::map<std::string, std::unique_ptr<ShaderInterface>> shaders;
-			shaders.insert({"standard_shader", std::unique_ptr<ShaderInterface>(new StandardShader("../resources/standard_shader.vert", "../resources/standard_shader.frag"))});
+			std::map<std::string, ShaderInterface *> shaders;
+			shaders.insert({"standard_shader", new StandardShader("resources/standard_shader.vert", "resources/standard_shader.frag")});
 			return shaders;
 		}
 
@@ -32,8 +32,8 @@ namespace Configuration
 		std::map<std::string, Model> load_models() noexcept
 		{
 			std::map<std::string, Model> models;
-			models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "../resources/terrain/terrain.obj", {0.0f, 1.053f, 0.0f})});
-			models.insert(std::pair<std::string, Model>{"pedestal", Model("pedestal", "../resources/pedestal/10421_square_pedastal_iterations-2.obj", {3.0f, -0.2f, 0.1f}, glm::quat({1.567f, 0.0f, 0.0f}), {0.01f, 0.01f, 0.01f})});
+			models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, 1.053f, 0.0f})});
+			models.insert(std::pair<std::string, Model>{"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {3.0f, -0.2f, 0.1f}, glm::quat({1.567f, 0.0f, 0.0f}), {0.01f, 0.01f, 0.01f})});
 			// models.insert(std::pair<std::string, Model>{"sphere", Model("sphere", "../resources/sphere/sphere.obj", { 3.0f, 0.4f, 0.1f }, glm::quat({ 0.0f, 0.0f, 0.0f }), { 0.35f, 0.35f, 0.35f })});
 			// models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "../resources/backpack/backpack.obj", { 0.0f, 0.0f, -10.0f })});
 			// models.insert(std::pair<std::string, Model>{"pillar", Model("pillar", "../resources/Pillar/LP_Pillar_Textured.obj", {0.0f, 0.0f, -20.0f})});

@@ -39,7 +39,7 @@ public:
 		std::string const &vertex_path,
 		std::string const &fragment_path,
 		std::string const &geometry_path = {}) noexcept;
-	~ShaderInterface() noexcept;
+	virtual ~ShaderInterface() noexcept;
 	ShaderInterface(ShaderInterface const &other) noexcept = default;
 	ShaderInterface(ShaderInterface &&other) noexcept = default;
 	ShaderInterface &operator=(ShaderInterface const &other) noexcept = default;
@@ -76,7 +76,7 @@ public:
 	void set(T const &value) const noexcept;
 
 private:
-	GLuint get_uniform_location(std::string const &name) const noexcept;
+	GLint get_uniform_location(std::string const &name) const noexcept;
 
 	GLuint const shader_id;		 // id of owner (a Shader of some kind)
 	std::string const name = {}; // what uniform is called in shader's source code

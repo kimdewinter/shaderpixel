@@ -194,11 +194,7 @@ void Uniform<std::vector<Texture>>::set(std::vector<Texture> const &textures) co
 			number = std::to_string(u_texture_heightn++);
 
 		// retrieve location of uniform
-		int location = this->get_uniform_location((name + number).c_str());
-		int location = glGetUniformLocation(
-			static_cast<GLuint>(this->shader_id),
-			(name + number).c_str());
-		ASSERT(location != -1, "texture uniform not found in TextureBinder::bind_textures()");
+		GLint location = this->get_uniform_location((name + number).c_str());
 
 		// activate and bind in OpenGL
 		glActiveTexture(GL_TEXTURE0 + i); // activate texture unit before calling glBindTexture()
@@ -209,9 +205,11 @@ void Uniform<std::vector<Texture>>::set(std::vector<Texture> const &textures) co
 }
 
 template <typename T>
-GLuint Uniform<T>::get_uniform_location(std::string const &name) const noexcept
+GLint Uniform<T>::get_uniform_location(std::string const &name) const noexcept
 {
-	return glGetUniformLocation(this->shader_id, name.c_str());
+	GLint location = glGetUniformLocation(this->shader_id, name.c_str());
+	ASSERT(location >= 0, "texture uniform not found in Uniform::get_uniform_location()");
+	return location;
 }
 
 StandardShader::StandardShader(
