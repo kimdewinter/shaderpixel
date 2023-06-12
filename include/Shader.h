@@ -47,9 +47,9 @@ public:
 		std::string const &geometry_path = {}) noexcept;
 	virtual ~ShaderInterface() noexcept;
 	ShaderInterface(ShaderInterface const &other) noexcept = delete;
-	ShaderInterface(ShaderInterface &&other) noexcept = default;
+	ShaderInterface(ShaderInterface &&other) noexcept = delete;
 	ShaderInterface &operator=(ShaderInterface const &other) noexcept = delete;
-	ShaderInterface &operator=(ShaderInterface &&other) noexcept = default;
+	ShaderInterface &operator=(ShaderInterface &&other) noexcept = delete;
 
 	GLuint get_id() const noexcept;
 
@@ -73,10 +73,10 @@ class Uniform
 public:
 	/// @param p const reference to caller (which should own this Uniform)
 	/// @param name what the uniform is called in the shader's source code; empty string if T=std::vector<Texture>
-	Uniform(ShaderInterface const &p, std::string const &name) noexcept;
+	Uniform(GLuint const shader_id, std::string const &name) noexcept;
 	~Uniform() noexcept = default;
-	Uniform(Uniform const &other) = default;
-	Uniform(Uniform &&other) = default;
+	Uniform(Uniform const &other) = delete;
+	Uniform(Uniform &&other) = delete;
 	Uniform &operator=(Uniform const &other) noexcept = delete;
 	Uniform &operator=(Uniform &&other) noexcept = delete;
 
@@ -98,7 +98,7 @@ public:
 		std::string const &geometry_path = {}) noexcept;
 	~StandardShader() noexcept = default;
 	StandardShader(StandardShader const &other) noexcept = delete;
-	StandardShader(StandardShader &&other) = default;
+	StandardShader(StandardShader &&other) = delete;
 	StandardShader &operator=(StandardShader const &other) noexcept = delete;
 	StandardShader &operator=(StandardShader &&other) noexcept = delete;
 
@@ -122,7 +122,7 @@ public:
 		std::string const &geometry_path = {}) noexcept;
 	~SingleColorShader() noexcept = default;
 	SingleColorShader(SingleColorShader const &other) noexcept = delete;
-	SingleColorShader(SingleColorShader &&other) = default;
+	SingleColorShader(SingleColorShader &&other) = delete;
 	SingleColorShader &operator=(SingleColorShader const &other) noexcept = delete;
 	SingleColorShader &operator=(SingleColorShader &&other) noexcept = delete;
 
@@ -132,9 +132,9 @@ public:
 		glm::mat4 const &projection) const noexcept;
 
 private:
-	Uniform<glm::mat4> const modelview_matrix = Uniform<glm::mat4>(*this, "u_modelview");
-	Uniform<glm::mat4> const projection_matrix = Uniform<glm::mat4>(*this, "u_projection");
-	Uniform<glm::vec4> const color = Uniform<glm::vec4>(*this, "u_color");
+	Uniform<glm::mat4> const modelview_matrix;
+	Uniform<glm::mat4> const projection_matrix;
+	Uniform<glm::vec4> const color;
 };
 
 #endif

@@ -110,8 +110,8 @@ void ShaderInterface::use() const noexcept
 }
 
 template <typename T>
-Uniform<T>::Uniform(ShaderInterface const &p, std::string const &name) noexcept
-	: shader_id(p.get_id()),
+Uniform<T>::Uniform(GLuint const shader_id, std::string const &name) noexcept
+	: shader_id(shader_id),
 	  name(name)
 {
 }
@@ -217,9 +217,9 @@ StandardShader::StandardShader(
 	std::string const &fragment_path,
 	std::string const &geometry_path) noexcept
 	: ShaderInterface{vertex_path, fragment_path, geometry_path},
-	  modelview_matrix(std::move(Uniform<glm::mat4>(*this, "u_modelview"))),
-	  projection_matrix(std::move(Uniform<glm::mat4>(*this, "u_projection"))),
-	  textures(std::move(Uniform<std::vector<Texture>>(*this, "")))
+	  modelview_matrix(this->get_id(), "u_modelview"),
+	  projection_matrix(this->get_id(), "u_projection"),
+	  textures(this->get_id(), "")
 {
 }
 
@@ -245,7 +245,10 @@ SingleColorShader::SingleColorShader(
 	std::string const &vertex_path,
 	std::string const &fragment_path,
 	std::string const &geometry_path) noexcept
-	: ShaderInterface{vertex_path, fragment_path, geometry_path}
+	: ShaderInterface{vertex_path, fragment_path, geometry_path},
+	  modelview_matrix(this->get_id(), "u_modelview"),
+	  projection_matrix(this->get_id(), "u_projection"),
+	  color(this->get_id(), "u_color")
 {
 }
 
