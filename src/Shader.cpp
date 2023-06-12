@@ -208,7 +208,12 @@ template <typename T>
 GLint Uniform<T>::get_uniform_location(std::string const &name) const noexcept
 {
 	GLint location = glGetUniformLocation(this->shader_id, name.c_str());
-	ASSERT(location >= 0, "texture uniform not found in Uniform::get_uniform_location()");
+	std::cout << "\n"
+			  << "uniform name: " << name << std::endl;
+	std::cout << "\n"
+			  << "id: " << location << std::endl;
+
+	ASSERT(location >= 0, "uniform not found in Uniform::get_uniform_location()");
 	return location;
 }
 
@@ -253,6 +258,40 @@ SingleColorShader::SingleColorShader(
 }
 
 void SingleColorShader::draw(
+	Model const &model,
+	glm::mat4 const &view,
+	glm::mat4 const &projection) const noexcept
+{
+	this->use();												 // make this shader program the currently active shader program in OpenGL
+	this->modelview_matrix.set(view * model.get_model_matrix()); // combine and send view & model matrices
+	this->projection_matrix.set(projection);					 // send perspective / projection matrix
+	this->color.set(
+		glm::vec4{
+			SINGLECOLORSHADER_COLOR_R,
+			SINGLECOLORSHADER_COLOR_G,
+			SINGLECOLORSHADER_COLOR_B,
+			SINGLECOLORSHADER_COLOR_A});
+	for (Mesh const &mesh : model.get_meshes())
+	{
+		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO
+		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(mesh.get_indices_size()), GL_UNSIGNED_INT, 0); // draw
+	}
+	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
+}
+
+DiffuseSingleColorShader::DiffuseSingleColorShader(
+	std::string const &vertex_path,
+	std::string const &fragment_path,
+	std::string const &geometry_path) noexcept
+	: ShaderInterface{vertex_path, fragment_path, geometry_path},
+	  modelview_matrix(this->get_id(), "u_modelview"),
+	  projection_matrix(this->get_id(), "u_projection"),
+	  color(this->get_id(), "u_color")
+{
+}
+
+void DiffuseSingleColorShader::draw(
 	Model const &model,
 	glm::mat4 const &view,
 	glm::mat4 const &projection) const noexcept

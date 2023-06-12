@@ -137,4 +137,28 @@ private:
 	Uniform<glm::vec4> const color;
 };
 
+class DiffuseSingleColorShader : public ShaderInterface
+{
+public:
+	DiffuseSingleColorShader(
+		std::string const &vertex_path,
+		std::string const &fragment_path,
+		std::string const &geometry_path = {}) noexcept;
+	~DiffuseSingleColorShader() noexcept = default;
+	DiffuseSingleColorShader(DiffuseSingleColorShader const &other) noexcept = delete;
+	DiffuseSingleColorShader(DiffuseSingleColorShader &&other) = delete;
+	DiffuseSingleColorShader &operator=(DiffuseSingleColorShader const &other) noexcept = delete;
+	DiffuseSingleColorShader &operator=(DiffuseSingleColorShader &&other) noexcept = delete;
+
+	void draw(
+		Model const &model,
+		glm::mat4 const &view,
+		glm::mat4 const &projection) const noexcept;
+
+private:
+	Uniform<glm::mat4> const modelview_matrix;
+	Uniform<glm::mat4> const projection_matrix;
+	Uniform<glm::vec4> const color;
+};
+
 #endif

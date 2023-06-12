@@ -26,6 +26,7 @@ namespace Configuration
 			std::map<std::string, ShaderInterface *> shaders;
 			shaders.insert({"standard_shader", new StandardShader("resources/standard_shader.vert", "resources/standard_shader.frag")});
 			shaders.insert({"single_color_shader", new SingleColorShader("resources/single_color_shader.vert", "resources/single_color_shader.frag")});
+			shaders.insert({"diffuse_single_color_shader", new DiffuseSingleColorShader("resources/diffuse_single_color_shader.vert", "resources/diffuse_single_color_shader.frag")});
 			return shaders;
 		}
 
@@ -49,7 +50,7 @@ namespace Configuration
 			std::multimap<std::string, std::string> name_pairings;
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "terrain"});
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pedestal"});
-			name_pairings.insert(std::pair<std::string, std::string>{"single_color_shader", "sphere"});
+			name_pairings.insert(std::pair<std::string, std::string>{"diffuse_single_color_shader", "sphere"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "backpack"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pillar"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "cube1"});

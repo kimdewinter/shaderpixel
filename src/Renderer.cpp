@@ -15,7 +15,6 @@ std::vector<std::pair<ShaderInterface const &, Model &>> Renderer::assemble_pair
 			continue;
 		}
 		render_pair_refs.push_back({*shader_iter->second, model_iter->second});
-		// render_pair_refs.push_back({shader_iter->second, model_iter->second});
 	}
 	return render_pair_refs;
 }
