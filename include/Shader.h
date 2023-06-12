@@ -23,7 +23,7 @@ Uniform is there to set the uniforms for each shader program prior to drawing
 When you implement a new shader:
 - derive from ShaderInterface
 - add Uniforms as necessary
-- add a Uniform<std::vector<Texture>> to handle texture binding
+(- add a Uniform<std::vector<Texture>> to handle texture binding)
 - implement a .draw() function on your new shader
 
 Drawing is done by:
@@ -113,28 +113,28 @@ private:
 	Uniform<std::vector<Texture>> const textures;
 };
 
-// class SingleColorShader : public ShaderInterface
-// {
-// public:
-// 	SingleColorShader(
-// 		std::string const &vertex_path,
-// 		std::string const &fragment_path,
-// 		std::string const &geometry_path = {}) noexcept;
-// 	~SingleColorShader() noexcept = default;
-// 	SingleColorShader(SingleColorShader const &other) noexcept = delete;
-// 	SingleColorShader(SingleColorShader &&other) noexcept = default;
-// 	SingleColorShader &operator=(SingleColorShader const &other) noexcept = delete;
-// 	SingleColorShader &operator=(SingleColorShader &&other) noexcept = default;
+class SingleColorShader : public ShaderInterface
+{
+public:
+	SingleColorShader(
+		std::string const &vertex_path,
+		std::string const &fragment_path,
+		std::string const &geometry_path = {}) noexcept;
+	~SingleColorShader() noexcept = default;
+	SingleColorShader(SingleColorShader const &other) noexcept = delete;
+	SingleColorShader(SingleColorShader &&other) = default;
+	SingleColorShader &operator=(SingleColorShader const &other) noexcept = delete;
+	SingleColorShader &operator=(SingleColorShader &&other) noexcept = delete;
 
-// 	void draw(
-// 		Model const &model,
-// 		glm::mat4 const &view,
-// 		glm::mat4 const &projection) const noexcept;
+	void draw(
+		Model const &model,
+		glm::mat4 const &view,
+		glm::mat4 const &projection) const noexcept;
 
-// private:
-// 	Uniform<glm::mat4> const modelview_matrix = Uniform<glm::mat4>(*this, "u_modelview");
-// 	Uniform<glm::mat4> const projection_matrix = Uniform<glm::mat4>(*this, "u_projection");
-// 	Uniform<glm::vec4> const color = Uniform<glm::vec4>(*this, "u_color");
-// };
+private:
+	Uniform<glm::mat4> const modelview_matrix = Uniform<glm::mat4>(*this, "u_modelview");
+	Uniform<glm::mat4> const projection_matrix = Uniform<glm::mat4>(*this, "u_projection");
+	Uniform<glm::vec4> const color = Uniform<glm::vec4>(*this, "u_color");
+};
 
 #endif

@@ -15,12 +15,12 @@ in vec3 inter_normal;
 in vec2 inter_tex_coords;
 out vec4 o_frag_color;
 
+// color
+uniform vec4 u_color;
+
 // mvp-matrix
 uniform mat4 u_modelview;
 uniform mat4 u_projection;
-
-// color
-uniform vec4 u_color;
 
 void main()
 {

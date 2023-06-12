@@ -241,33 +241,33 @@ void StandardShader::draw(
 	glActiveTexture(GL_TEXTURE0);
 }
 
-// SingleColorShader::SingleColorShader(
-// 	std::string const &vertex_path,
-// 	std::string const &fragment_path,
-// 	std::string const &geometry_path) noexcept
-// 	: ShaderInterface{vertex_path, fragment_path, geometry_path}
-// {
-// }
+SingleColorShader::SingleColorShader(
+	std::string const &vertex_path,
+	std::string const &fragment_path,
+	std::string const &geometry_path) noexcept
+	: ShaderInterface{vertex_path, fragment_path, geometry_path}
+{
+}
 
-// void SingleColorShader::draw(
-// 	Model const &model,
-// 	glm::mat4 const &view,
-// 	glm::mat4 const &projection) const noexcept
-// {
-// 	this->use();												 // make this shader program the currently active shader program in OpenGL
-// 	this->modelview_matrix.set(view * model.get_model_matrix()); // combine and send view & model matrices
-// 	this->projection_matrix.set(projection);					 // send perspective / projection matrix
-// 	this->color.set(
-// 		glm::vec4{
-// 			SINGLECOLORSHADER_COLOR_R,
-// 			SINGLECOLORSHADER_COLOR_G,
-// 			SINGLECOLORSHADER_COLOR_B,
-// 			SINGLECOLORSHADER_COLOR_A});
-// 	for (Mesh const &mesh : model.get_meshes())
-// 	{
-// 		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO
-// 		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(mesh.get_indices_size()), GL_UNSIGNED_INT, 0); // draw
-// 	}
-// 	glBindVertexArray(0);
-// 	glActiveTexture(GL_TEXTURE0);
-// }
+void SingleColorShader::draw(
+	Model const &model,
+	glm::mat4 const &view,
+	glm::mat4 const &projection) const noexcept
+{
+	this->use();												 // make this shader program the currently active shader program in OpenGL
+	this->modelview_matrix.set(view * model.get_model_matrix()); // combine and send view & model matrices
+	this->projection_matrix.set(projection);					 // send perspective / projection matrix
+	this->color.set(
+		glm::vec4{
+			SINGLECOLORSHADER_COLOR_R,
+			SINGLECOLORSHADER_COLOR_G,
+			SINGLECOLORSHADER_COLOR_B,
+			SINGLECOLORSHADER_COLOR_A});
+	for (Mesh const &mesh : model.get_meshes())
+	{
+		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO
+		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(mesh.get_indices_size()), GL_UNSIGNED_INT, 0); // draw
+	}
+	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
+}
