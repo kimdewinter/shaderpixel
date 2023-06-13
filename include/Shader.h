@@ -11,9 +11,14 @@
 #include "main.h"
 
 #define SINGLECOLORSHADER_COLOR_R 1.0f
-#define SINGLECOLORSHADER_COLOR_G 1.0f
-#define SINGLECOLORSHADER_COLOR_B 1.0f
+#define SINGLECOLORSHADER_COLOR_G 0.25f
+#define SINGLECOLORSHADER_COLOR_B 0.0f
 #define SINGLECOLORSHADER_COLOR_A 1.0f
+#define SINGLECOLORSHADER_LIGHT_VECTOR_X -0.5f
+#define SINGLECOLORSHADER_LIGHT_VECTOR_Y 0.5f
+#define SINGLECOLORSHADER_LIGHT_VECTOR_Z 0.5f
+#define SINGLECOLORSHADER_LIGHT_VECTOR_W 0.0f
+#define SINGLECOLORSHADER_LIGHT_INTENSITY 10.0f // advised default: 1.0f
 
 /*
 ShaderInterface is there as a base for individual shaders you wish to implement
@@ -159,7 +164,8 @@ private:
 	Uniform<glm::mat4> const modelview_matrix;
 	Uniform<glm::mat4> const projection_matrix;
 	Uniform<glm::vec4> const color;
-	Uniform<glm::vec4> const light; // last float can be used in future to indicate directional light (0.0f) or other light (1.0f)
+	Uniform<glm::vec4> const light_vector; // last float can be used in future to indicate directional light (0.0f) or other light (1.0f)
+	Uniform<float> const light_intensity;
 };
 
 #endif

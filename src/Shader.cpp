@@ -283,7 +283,8 @@ DiffuseSingleColorShader::DiffuseSingleColorShader(
 	  modelview_matrix(this->get_id(), "u_modelview"),
 	  projection_matrix(this->get_id(), "u_projection"),
 	  color(this->get_id(), "u_color"),
-	  light(this->get_id(), "u_light")
+	  light_vector(this->get_id(), "u_light_vector"),
+	  light_intensity(this->get_id(), "u_light_intensity")
 {
 }
 
@@ -301,7 +302,8 @@ void DiffuseSingleColorShader::draw(
 			SINGLECOLORSHADER_COLOR_G,
 			SINGLECOLORSHADER_COLOR_B,
 			SINGLECOLORSHADER_COLOR_A});
-	this->light.set({-0.5f, 0.5f, 0.5f, 0.0f});
+	this->light_vector.set({SINGLECOLORSHADER_LIGHT_VECTOR_X, SINGLECOLORSHADER_LIGHT_VECTOR_Y, SINGLECOLORSHADER_LIGHT_VECTOR_Z, SINGLECOLORSHADER_LIGHT_VECTOR_W});
+	this->light_intensity.set(SINGLECOLORSHADER_LIGHT_INTENSITY);
 	for (Mesh const &mesh : model.get_meshes())
 	{
 		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO

@@ -16,10 +16,11 @@ in vec2 v2f_tex_coords;
 out vec4 o_frag_color;
 
 // color
-uniform vec4 u_color;
+uniform vec4 u_color; // RGBA; alpha channel unused at time of writing
 
 // lighting
-uniform vec4 u_light; // unit vector to light source; last float can be used in future to indicate directional light (0.0f) or other light (1.0f)
+uniform vec4 u_light_vector; // unit vector TO light source; last float can be used in future to indicate directional light (0.0f) or other light (1.0f)
+uniform float u_light_intensity; // intensity of light source
 
 // mvp-matrix
 uniform mat4 u_modelview;
@@ -27,11 +28,15 @@ uniform mat4 u_projection;
 
 void main()
 {
-	// We apply Lambertian diffuse lighting
-	// by calculating how much this fragment's normal diverges from u_light
-	// which tells us how brightly lit this fragment should be
-	float divergence = dot(v2f_normal, u_light.xyz); // swizzle u_light from vec4 to vec3
-	float clamped = clamp(divergence, 0.0, 1.0); // fragments on darkly lit side can go into negatives
-	vec3 shaded_color = clamped * u_color.xyz;
-	o_frag_color = vec4(shaded_color, 1.0);
+	// We apply basic (Lambertian) diffuse lighting
+	// get how much this fragment's normal diverges from u_light_vector
+	// which tells us how far this fragment is on the lit/shaded side of the object
+	float divergence_multiplier = dot(v2f_normal, u_light_vector.xyz); // swizzle u_light_vector from vec4 to vec3
+	divergence_multiplier = clamp(divergence_multiplier, 0.0, 1.0); // multiplier of fragments on shaded side can go into the negative
+	
+	// brighten/dampen color according to intensity of light source
+	vec3 intensitied_color = u_color.xyz * u_light_intensity; // swizzle u_color from vec4 to vec3
+
+	// combine everything to get final color
+	o_frag_color = vec4(divergence_multiplier * intensitied_color, 1.0);
 }
