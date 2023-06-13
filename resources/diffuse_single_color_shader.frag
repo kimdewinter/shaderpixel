@@ -19,7 +19,7 @@ out vec4 o_frag_color;
 uniform vec4 u_color;
 
 // lighting
-uniform vec4 u_light; // unit vector to light; last float can be used in future to indicate directional light (0.0f) or other light (1.0f)
+uniform vec4 u_light; // unit vector to light source; last float can be used in future to indicate directional light (0.0f) or other light (1.0f)
 
 // mvp-matrix
 uniform mat4 u_modelview;
@@ -27,11 +27,12 @@ uniform mat4 u_projection;
 
 void main()
 {
-	// o_frag_color = u_color;
-	// vec4 local_color = u_color; // to prevent unused uniform complaints
-
-	// o_frag_color = vec4(v2f_normal.xyz, 1.0f); // <- uniform not found?
-
 	float diffuse_light = clamp(dot(v2f_normal, u_light.xyz), 0.0, 1.0);
-	o_frag_color = vec4(diffuse_light, diffuse_light, diffuse_light, 1.0f);
+
+	// We apply Lambertian diffuse lighting
+	// by calculating how much this fragment's normal diverges from u_light
+	// which tells us how brightly lit this fragment should be
+	float divergence = dot(v2f_normal, u_light.xyz); // swizzle u_light from vec4 to vec3
+	float clamped = clamp(divergence, 0.0, 1.0); // fragments on darkly lit side can go into negatives
+	o_frag_color = vec4(clamped, clamped, clamped, 1.0);
 }
