@@ -27,12 +27,11 @@ uniform mat4 u_projection;
 
 void main()
 {
-	float diffuse_light = clamp(dot(v2f_normal, u_light.xyz), 0.0, 1.0);
-
 	// We apply Lambertian diffuse lighting
 	// by calculating how much this fragment's normal diverges from u_light
 	// which tells us how brightly lit this fragment should be
 	float divergence = dot(v2f_normal, u_light.xyz); // swizzle u_light from vec4 to vec3
 	float clamped = clamp(divergence, 0.0, 1.0); // fragments on darkly lit side can go into negatives
-	o_frag_color = vec4(clamped, clamped, clamped, 1.0);
+	vec3 shaded_color = clamped * u_color.xyz;
+	o_frag_color = vec4(shaded_color, 1.0);
 }
