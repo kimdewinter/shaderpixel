@@ -208,12 +208,7 @@ template <typename T>
 GLint Uniform<T>::get_uniform_location(std::string const &name) const noexcept
 {
 	GLint location = glGetUniformLocation(this->shader_id, name.c_str());
-	std::cout << "\n"
-			  << "uniform name: " << name << std::endl;
-	std::cout << "\n"
-			  << "id: " << location << std::endl;
-
-	ASSERT(location >= 0, "uniform not found in Uniform::get_uniform_location()");
+	SOFT_ASSERT(location >= 0, "uniform \"" + name + "\" not found in Uniform::get_uniform_location() (is it unused and optimized out?)");
 	return location;
 }
 

@@ -24,6 +24,8 @@ uniform mat4 u_projection;
 
 void main()
 {
-	o_frag_color = u_color;
-	// o_frag_color = vec4(inter_normal.xyz, 1.0f); // <- uniform not found?
+	// o_frag_color = u_color;
+	// vec4 local_color = u_color; // to prevent unused uniform complaints
+
+	o_frag_color = vec4(inter_normal.xyz, 1.0f); // <- uniform not found?
 }
