@@ -282,7 +282,8 @@ DiffuseSingleColorShader::DiffuseSingleColorShader(
 	: ShaderInterface{vertex_path, fragment_path, geometry_path},
 	  modelview_matrix(this->get_id(), "u_modelview"),
 	  projection_matrix(this->get_id(), "u_projection"),
-	  color(this->get_id(), "u_color")
+	  color(this->get_id(), "u_color"),
+	  light(this->get_id(), "u_light")
 {
 }
 
@@ -300,6 +301,7 @@ void DiffuseSingleColorShader::draw(
 			SINGLECOLORSHADER_COLOR_G,
 			SINGLECOLORSHADER_COLOR_B,
 			SINGLECOLORSHADER_COLOR_A});
+	this->light.set({-0.5f, 0.5f, 0.5f, 0.0f});
 	for (Mesh const &mesh : model.get_meshes())
 	{
 		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO

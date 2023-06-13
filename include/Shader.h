@@ -159,6 +159,7 @@ private:
 	Uniform<glm::mat4> const modelview_matrix;
 	Uniform<glm::mat4> const projection_matrix;
 	Uniform<glm::vec4> const color;
+	Uniform<glm::vec4> const light; // last float can be used in future to indicate directional light (0.0f) or other light (1.0f)
 };
 
 #endif
