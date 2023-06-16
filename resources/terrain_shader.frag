@@ -13,6 +13,7 @@ in vec3 v2f_normal;
 
 // texture_related
 uniform sampler2D u_texture_diffuse1;
+uniform float u_texture_scale;
 in vec2 v2f_tex_coords;
 out vec4 o_frag_color;
 
@@ -22,5 +23,5 @@ uniform mat4 u_projection;
 
 void main()
 {
-	o_frag_color = texture(u_texture_diffuse1, mod(v2f_tex_coords * 5.0, 1.0));
+	o_frag_color = texture(u_texture_diffuse1, mod(v2f_tex_coords * u_texture_scale, 1.0));
 }

@@ -25,7 +25,8 @@ namespace Configuration
 		{
 			std::map<std::string, ShaderInterface *> shaders;
 			shaders.insert({"standard_shader", new StandardShader("resources/standard_shader.vert", "resources/standard_shader.frag")});
-			shaders.insert({"single_color_shader", new SingleColorShader("resources/single_color_shader.vert", "resources/single_color_shader.frag")});
+			shaders.insert({"terrain_shader", new TerrainShader("resources/terrain_shader.vert", "resources/terrain_shader.frag")});
+			// shaders.insert({"single_color_shader", new SingleColorShader("resources/single_color_shader.vert", "resources/single_color_shader.frag")});
 			shaders.insert({"diffuse_single_color_shader", new DiffuseSingleColorShader("resources/diffuse_single_color_shader.vert", "resources/diffuse_single_color_shader.frag")});
 			return shaders;
 		}
@@ -34,7 +35,7 @@ namespace Configuration
 		std::map<std::string, Model> load_models() noexcept
 		{
 			std::map<std::string, Model> models;
-			models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "resources/terrain/terrain.obj", {0.0f, 1.053f, 0.0f})});
+			models.insert(std::pair<std::string, Model>{"terrain", Model("terrain", "resources/terrain/terrain.obj", {3.0f, -1.05f, 0.1f}, glm::quat({0.0f, 0.0f, 0.0f}), {5.0f, 5.0f, 5.0f})});
 			models.insert(std::pair<std::string, Model>{"pedestal", Model("pedestal", "resources/pedestal/10421_square_pedastal_iterations-2.obj", {3.0f, -0.2f, 0.1f}, glm::quat({1.567f, 0.0f, 0.0f}), {0.01f, 0.01f, 0.01f})});
 			models.insert(std::pair<std::string, Model>{"sphere", Model("sphere", "resources/sphere/sphere.obj", {3.0f, 0.4f, 0.1f}, glm::quat({0.0f, 0.0f, 0.0f}), {0.35f, 0.35f, 0.35f})});
 			// models.insert(std::pair<std::string, Model>{"backpack", Model("backpack", "../resources/backpack/backpack.obj", { 0.0f, 0.0f, -10.0f })});
@@ -48,7 +49,7 @@ namespace Configuration
 		std::multimap<std::string, std::string> pair_shader_and_model_names() noexcept
 		{
 			std::multimap<std::string, std::string> name_pairings;
-			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "terrain"});
+			name_pairings.insert(std::pair<std::string, std::string>{"terrain_shader", "terrain"});
 			name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "pedestal"});
 			name_pairings.insert(std::pair<std::string, std::string>{"diffuse_single_color_shader", "sphere"});
 			// name_pairings.insert(std::pair<std::string, std::string>{"standard_shader", "backpack"});

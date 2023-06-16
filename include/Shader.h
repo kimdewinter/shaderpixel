@@ -118,6 +118,33 @@ private:
 	Uniform<std::vector<Texture>> const textures;
 };
 
+class TerrainShader : public ShaderInterface
+{
+public:
+	TerrainShader(
+		std::string const &vertex_path,
+		std::string const &fragment_path,
+		std::string const &geometry_path = {}) noexcept;
+	~TerrainShader() noexcept = default;
+	TerrainShader(TerrainShader const &other) noexcept = delete;
+	TerrainShader(TerrainShader &&other) = delete;
+	TerrainShader &operator=(TerrainShader const &other) noexcept = delete;
+	TerrainShader &operator=(TerrainShader &&other) noexcept = delete;
+
+	void draw(
+		Model const &model,
+		glm::mat4 const &view,
+		glm::mat4 const &projection) const noexcept;
+
+private:
+	float calculate_texture_scale(glm::vec3 const &model_scalars) const noexcept;
+
+	Uniform<glm::mat4> const modelview_matrix;
+	Uniform<glm::mat4> const projection_matrix;
+	Uniform<std::vector<Texture>> const textures;
+	Uniform<float> const texture_scale;
+};
+
 class SingleColorShader : public ShaderInterface
 {
 public:

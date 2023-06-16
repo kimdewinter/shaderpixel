@@ -241,6 +241,47 @@ void StandardShader::draw(
 	glActiveTexture(GL_TEXTURE0);
 }
 
+TerrainShader::TerrainShader(
+	std::string const &vertex_path,
+	std::string const &fragment_path,
+	std::string const &geometry_path) noexcept
+	: ShaderInterface{vertex_path, fragment_path, geometry_path},
+	  modelview_matrix(this->get_id(), "u_modelview"),
+	  projection_matrix(this->get_id(), "u_projection"),
+	  textures(this->get_id(), ""),
+	  texture_scale(this->get_id(), "u_texture_scale")
+{
+}
+
+float TerrainShader::calculate_texture_scale(glm::vec3 const &model_scalars) const noexcept
+{
+	if (model_scalars.x != model_scalars.y || model_scalars.x != model_scalars.z)
+	{
+		ASSERT(false, "TerrainShader cannot scale/tile textures when the model-scale is not uniform across all dimensions; defaulting to default texture scale");
+		return 1.0f;
+	}
+	return model_scalars.x;
+}
+
+void TerrainShader::draw(
+	Model const &model,
+	glm::mat4 const &view,
+	glm::mat4 const &projection) const noexcept
+{
+	this->use();																 // make this shader program the currently active shader program in OpenGL
+	this->modelview_matrix.set(view * model.get_model_matrix());				 // combine and send view & model matrices
+	this->projection_matrix.set(projection);									 // send perspective / projection matrix
+	this->texture_scale.set(this->calculate_texture_scale(model.get_scaling())); // if model scaled uniformly across dimensions, then scale texture
+	for (Mesh const &mesh : model.get_meshes())
+	{
+		this->textures.set(mesh.get_textures());														// activate & bind textures
+		glBindVertexArray(static_cast<GLuint>(mesh.get_VAO()));											// bind VAO
+		glDrawElements(GL_TRIANGLES, static_cast<GLuint>(mesh.get_indices_size()), GL_UNSIGNED_INT, 0); // draw
+	}
+	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
+}
+
 SingleColorShader::SingleColorShader(
 	std::string const &vertex_path,
 	std::string const &fragment_path,
