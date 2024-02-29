@@ -58,7 +58,12 @@ ${SOURCE_DIR}/Shader.cpp
 ${SOURCE_DIR}/Gui.cpp
 )
 
-add_executable(${CMAKE_PROJECT_NAME} ${sources})
+if(WIN32)
+	add_executable(${CMAKE_PROJECT_NAME} WIN32 ${sources})
+else()
+	add_executable(${CMAKE_PROJECT_NAME} ${sources})
+endif()
+
 
 # Enable C++17
 set(CMAKE_CXX_STANDARD 17)

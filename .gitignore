@@ -36,3 +36,16 @@ out/
 *.exe
 *.out
 *.app
+
+*.vcxproj*
+CMakeCache.txt
+CMakeFiles/
+Debug/
+_deps/
+cmake_install.cmake
+imgui.*
+include/KHR/
+include/glad/
+shaderpixel.*
+src/glad.c
+x64/

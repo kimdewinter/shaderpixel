@@ -1,6 +1,7 @@
 #include "Model.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <glad/glad.h>
 #include "ErrorHandler.h"
