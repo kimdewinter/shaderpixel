@@ -1,5 +1,12 @@
 # shaderpixel
-School project: showcasing 3d fractals, mandelboxes, translucency, volumetric clouds &amp; light, and more!
+A little playground for me in which I can play with shaders.
 
-## Still a work in progress, check back later!
-![](https://steamuserimages-a.akamaihd.net/ugc/576778170939495596/80E8F9E9199A23E84FC639DA4A43BB001AFE7548/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false)
+Made mostly from scratch in C++ with OpenGL.
+
+Did use SDL for window and context management, ASSIMP for asset importing and DearImGui for the GUI.
+
+Enjoy this neat sphere with diffuse lighting!
+
+![](https://i.imgur.com/WbrUUCs.png)
+
+## Might add more if I feel like it, check back later!
